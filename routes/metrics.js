@@ -109,6 +109,10 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
         },
         function(callback) {
             console.log('3rd');
+            if (req.body['Timestamp']) {
+                req.body['@timestamp'] = req.body['Timestamp'];
+                delete req.body['Timestamp'];
+            }
             client.index({
                 index: index,
                 type: experimentID,
