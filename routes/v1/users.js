@@ -1,10 +1,19 @@
 var express = require('express');
 var router = express.Router();
 var async = require('async');
+var dateFormat = require('dateformat');
+
+router.get('/', function(req, res, next) {
+    res.redirect('/v1/dreamcloud/mf/workflows?users');
+});
+
+router.get('/:id', function(req, res, next) {
+    res.redirect('/v1/dreamcloud/mf/workflows/' + req.params.id + '?users');
+});
 
 router.put('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
-        mf_server = req.app.get('mf_server'),
+        mf_server = req.app.get('mf_server') + '/v1/mf/',
         client = req.app.get('elastic');
 
     client.index({
@@ -18,22 +27,22 @@ router.put('/:id', function(req, res, next) {
             return next(error);
         }
         var json = {};
-        json.href = mf_server + '/workflows/' + id;
+        json.href = mf_server + 'users/' + id;
         res.json(json);
     });
 });
 
-router.get('/:id/create', function(req, res, next) {
-    res.json("{ 'hello': 'world'}");
-});
-
 router.post('/:id/create', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
-        mf_server = req.app.get('mf_server'),
         client = req.app.get('elastic');
 
     var data = req.body;
     var experiment_id;
+
+    var created_on = {};
+    var now = new Date();
+    now = dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss");
+    created_on['created_on'] = now;
 
     async.series([
         /* (1) register workflow, if not exists yet */
@@ -41,7 +50,8 @@ router.post('/:id/create', function(req, res, next) {
             client.index({
                 index: 'mf',
                 type: 'workflows',
-                id: id
+                id: id,
+                body: created_on
             }, function(error, response) {
                 if (error) {
                     return series_callback(error);

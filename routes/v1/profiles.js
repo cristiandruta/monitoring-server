@@ -6,7 +6,14 @@ router.get('/:workID', function(req, res, next) {
     var client = req.app.get('elastic'),
       mf_server = req.app.get('mf_server'),
       workflow = req.params.workID.toLowerCase(),
+      dreamcloud = req.query.dreamcloud,
       json = {};
+
+    if (is_defined(dreamcloud)) {
+        mf_server = mf_server + '/v1/dreamcloud/mf';
+    } else {
+        mf_server = mf_server + '/v1/mf';
+    }
 
     client.indices.getSettings({
         index: workflow + '*',
@@ -83,9 +90,16 @@ router.get('/:workID/:taskID', function(req, res, next) {
     var client = req.app.get('elastic'),
       workflow = req.params.workID.toLowerCase(),
       mf_server = req.app.get('mf_server'),
+      dreamcloud = req.query.dreamcloud,
       task = req.params.taskID,
       size = 1000,
       json = {};
+
+    if (is_defined(dreamcloud)) {
+        mf_server = mf_server + '/v1/dreamcloud/mf';
+    } else {
+        mf_server = mf_server + '/v1/mf';
+    }
 
     // assign default taskID when application has no workflow
     if (!is_defined(task)) {
@@ -116,7 +130,7 @@ router.get('/:workID/:taskID', function(req, res, next) {
                     if (response.found) {
                         var result = response._source,
                           timestamp = result.timestamp,
-                          href = mf_server + '/profiles/' + index + '/' + experimentID;
+                          href = mf_server + '/profiles/' + workflow + '/' + task + '/' + experimentID;
                         var element = {};
                         element.href = href;
                         if (typeof timestamp !== 'undefined') {
@@ -157,6 +171,7 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
       workflow = req.params.workID.toLowerCase(),
       task = req.params.taskID,
       experiment = req.params.expID,
+      filter = req.query.filter,
       size = 1000,
       json = [];
 
@@ -195,8 +210,6 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
                     }
                     json.push(item);
                 });
-            } else {
-                json.error = error;
             }
 
             if (typeof json[0] == 'undefined') {

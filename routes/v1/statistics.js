@@ -1,13 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/:workflowID', function(req, res, next) {
-    var workflowID = req.params.workflowID.toLowerCase(),
-      index = workflowID + '_*';
-
-    return handle_response(req, res, next, index);
-});
-
 router.get('/:workflowID/:taskID', function(req, res, next) {
     var workflowID = req.params.workflowID.toLowerCase(),
       taskID = req.params.taskID.toLowerCase(),
@@ -16,15 +9,23 @@ router.get('/:workflowID/:taskID', function(req, res, next) {
     return handle_response(req, res, next, index);
 });
 
-function handle_response(req, res, next, index) {
+router.get('/:workflowID/:taskID/:experimentID', function(req, res, next) {
+    var workflowID = req.params.workflowID.toLowerCase(),
+      taskID = req.params.taskID.toLowerCase(),
+      type = req.params.experimentID,
+      index = workflowID + '_' + taskID;
+
+    return handle_response(req, res, next, index, type);
+});
+
+function handle_response(req, res, next, index, type) {
     var client = req.app.get('elastic'),
-      mf_server = req.app.get('mf_server'),
+      mf_server = req.app.get('mf_server') + '/v1/mf',
       workflowID = req.params.workflowID.toLowerCase(),
-      filter = req.query.filter,
       metric = req.query.metric,
       from = req.query.from,
       to = req.query.to,
-      body = aggregation_by(metric);
+      body = aggregation_by(metric, type);
 
      if (!is_defined(metric)) {
         var error = {
@@ -36,19 +37,8 @@ function handle_response(req, res, next, index) {
         return;
     }
 
-    if (is_defined(filter)) {
-        if (filter.indexOf("==") >= 0) {
-            var terms = filter.split("==");
-            body = filter_and_aggregate_by(terms[0], terms[1], metric, from, to);
-        } else {
-            var error = {
-                'error': {
-                    'message': 'only the operator == is supported'
-                }
-            }
-            res.json(error);
-            return;
-        }
+    if (is_defined(from) && is_defined(to)) {
+        body = filter_and_aggregate_by(metric, from, to, type);
     }
 
     client.search({
@@ -63,12 +53,11 @@ function handle_response(req, res, next, index) {
         var answer = {},
           aggs = response.aggregations;
 
-        answer['workflow'] = {}
-        answer['workflow'].href = mf_server + '/workflows/' + workflowID;
+        answer['user'] = {}
+        answer['user'].href = mf_server + '/users/' + workflowID;
         answer['metric'] = metric;
 
-        if (is_defined(filter)) {
-            answer['filter'] = filter;
+        if (is_defined(from) && is_defined(to)) {
             aggs = aggs['filtered_stats'];
         }
         answer['statistics'] = aggs[metric + '_Stats'];
@@ -82,17 +71,19 @@ function is_defined(variable) {
     return (typeof variable !== 'undefined');
 }
 
-function filter_and_aggregate_by(term_key, term_filter, field_name, from, to) {
+function filter_and_aggregate_by(field_name, from, to, type) {
+    var filter_type = '';
+    if (is_defined(type)) {
+        filter_type = '{ ' +
+                        '"type": { "value": "' + type + '" }' +
+                    '},';
+    }
     return '{' +
         '"aggs": {' +
             '"filtered_stats": {' +
                 '"filter": {' +
                     '"and": [' +
-                        '{' +
-                            '"term": {' +
-                                '"' + term_key + '": "' + term_filter.toLowerCase() + '"' +
-                            '}' +
-                        '}' +
+                        filter_type +
                         date_filter(from, to) +
                     ']' +
                 '},' +
@@ -107,7 +98,7 @@ function date_filter(from, to) {
 
     if (is_defined(from) && is_defined(to)) {
         filter =
-            ',{ ' +
+            '{ ' +
                 '"range": {' +
                     '"@timestamp": {' +
                         '"from": "' + from + '",' +
@@ -120,8 +111,25 @@ function date_filter(from, to) {
     return filter;
 }
 
-function aggregation_by(field_name) {
-    return '{' +
+function type_filter(type) {
+    var filter = '';
+
+    if (is_defined(type)) {
+        filter =
+            '"query": {' +
+                '"filtered": {' +
+                    '"filter": {' +
+                        '"type": { "value": "' + type + '" }' +
+                    '}' +
+                '}' +
+            '},';
+    }
+
+    return filter;
+}
+
+function aggregation_by(field_name, type) {
+    return '{' + type_filter(type) +
         '"aggs": {' +
             '"' + field_name + '_Stats" : {' +
                 '"extended_stats" : {' +

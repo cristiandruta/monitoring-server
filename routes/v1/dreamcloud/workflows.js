@@ -7,8 +7,15 @@ router.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
         mf_server = req.app.get('mf_server'),
         details = req.query.details,
+        excess = req.query.users,
         size = 1000,
         json = {};
+
+    if (is_defined(excess)) {
+        mf_server = mf_server + '/v1/mf';
+    } else {
+        mf_server = mf_server + '/v1/dreamcloud/mf';
+    }
 
     client.search({
         index: 'mf',
@@ -37,7 +44,7 @@ router.get('/', function(req, res, next) {
                 if (is_defined(details)) {
                     json = get_details(results);
                 } else {
-                    json = get_workflows(results, mf_server);
+                    json = get_workflows(results, mf_server, excess);
                 }
             }
             res.json(json);
@@ -66,14 +73,18 @@ function get_details(results) {
     return response;
 }
 
-function get_workflows(results, mf_server) {
+function get_workflows(results, mf_server, excess) {
     var keys = Object.keys(results),
         workflow = '',
-        response = {};
+        response = {},
+        path = 'workflows';
+    if (is_defined(excess)) {
+        path = 'users';
+    }
     keys.forEach(function(key) {
         workflow = results[key]._id
         var json = {}
-        json.href = mf_server + '/workflows/' + workflow;
+        json.href = mf_server + '/' + path + '/' + workflow;
         response[workflow] = json;
     });
     return response;

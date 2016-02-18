@@ -11,20 +11,30 @@ var elastic = new elasticsearch.Client({
   log: 'trace'
 });
 
-var routes = require('./routes/index');
-var workflows = require('./routes/workflows');
-var experiments = require('./routes/experiments');
-var profiles = require('./routes/profiles');
-var metrics = require('./routes/metrics');
-var runtime = require('./routes/runtime');
-var progress = require('./routes/progress');
-var energy = require('./routes/energy');
-var deployments = require('./routes/deployments');
-var statistics = require('./routes/statistics');
-var resources = require('./routes/resources');
-var status = require('./routes/status');
-var report = require('./routes/report');
-var users = require('./routes/users');
+/* root */
+var routes = require('./routes/v1/index');
+
+/* excess */
+var users = require('./routes/v1/users');
+var runtime = require('./routes/v1/runtime');
+var statistics = require('./routes/v1/statistics');
+
+/* dreamcloud */
+var workflows = require('./routes/v1/dreamcloud/workflows');
+var runtime_dreamcloud = require('./routes/v1/dreamcloud/runtime');
+var progress = require('./routes/v1/dreamcloud/progress');
+var energy = require('./routes/v1/dreamcloud/energy');
+var deployments = require('./routes/v1/dreamcloud/deployments');
+var statistics_dreamcloud = require('./routes/v1/dreamcloud/statistics');
+var resources = require('./routes/v1/dreamcloud/resources');
+var status = require('./routes/v1/dreamcloud/status');
+var report = require('./routes/v1/dreamcloud/report');
+
+/* excess and dreamcloud */
+var experiments = require('./routes/v1/experiments');
+var profiles = require('./routes/v1/profiles');
+var profiles_dreamcloud = require('./routes/v1/dreamcloud/profiles');
+var metrics = require('./routes/v1/metrics');
 
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
@@ -32,11 +42,9 @@ app.set('view engine', 'jade');
 app.set('elastic', elastic);
 app.set('version', '1.0.2');
 var port = '3030',
-  prefix = '/dreamcloud/mf',
   hostname = os.hostname();
 hostname = hostname.replace("http://fe", "http://mf");
-app.set('prefix', prefix);
-app.set('mf_server', 'http://' + hostname + ':' + port + prefix);
+app.set('mf_server', 'http://' + hostname + ':' + port);
 app.set('pwm_idx', 'dreamcloud_pwm_idx');
 
 app.use(logger('combined'));
@@ -45,23 +53,36 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/* root */
 app.use('/', routes);
-app.use('/dreamcloud/mf', routes);
-app.use('/dreamcloud/mf/workflows', workflows);
-app.use('/mf/experiments', experiments);
-app.use('/mf/profiles', profiles);
-app.use('/mf/metrics', metrics);
-app.use('/dreamcloud/mf/runtime', runtime);
-app.use('/dreamcloud/mf/progress', progress);
-app.use('/dreamcloud/mf/energy', energy);
-app.use('/dreamcloud/mf/deployments', deployments);
-app.use('/dreamcloud/mf/statistics', statistics);
-app.use('/dreamcloud/mf/resources', resources);
-app.use('/dreamcloud/mf/status', status);
-app.use('/dreamcloud/mf/report', report);
-app.use('/mf/users', users);
+app.use('/v1/mf', routes);
+app.use('/v1/dreamcloud/mf', routes);
 
-// catch 404 and forward to error handler
+/* excess */
+app.use('/v1/mf/users', users);
+app.use('/v1/mf/runtime', runtime);
+app.use('/v1/mf/statistics', statistics);
+
+/* dreamcloud */
+app.use('/v1/dreamcloud/mf/workflows', workflows);
+app.use('/v1/dreamcloud/mf/runtime', runtime_dreamcloud);
+app.use('/v1/dreamcloud/mf/progress', progress);
+app.use('/v1/dreamcloud/mf/energy', energy);
+app.use('/v1/dreamcloud/mf/deployments', deployments);
+app.use('/v1/dreamcloud/mf/statistics', statistics_dreamcloud);
+app.use('/v1/dreamcloud/mf/resources', resources);
+app.use('/v1/dreamcloud/mf/status', status);
+app.use('/v1/dreamcloud/mf/report', report);
+
+/* both */
+app.use('/v1/mf/experiments', experiments);
+app.use('/v1/mf/profiles', profiles);
+app.use('/v1/mf/metrics', metrics);
+app.use('/v1/dreamcloud/mf/experiments', experiments);
+app.use('/v1/dreamcloud/mf/profiles', profiles_dreamcloud);
+app.use('/v1/dreamcloud/mf/metrics', metrics);
+
+/* catch 404 and forward to error handler */
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
@@ -87,6 +108,5 @@ app.use(function(err, req, res, next) {
   error.error = err;
   res.json(error);
 });
-
 
 module.exports = app;

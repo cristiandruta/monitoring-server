@@ -15,12 +15,11 @@ router.get('/:workID/:expID', function(req, res, next) {
         type: 'status',
         id: documentId
     }, function(error, response) {
-	if (error) {
-	    json.error = "No current status report available.";
+    	if (error) {
+    	    json = "No current status report available.";
             return next(json);
         }
         if (response.found) {
-            console.log(response);
             json = response._source;
         }
         res.json(json);
@@ -45,10 +44,10 @@ router.put('/:workID/:expID', function(req, res, next) {
         id: documentId,
         body: req.body
     },function(error, response) {
-	if (error) {
-		res.status(500);
-		return next(error);
-	}
+    	if (error) {
+    		res.status(500);
+    		return next(error);
+    	}
         var json = {};
         json.href = mf_server + '/status/' + workflow + '/' + experiment;
         res.json(json);

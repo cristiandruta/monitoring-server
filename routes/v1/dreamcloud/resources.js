@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
     client.get({
         index: 'mf',
         type: 'resources',
-        id: "current_state"
+        id: 'current_state'
     }, function(error, response) {
         if (error) {
             res.status(500)

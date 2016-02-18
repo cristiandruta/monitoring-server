@@ -71,7 +71,7 @@ function get_details(results) {
             }
             delete item.timestamp;
         }
-        item.workflow = results[key].fields._parent;
+        item.workflow = results[key]._parent;
         response[results[key]._id] = item;
     });
     return response;
@@ -84,7 +84,7 @@ function get_workflows(mf_server, results) {
       response = {};
     keys.forEach(function(key) {
         experimentID = results[key]._id
-        workflow = results[key].fields._parent;
+        workflow = results[key]._parent;
         var json = {};
         json.href = mf_server + '/experiments/' + experimentID + '?workflow=' + workflow;
         response[experimentID] = json;
