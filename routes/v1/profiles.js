@@ -109,6 +109,7 @@ router.get('/:workID/:taskID', function(req, res, next) {
         return;
     }
     var index = workflow + '_' + task;
+    index = index.toLowerCase()
 
     client.indices.getMapping({
         index: index,

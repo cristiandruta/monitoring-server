@@ -37,6 +37,9 @@ router.post('/:id/create', function(req, res, next) {
         client = req.app.get('elastic');
 
     var data = req.body;
+    if (data['application']) {
+        data['application'] = data['application'].replace(' ', '_')
+    }
     var experiment_id;
 
     var created_on = {};

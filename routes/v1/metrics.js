@@ -53,9 +53,12 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
       client = req.app.get('elastic'),
       index_missing = false;
 
+    // taskID will later be used as an index, no white spaces allowed
+    taskID = taskID.replace(' ', '_')
+
     var index = workflowID;
     if (typeof taskID == 'undefined') {
-        taskID = 'all'
+        taskID = 'manual_monitoring'
     }
 
     index = workflowID + '_' + taskID;
@@ -88,7 +91,7 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
                 var http_request = http.request(options, function(res) {
                     res.setEncoding('utf-8');
                     res.on('data', function(data) {
-                        console.log('incoming: ' + data);
+                        //console.log('incoming: ' + data);
                     });
                     res.on('end', function() {
                         callback(null, '2=created');
@@ -133,7 +136,7 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
         }
     ],
     function(err, results){
-        console.log(results);
+        //console.log(results);
     });
 });
 
