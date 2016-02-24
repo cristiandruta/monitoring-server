@@ -8,7 +8,7 @@ var os = require("os");
 var elasticsearch = require('elasticsearch');
 var elastic = new elasticsearch.Client({
   host: '127.0.0.1:9200',
-  log: 'trace'
+  log: 'error'
 });
 
 /* root */
@@ -47,7 +47,11 @@ hostname = hostname.replace("http://fe", "http://mf");
 app.set('mf_server', 'http://' + hostname + ':' + port);
 app.set('pwm_idx', 'dreamcloud_pwm_idx');
 
-app.use(logger('combined'));
+//app.use(logger('combined'));
+app.use(logger('combined', {
+  skip: function (req, res) { return res.statusCode < 400 }
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
