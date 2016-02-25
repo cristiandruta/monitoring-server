@@ -40,7 +40,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.set('elastic', elastic);
-app.set('version', '1.0.2');
+app.set('version', '16.2');
 var port = '3030',
   hostname = os.hostname();
 hostname = hostname.replace("http://fe", "http://mf");
