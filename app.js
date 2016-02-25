@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var os = require("os");
 var elasticsearch = require('elasticsearch');
 var elastic = new elasticsearch.Client({
-  host: '127.0.0.1:9200',
+  host: 'localhost:9200',
   log: 'error'
 });
 
