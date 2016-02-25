@@ -1,6 +1,6 @@
 {
-  "name": "monitoring_api",
-  "version": "1.0.2",
+  "name": "EXCESS ATOM monitoring backend server",
+  "version": "16.2",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
