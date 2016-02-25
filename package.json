@@ -1,5 +1,5 @@
 {
-  "name": "EXCESS ATOM monitoring backend server",
+  "name": "monitoring-server",
   "version": "16.2",
   "private": true,
   "scripts": {
