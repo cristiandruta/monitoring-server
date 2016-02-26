@@ -100,7 +100,36 @@ port 3000. Please browse to http://localhost:3030 to check if the startup
 was successful.
 
 
-## Monitoring
+## RESTful Queries
+
+It follows a list of some RESTful queries to demonstrate its usage:
+
+```bash
+# WORKFLOWS
+GET /v1/dreamcloud/mf/workflows
+GET /v1/dreamcloud/mf/workflows?details
+GET /v1/dreamcloud/mf/workflows/power_stream
+GET /v1/dreamcloud/mf/workflows/ms2
+
+# EXPERIMENTS
+GET /v1/mf/experiments
+GET /v1/mf/experiments?details
+GET /v1/mf/experiments?workflows=ms2
+GET /v1/mf/experiments?workflows=ms2&details
+GET /v1/mf/experiments/AU3DzYggYHjgymAd2iPp?workflow=ms2
+GET /v1/mf/experiments/AU3DzYggYHjgymAd2iPp?workflow=ms2&extends=tak
+
+# PROFILES
+GET /v1/dramlud/mf/profiles/ms2/
+GET /v1/dreamcloud/mf/profiles/ms2/task_1
+GET /v1/dreamcloud/mf/profiles/ms2/task_1/AU3DzggYHjgymAdip
+
+# RUNTIME
+GET /v1/dreamcloud/mf/runtime/ms2/task_1/AU3DzggYHjgymAdip
+GET /v1/dreamcloud/mf/runtime/ms2/AU3DzYggYHjgymAd2iPp
+```
+
+# Monitoring
 
 Please refer to the [installation and monitoring guide][agent] of the monitoring agent in order to fill the database with data that then can be visualized and exported as JSON or CSV.
 
