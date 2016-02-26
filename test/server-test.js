@@ -1,4 +1,4 @@
-var server = require('../bin/www');
+var server = require('../bin/test');
 
 describe('server', function () {
   before(function () {

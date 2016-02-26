@@ -22,53 +22,11 @@ app.set('port', port);
 var server = http.createServer(app);
 
 /**
- * Initialize Elasticsearch
+ * Listen on provided port, on all network interfaces.
  */
-var client = app.get("elastic");
-client.indices.create({
-  index: "mf",
-  body:
-  {
-    "mappings": {
-      "workflows": {
-        "properties": {
-          "application": { "type": "string" },
-          "author": { "type": "string" },
-          "tasks": {
-            "properties" : {
-              "name": { "type": "string" },
-              "type": { "type": "string" },
-              "next": { "type": "string" }
-            }
-          }
-        }
-      },
-      "experiments": {
-        "properties": {
-          "user": { "type": "string" },
-          "description": { "type": "string" }
-        },
-        "_parent": {
-          "type": "workflows"
-        }
-      }
-    }
-  }
-},function(error, response) {
-  if (error) {
-    if (response.status != 400) {
-      //response.status(500);
-      //return next(error);
-      return;
-    }
-  }
-  /**
-   * Listen on provided port, on all network interfaces.
-   */
-  server.listen(port);
-  server.on('error', onError);
-  server.on('listening', onListening);
-});
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
