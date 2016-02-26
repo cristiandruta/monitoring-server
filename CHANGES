@@ -1,0 +1,8 @@
+# RELEASE NOTES
+
+## 16.2 (26/02/2016)
+
+### Features
+- Unification of EXCESS and DreamCloud APIs
+- Introduction of version schema; current API version is v1
+- Split up backend functionality and front-end (Web interface)
