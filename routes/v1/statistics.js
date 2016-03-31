@@ -60,10 +60,17 @@ function handle_response(req, res, next, index, type) {
         if (is_defined(from) && is_defined(to)) {
             aggs = aggs['filtered_stats'];
         }
-        answer['statistics'] = aggs[metric + '_Stats'];
-        answer['min'] = aggs['Minimum_' + metric]['hits']['hits'][0]['_source'];
-        answer['max'] = aggs['Maximum_' + metric]['hits']['hits'][0]['_source'];
-        res.json(answer);
+        if(aggs['Minimum_' + metric]['hits']['total'] == 0) {
+                var json = {};
+                json.error = "response is empty for the metric";
+                res.json(json);
+        }
+        else {
+            answer['statistics'] = aggs[metric + '_Stats'];
+            answer['min'] = aggs['Minimum_' + metric]['hits']['hits'][0]['_source'];
+            answer['max'] = aggs['Maximum_' + metric]['hits']['hits'][0]['_source'];
+            res.json(answer);    
+        }
     });
 }
 
