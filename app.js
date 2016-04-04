@@ -45,7 +45,7 @@ var port = '3030',
   hostname = os.hostname();
 hostname = hostname.replace("http://fe", "http://mf");
 app.set('mf_server', 'http://' + hostname + ':' + port);
-app.set('pwm_idx', 'dreamcloud_pwm_idx');
+app.set('pwm_idx', 'power_dreamcloud');
 
 //app.use(logger('combined'));
 app.use(logger('combined', {
