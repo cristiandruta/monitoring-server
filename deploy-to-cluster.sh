@@ -4,10 +4,10 @@ echo "Deploying a new development version of the monitoring server to the EXCESS
 
 VERSION=$1
 REPO=$2
+
 #
 # set parameters to retrieve artifact from nexus
 #
-#REPO=snapshots
 GROUP=eu/excess-project
 ARTIFACT=monitoring-server
 VERSION=${VERSION}
