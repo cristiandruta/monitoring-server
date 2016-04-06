@@ -1,7 +1,7 @@
 var express = require('express');
 var async = require('async');
 var router = express.Router();
-var moment = require('moment');
+var dateFormat = require('dateformat');
 
 router.get('/:workID/:expID', function(req, res, next) {
     var client = req.app.get('elastic'),
@@ -24,7 +24,7 @@ router.get('/:workID/:expID', function(req, res, next) {
             return next(error);
         }
         if (response !== undefined) {
-            var earliest_start = Number.MAX_VALUE;
+            var earliest_start = "2200-01-01T00:00:00.000";
             var latest_end = 0;
 
             var tasks = Object.keys(response);
@@ -53,9 +53,7 @@ router.get('/:workID/:expID', function(req, res, next) {
                             var metric_data = only_results[key]._source;
                             start = metric_data['@timestamp'];
                             start = start.replace(/\s/g, '0');
-                            start = new Date(start);
-                            start = start.getTime();
-                            if (start < earliest_start) {
+                            if ((new Date(start)) < (new Date(earliest_start))) {
                                 earliest_start = start;
                             }
                         });
@@ -79,12 +77,10 @@ router.get('/:workID/:expID', function(req, res, next) {
                             var keys = Object.keys(only_results);
                             keys.forEach(function(key) {
                                 var metric_data = only_results[key]._source;
-                                host = metric_data['host'];
+                                hostname = metric_data['host'];
                                 end = metric_data['@timestamp'];
                                 end = end.replace(/\s/g, '0');
-                                end = new Date(end);
-                                end = end.getTime();
-                                if (end > latest_end) {
+                                if (new Date(end) > new Date(latest_end)) {
                                     latest_end = end;
                                 }
                             });
@@ -93,9 +89,9 @@ router.get('/:workID/:expID', function(req, res, next) {
                         json.tasks[task] = {};
                         json.tasks[task].host = hostname;
                         json.tasks[task].runtime = {};
-                        json.tasks[task].runtime.start = new Date(start);
-                        json.tasks[task].runtime.end = new Date(end);
-                        json.tasks[task].runtime.seconds = (end - start) / 1000;
+                        json.tasks[task].runtime.start = start;
+                        json.tasks[task].runtime.end = end;
+                        json.tasks[task].runtime.seconds = (new Date(end) - new Date(start)) / 1000;
                         if (!json.tasks[task].runtime.seconds) {
                             json.tasks[task].runtime.seconds = 0;
                         }
@@ -120,7 +116,7 @@ router.get('/:workID/:expID', function(req, res, next) {
                             json.tasks[task].energy = {};
                             json.tasks[task].energy["NODE01"] = {};
                             json.tasks[task].energy["NODE01"].avg_watt_consumption = average;
-                            var duration = (end - start) / 1000;
+                            var duration = (new Date(end) - new Date(start)) / 1000;
                             var joule = average * duration;
                             json.tasks[task].energy["NODE01"].total_energy_consumption = joule;
 
@@ -147,9 +143,9 @@ router.get('/:workID/:expID', function(req, res, next) {
                     return next(error);
                 }
 
-                json.workflow.runtime.start = new Date(earliest_start);
-                json.workflow.runtime.end = new Date(latest_end);
-                json.workflow.runtime.seconds = (latest_end - earliest_start) / 1000;
+                json.workflow.runtime.start = earliest_start;
+                json.workflow.runtime.end = latest_end;
+                json.workflow.runtime.seconds = (new Date(latest_end) - new Date(earliest_start)) / 1000;
 
                 var body = compute_average_on("NODE01", "NODE02", "NODE03", earliest_start, latest_end);
 
@@ -170,7 +166,7 @@ router.get('/:workID/:expID', function(req, res, next) {
                     var average = aggs['power_metrics']["NODE01"].value;
                     json.workflow.energy["NODE01"] = {};
                     json.workflow.energy["NODE01"].avg_watt_consumption = average;
-                    var duration = (latest_end - earliest_start) / 1000;
+                    var duration = (new Date(latest_end) - new Date(earliest_start)) / 1000;
                     var joule = average * duration;
                     json.workflow.energy["NODE01"].total_energy_consumption = joule;
 
@@ -193,49 +189,8 @@ router.get('/:workID/:expID', function(req, res, next) {
     })
 });
 
-/*
-function compute_average_on(metric_name, from, to) {
-    from = from / 1000;
-    from = from - 3600;
-    to = to / 1000;
-    to = to - 3600;
-    var query = {
-        "aggs": {
-            "power_metrics": {
-                "filter": {
-                    "and": [{
-                        "exists": {
-                            "field": metric_name
-                        }
-                    }, {
-                        "range": {
-                            "Timestamp": {
-                                "gte": from.toString(),
-                                "lte": to.toString()
-                            }
-                        }
-                    }]
-                },
-                "aggs": {
-                    "report": {
-                        "avg": {
-                            "field": metric_name
-                        }
-                    }
-                }
-            }
-        }
-    };
-    return query;
-}
-*/
-
 
 function compute_average_on(metric_name_a, metric_name_b, metric_name_c, from, to) {
-    from = from / 1000;
-    from = from - 3600;
-    to = to / 1000;
-    to = to - 3600;
     var query = {
         "aggs": {
             "power_metrics": {
@@ -256,7 +211,7 @@ function compute_average_on(metric_name_a, metric_name_b, metric_name_c, from, t
                         }]
                     }, {
                         "range": {
-                            "Timestamp": {
+                            "@timestamp": {
                                 "gte": from.toString(),
                                 "lte": to.toString()
                             }

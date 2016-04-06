@@ -60,8 +60,8 @@ router.get('/:workID/:expID', function(req, res, next) {
                                     var metric_data = only_results[key]._source;
                                     start = metric_data['@timestamp'];
                                     start = start.replace(/\s/g, '0');
-                                    start = new Date(start);
-                                    start = start.getTime() / 1000;
+                                    //start = new Date(start);
+                                    //start = start.getTime() / 1000;
                                     if (start < earliest_start) {
                                         earliest_start = start;
                                     }
@@ -89,8 +89,8 @@ router.get('/:workID/:expID', function(req, res, next) {
                                         host = metric_data['host'];
                                         end = metric_data['@timestamp'];
                                         end = end.replace(/\s/g, '0');
-                                        end = new Date(end);
-                                        end = end.getTime() / 1000;
+                                        //end = new Date(end);
+                                        //end = end.getTime() / 1000;
                                         if (end > latest_end) {
                                             latest_end = end;
                                         }
