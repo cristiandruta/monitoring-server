@@ -30,7 +30,7 @@ router.get('/:workID/:expID', function(req, res, next) {
         if (result != undefined) {
             var es_result = {};
             es_result.workflow = workflow;
-            var earliest_start = Number.MAX_VALUE;
+            var earliest_start = "2200-01-01T00:00:00.000";
             var latest_end = 0;
 
             var tasks = result._source.tasks;
@@ -60,9 +60,7 @@ router.get('/:workID/:expID', function(req, res, next) {
                                     var metric_data = only_results[key]._source;
                                     start = metric_data['@timestamp'];
                                     start = start.replace(/\s/g, '0');
-                                    //start = new Date(start);
-                                    //start = start.getTime() / 1000;
-                                    if (start < earliest_start) {
+                                    if (new Date(start) < new Date(earliest_start)) {
                                         earliest_start = start;
                                     }
                                 });
@@ -89,9 +87,7 @@ router.get('/:workID/:expID', function(req, res, next) {
                                         host = metric_data['host'];
                                         end = metric_data['@timestamp'];
                                         end = end.replace(/\s/g, '0');
-                                        //end = new Date(end);
-                                        //end = end.getTime() / 1000;
-                                        if (end > latest_end) {
+                                        if (new Date(end) > new Date(latest_end)) {
                                             latest_end = end;
                                         }
                                     });
@@ -104,7 +100,7 @@ router.get('/:workID/:expID', function(req, res, next) {
                             json.data = {};
                             json.data.start = start;
                             json.data.end = end;
-                            json.data.runtime = (end - start);
+                            json.data.runtime = ((new Date(end) - new Date(start))) / 1000;
                             if (!json.data.runtime) {
                                 json.data.runtime = 0;
                             }
@@ -115,7 +111,7 @@ router.get('/:workID/:expID', function(req, res, next) {
                     });
                 },
                 function(err) {
-                    var total_runtime = latest_end - earliest_start;
+                    var total_runtime = ((new Date(latest_end) - new Date(earliest_start))) / 1000;
                     es_result.start = earliest_start;
                     es_result.end = latest_end;
                     es_result.total_runtime = total_runtime;
