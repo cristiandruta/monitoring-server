@@ -89,7 +89,6 @@ app.use('/v1/dreamcloud/mf/metrics', metrics);
 /* catch 404 and forward to error handler */
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
-  err.status = 404;
   next(err);
 });
 
@@ -98,7 +97,7 @@ app.use(function(req, res, next) {
 // development error handler
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
+    //res.status(err.status || 500);
     var error = {};
     error.error = err;
     res.json(error);
@@ -107,7 +106,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
+  //res.status(err.status || 500);
   var error = {};
   error.error = err;
   res.json(error);
