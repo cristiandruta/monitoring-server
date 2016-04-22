@@ -35,6 +35,7 @@ var experiments = require('./routes/v1/experiments');
 var profiles = require('./routes/v1/profiles');
 var profiles_dreamcloud = require('./routes/v1/dreamcloud/profiles');
 var metrics = require('./routes/v1/metrics');
+var units = require('./routes/v1/units');
 
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
@@ -82,6 +83,7 @@ app.use('/v1/dreamcloud/mf/report', report);
 app.use('/v1/mf/experiments', experiments);
 app.use('/v1/mf/profiles', profiles);
 app.use('/v1/mf/metrics', metrics);
+app.use('/v1/mf/units', units);
 app.use('/v1/dreamcloud/mf/experiments', experiments);
 app.use('/v1/dreamcloud/mf/profiles', profiles_dreamcloud);
 app.use('/v1/dreamcloud/mf/metrics', metrics);
