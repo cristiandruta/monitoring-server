@@ -120,7 +120,7 @@ GET /v1/mf/experiments/AU3DzYggYHjgymAd2iPp?workflow=ms2
 GET /v1/mf/experiments/AU3DzYggYHjgymAd2iPp?workflow=ms2&extends=tak
 
 # PROFILES
-GET /v1/dramlud/mf/profiles/ms2/
+GET /v1/dreamcloud/mf/profiles/ms2/
 GET /v1/dreamcloud/mf/profiles/ms2/task_1
 GET /v1/dreamcloud/mf/profiles/ms2/task_1/AU3DzggYHjgymAdip
 

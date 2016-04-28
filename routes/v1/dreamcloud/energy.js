@@ -3,7 +3,7 @@ var async = require('async');
 var moment = require('moment');
 var router = express.Router();
 
-var skip_fields = [ 'Timestamp', 'type', 'hostname' ];
+var skip_fields = [ '@timestamp', 'type', 'host' ];
 
 router.get('/:workflowID/:experimentID', function(req, res, next) {
     var client = req.app.get('elastic'),
@@ -56,11 +56,9 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
                                     var metric_data = only_results[key]._source;
                                     start = metric_data['@timestamp'];
                                     start = start.replace(/\s/g, '0');
-                                    start = new Date(start);
-                                    start = start.getTime() / 1000;
                                 });
 
-                                ranges[task].start = start - 3600;
+                                ranges[task].start = start;
                                 series_callback(null);
                             }
                         });
@@ -84,11 +82,9 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
                                     var metric_data = only_results[key]._source;
                                     end = metric_data['@timestamp'];
                                     end = end.replace(/\s/g, '0');
-                                    end = new Date(end);
-                                    end = end.getTime() / 1000;
                                 });
 
-                                ranges[task].end = end - 3600;
+                                ranges[task].end = end;
                                 series_callback(null);
                             }
                         });
@@ -101,7 +97,7 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
                                     constant_score: {
                                         filter: {
                                             range: {
-                                                "Timestamp": {
+                                                "@timestamp": {
                                                     "gte": ranges[task].start.toString(),
                                                     "lte": ranges[task].end.toString()
                                                 }
@@ -132,7 +128,7 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
                                     constant_score: {
                                         filter: {
                                             range: {
-                                                "Timestamp": {
+                                                "@timestamp": {
                                                     "gte": ranges[task].start.toString(),
                                                     "lte": ranges[task].end.toString()
                                                 }
@@ -142,7 +138,7 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
                                 }
                             },
                             size: ranges[task].size,
-                            sort: [ "Timestamp:asc" ],
+                            sort: [ "@timestamp:asc" ],
                         }, function(error, result) {
                             if (error) {
                                 return series_callback(error);
@@ -168,16 +164,12 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
                                             if (skip_fields.indexOf(key) > -1 || key == '')
                                                 continue;
                                             var value = parseInt(data[key]);
-                                            var time = data['Timestamp']; // 1430646029.762737460
-                                            time = moment.unix(parseFloat(time));
-                                            time = time.add(1, 'h');
-                                            time = time.valueOf() / 1000;
-                                            time = time.toString().substring(0, 13); // 1430646029.76
+                                            var time = data['@timestamp'];
                                             var metrics = power_result[time];
                                             if (!metrics) {
                                                 metrics = {};
                                                 metrics['@timestamp'] = time;
-                                                metrics.type = "pwm";//data.type;
+                                                metrics.type = "pwm";
                                             }
                                             metrics[key] = value;
                                             power_result[time] = metrics;
@@ -256,11 +248,9 @@ router.get('/:workflowID/:taskID/:experimentID', function(req, res, next) {
                             var metric_data = only_results[key]._source;
                             start = metric_data['@timestamp'];
                             start = start.replace(/\s/g, '0');
-                            start = new Date(start);
-                            start = start.getTime() / 1000;
                         });
 
-                        ranges[task].start = start - 3600;
+                        ranges[task].start = start;
                         series_callback(null);
                     }
                 });
@@ -284,11 +274,9 @@ router.get('/:workflowID/:taskID/:experimentID', function(req, res, next) {
                             var metric_data = only_results[key]._source;
                             end = metric_data['@timestamp'];
                             end = end.replace(/\s/g, '0');
-                            end = new Date(end);
-                            end = end.getTime() / 1000;
                         });
 
-                        ranges[task].end = end - 3600;
+                        ranges[task].end = end;
                         series_callback(null);
                     }
                 });
@@ -301,7 +289,7 @@ router.get('/:workflowID/:taskID/:experimentID', function(req, res, next) {
                             constant_score: {
                                 filter: {
                                     range: {
-                                        "Timestamp": {
+                                        "@timestamp": {
                                             "gte": ranges[task].start.toString(),
                                             "lte": ranges[task].end.toString()
                                         }
@@ -332,7 +320,7 @@ router.get('/:workflowID/:taskID/:experimentID', function(req, res, next) {
                             constant_score: {
                                 filter: {
                                     range: {
-                                        "Timestamp": {
+                                        "@timestamp": {
                                             "gte": ranges[task].start.toString(),
                                             "lte": ranges[task].end.toString()
                                         }
@@ -342,7 +330,7 @@ router.get('/:workflowID/:taskID/:experimentID', function(req, res, next) {
                         }
                     },
                     size: ranges[task].size,
-                    sort: [ "Timestamp:asc" ],
+                    sort: [ "@timestamp:asc" ],
                 }, function(error, result) {
                     if (error) {
                         return series_callback(error);
@@ -367,17 +355,14 @@ router.get('/:workflowID/:taskID/:experimentID', function(req, res, next) {
                                 if (data.hasOwnProperty(key)) {
                                     if (skip_fields.indexOf(key) > -1 || key == '')
                                         continue;
+
                                     var value = parseInt(data[key]);
-                                    var time = data['Timestamp']; // 1430646029.762737460
-                                    time = moment.unix(parseFloat(time));
-                                    time = time.add(1, 'h');
-                                    time = time.valueOf() / 1000;
-                                    time = time.toString().substring(0, 13); // 1430646029.76
+                                    var time = data['@timestamp'];
                                     var metrics = power_result[time];
                                     if (!metrics) {
                                         metrics = {};
                                         metrics['@timestamp'] = time;
-                                        metrics.type = "pwm";//data.type;
+                                        metrics.type = "pwm";
                                     }
                                     metrics[key] = value;
                                     power_result[time] = metrics;
