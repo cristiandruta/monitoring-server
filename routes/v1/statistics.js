@@ -22,6 +22,7 @@ function handle_response(req, res, next, index, type) {
     var client = req.app.get('elastic'),
       mf_server = req.app.get('mf_server') + '/v1/mf',
       workflowID = req.params.workflowID.toLowerCase(),
+      host = req.query.host,
       metric = req.query.metric,
       from = req.query.from,
       to = req.query.to,
@@ -38,7 +39,7 @@ function handle_response(req, res, next, index, type) {
     }
 
     if (is_defined(from) && is_defined(to)) {
-        body = filter_and_aggregate_by(metric, from, to, type);
+        body = filter_and_aggregate_by(metric, from, to, type, host);
     }
 
     client.search({
@@ -78,11 +79,16 @@ function is_defined(variable) {
     return (typeof variable !== 'undefined');
 }
 
-function filter_and_aggregate_by(field_name, from, to, type) {
+function filter_and_aggregate_by(field_name, from, to, type, host) {
     var filter_type = '';
     if (is_defined(type)) {
         filter_type = '{ ' +
                         '"type": { "value": "' + type + '" }' +
+                    '},';
+    }
+    if(is_defined(host)) {
+        filter_type += '{ ' +
+                        '"prefix": { "host": "' + host + '" }' +
                     '},';
     }
     return '{' +
