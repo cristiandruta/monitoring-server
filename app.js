@@ -29,6 +29,7 @@ var statistics_dreamcloud = require('./routes/v1/dreamcloud/statistics');
 var resources = require('./routes/v1/dreamcloud/resources');
 var status = require('./routes/v1/dreamcloud/status');
 var report = require('./routes/v1/dreamcloud/report');
+var summary = require('./routes/v1/dreamcloud/summary');
 
 /* excess and dreamcloud */
 var experiments = require('./routes/v1/experiments');
@@ -45,7 +46,7 @@ app.set('version', '16.2');
 var port = '3030',
   hostname = os.hostname();
 hostname = hostname.replace("http://fe", "http://mf");
-app.set('mf_server', 'http://' + hostname + ':' + port);
+app.set('mf_server', 'http://' + hostname + ':' + port + '/v1');
 app.set('pwm_idx', 'power_dreamcloud');
 
 //app.use(logger('combined'));
@@ -78,6 +79,7 @@ app.use('/v1/dreamcloud/mf/statistics', statistics_dreamcloud);
 app.use('/v1/dreamcloud/mf/resources', resources);
 app.use('/v1/dreamcloud/mf/status', status);
 app.use('/v1/dreamcloud/mf/report', report);
+app.use('/v1/dreamcloud/mf/summary', summary);
 
 /* both */
 app.use('/v1/mf/experiments', experiments);
