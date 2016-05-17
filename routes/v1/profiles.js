@@ -91,7 +91,7 @@ router.get('/:workID/:taskID', function(req, res, next) {
       workflow = req.params.workID.toLowerCase(),
       mf_server = req.app.get('mf_server'),
       dreamcloud = req.query.dreamcloud,
-      task = req.params.taskID,
+      task = req.params.taskID.toLowerCase(),
       size = 1000,
       json = {};
 
@@ -170,7 +170,7 @@ router.get('/:workID/:taskID', function(req, res, next) {
 router.get('/:workID/:taskID/:expID', function(req, res, next) {
     var client = req.app.get('elastic'),
       workflow = req.params.workID.toLowerCase(),
-      task = req.params.taskID,
+      task = req.params.taskID.toLowerCase(),
       experiment = req.params.expID,
       filter = req.query.filter,
       size = 1000,
