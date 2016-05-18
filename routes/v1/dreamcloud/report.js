@@ -86,6 +86,11 @@ router.get('/:workID/:expID', function(req, res, next) {
                             });
                         }
 
+                        if (!is_defined(start) || !is_defined(end)) {
+                            callback(null);
+                            return;
+                        }
+
                         json.tasks[task] = {};
                         json.tasks[task].host = hostname;
                         json.tasks[task].runtime = {};
@@ -96,13 +101,6 @@ router.get('/:workID/:expID', function(req, res, next) {
                             json.tasks[task].runtime.seconds = 0;
                         }
 
-                        if (!is_defined(start) || !is_defined(end)) {
-                            res.status(500);
-                            error = "Please check that metric data " +
-                                "is available for this application and task. " +
-                                "Could not find a start and/or end time for the task.";
-                            return next(error);
-                        }
                         var body = compute_average_on("NODE01", "NODE02", "NODE03", start, end);
 
                         client.search({
@@ -154,12 +152,6 @@ router.get('/:workID/:expID', function(req, res, next) {
                 json.workflow.runtime.end = latest_end;
                 json.workflow.runtime.seconds = (new Date(latest_end) - new Date(earliest_start)) / 1000;
 
-                if (!is_defined(start) || !is_defined(end)) {
-                    error = "Please check that metric data " +
-                        "is available for this application and task. " +
-                        "Could not find a start and/or end time for the task.";
-                    return next(error);
-                }
                 var body = compute_average_on("NODE01", "NODE02", "NODE03", earliest_start, latest_end);
 
                 client.search({
