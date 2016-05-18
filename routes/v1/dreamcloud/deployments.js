@@ -103,16 +103,13 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
                 var source = response._source;
                 var experiments = source.experiments;
                 experiments = ( typeof experiments != 'undefined' &&
-                                experiments instanceof Object ) ? experiments : {};
-                if (!(experiment in experiments)) {
-                    experiments[experiment] = 1;
-                }
-                source.experiments = experiments;
+                                experiments instanceof Array ) ? experiments : [];
+                experiments.push(experiment);
                 /* update document */
                 client.index({
                     index: 'deployment_on_' + platform,
                     type: workflow + '_' + task,
-                    id: hashvalue,
+                    id: experiment,
                     body: source
                 },function(error, response) {
                     if (error) {
@@ -125,13 +122,14 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
                 });
             });
         } else { /* index new deployment plan */
-            req.body.experiments = {};
-            req.body.experiments[experiment] = 1;
+            var source = req.body;
+            source.experiments = [];
+            experiments.push(experiment);
             client.index({
                 index: 'deployment_on_' + platform,
                 type: workflow + '_' + task,
                 id: hashvalue,
-                body: req.body
+                body: source
             },function(error, response) {
                 if (error) {
                     res.status(500);
