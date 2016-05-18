@@ -1,7 +1,7 @@
 var express = require('express');
 var async = require('async');
-var router = express.Router();
 var dateFormat = require('dateformat');
+var router = express.Router();
 
 router.get('/:workID/:expID', function(req, res, next) {
     var client = req.app.get('elastic'),
@@ -190,7 +190,7 @@ router.get('/:workID/:expID', function(req, res, next) {
                 });
             });
         }
-    })
+    });
 });
 
 function is_defined(variable) {
