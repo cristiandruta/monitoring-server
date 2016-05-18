@@ -77,7 +77,7 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
                         keys.forEach(function(key) {
                             var metric_data = only_results[key]._source;
                             end = metric_data['@timestamp'];
-                            end = start.replace(/\s/g, '0');
+                            end = end.replace(/\s/g, '0');
                         });
                     }
 
@@ -95,9 +95,9 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
                     data.runtime = {};
                     data.runtime.start = start;
                     data.runtime.end = end;
-                    data.runtime.seconds = (new Date(end) - new Date(start)) / 1000;
-                    if (!data.runtime.seconds) {
-                        data.runtime.seconds = 0;
+                    data.runtime.actual = (new Date(end) - new Date(start)) / 1000;
+                    if (!data.runtime.actual) {
+                        data.runtime.actual = 0;
                     }
 
                     /* get energy measurments */
@@ -108,7 +108,6 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
                         body: body
                     }, function(error, response) {
                         if (error) {
-                            json.push(data);
                             callback(null);
                             return;
                         }
@@ -136,8 +135,66 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
                         joule = average * duration;
                         data.energy.NODE03.total_energy_consumption = joule;
 
-                        json.push(data);
-                        callback(null);
+                        /* no energy measurements available */
+                        if (!is_defined(average) || average === null) {
+                            data.energy = [];
+                        }
+
+                        /* retrieve all metric counters as a set */
+                        var index = workflow + '_' + task;
+                        var metric_keys = {};
+                        client.search({
+                            index: index,
+                            type: experiment,
+                            size: 20 /* should be enough results to capture all metrics */
+                        }, function(error, response) {
+                            if (error) {
+                                callback(null);
+                                return;
+                            }
+                            if (response.hits !== undefined) {
+                                var results = response.hits.hits,
+                                  keys = Object.keys(results),
+                                  items = {};
+                                /* filter keys like @timestamp, host, task, and type */
+                                keys.forEach(function(key) {
+                                    items = results[key]._source;
+                                    if (items.type == 'progress') {
+                                        return;
+                                    }
+                                    delete items['@timestamp'];
+                                    delete items.host;
+                                    delete items.task;
+                                    delete items.type;
+                                    for (var item in items) {
+                                        metric_keys[item] = item;
+                                    }
+                                });
+
+                                data.metrics = {};
+                                /* compute statistics for each identified metric */
+                                async.each(metric_keys, function(metric, inner_callback) {
+                                    client.search({
+                                        index: index,
+                                        type: experiment,
+                                        searchType: 'count',
+                                        body: aggregation_by(metric)
+                                    }, function(error, response) {
+                                        if (error) {
+                                            inner_callback(null);
+                                            return;
+                                        }
+                                        var aggs = response.aggregations;
+                                        data.metrics[metric] = aggs[metric + '_Stats'];
+                                        inner_callback(null);
+                                    });
+                                }, function(error) {
+                                    json.push(data);
+                                });
+                            }
+                            /* finished */
+                            callback(null);
+                        });
                     });
                 });
             });
@@ -203,8 +260,45 @@ function compute_average_on(metric_name_a, metric_name_b, metric_name_c, from, t
                 }
             }
         }
-    }
+    };
     return query;
+}
+
+
+function aggregation_by(field_name) {
+    return '{' +
+        '"aggs": {' +
+            '"' + field_name + '_Stats" : {' +
+                '"stats" : {' +
+                    '"field" : "' + field_name + '"' +
+                '}' +
+            '},' +
+            '"Minimum_' + field_name + '": {' +
+                '"top_hits": {' +
+                    '"size": 1,' +
+                    '"sort": [' +
+                        '{' +
+                            '"' + field_name + '": {' +
+                                '"order": "asc"' +
+                            '}' +
+                        '}' +
+                    ']' +
+                '}' +
+            '},' +
+            '"Maximum_' + field_name + '": {' +
+                '"top_hits": {' +
+                    '"size": 1,' +
+                    '"sort": [' +
+                        '{' +
+                            '"' + field_name + '": {' +
+                                '"order": "desc"' +
+                            '}' +
+                        '}' +
+                    ']' +
+                '}' +
+            '}' +
+        '}' +
+    '}';
 }
 
 module.exports = router;
