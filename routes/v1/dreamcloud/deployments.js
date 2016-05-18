@@ -16,7 +16,7 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
         type: workflow + '_' + task,
         searchType: 'count'
     }, function(error, response) {
-        if (response.hits != undefined) {
+        if (response.hits !== undefined) {
             size = response.hits.total;
         }
 
@@ -93,7 +93,7 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
         type: workflow + '_' + task,
         id: hashvalue
     }, function(error, exists) {
-        if (exists == true) {
+        if (exists === true) {
             client.get({
                 index: 'deployment_on_' + platform,
                 type: workflow + '_' + task,
@@ -103,13 +103,14 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
                 var source = response._source;
                 var experiments = source.experiments;
                 experiments = ( typeof experiments != 'undefined' &&
-                                experiments instanceof Array ) ? experiments : [];
-                experiments.push(experiment);
+                                experiments instanceof Object ) ? experiments : {};
+                experiments[experiment] = 1;
+                source.experiments = experiments;
                 /* update document */
                 client.index({
                     index: 'deployment_on_' + platform,
                     type: workflow + '_' + task,
-                    id: experiment,
+                    id: hashvalue,
                     body: source
                 },function(error, response) {
                     if (error) {
@@ -123,7 +124,7 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
             });
         } else { /* index new deployment plan */
             var source = req.body;
-            source.experiments = [];
+            source.experiments = { experiment: 1 };
             experiments.push(experiment);
             client.index({
                 index: 'deployment_on_' + platform,
