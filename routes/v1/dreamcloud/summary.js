@@ -13,9 +13,11 @@ router.get('/:workflow/:task/:platform:/:deployment', function(req, res, next) {
 
     /* retrieve all experiment summaries that have this deployment */
 
-    /* (1) get deployment plan */
-    /* (2) get hash value */
-    /* (3) find all experiments having this deployment plan */
+    /* (1) get deployment plan for the given hashvalue */
+    /* (2) parse key experiments */
+    /* (3) for each experiment, get
+     *   (a)
+     * */
     res.json(json);
 });
 
