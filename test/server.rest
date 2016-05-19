@@ -1,0 +1,34 @@
+// GLOBAL SETTINGS
+http://localhost:3030/v1
+Accept: application/json
+--
+
+#
+# GET report for cluster experiment
+#
+--
+GET /dreamcloud/mf/report/ms2/AVS_GvCNGMPeuCn4T-pC
+
+#
+# GET energy data for experiment
+#
+--
+GET /dreamcloud/mf/energy/ms2/t2.1/AVS_GvCNGMPeuCn4T-pC
+
+#
+# GET deployment plan for a given hash value
+#
+--
+GET /dreamcloud/mf/deployments/ms2/t2.1/test_cluster/4e165a82309000fd5a6ab20c097b2e9f2ba5216d
+
+#
+# GET summary for a given workflow, task, platform, and deployment combination
+#
+--
+GET /dreamcloud/mf/summary/ms2/t2.1/test_cluster/4e165a82309000fd5a6ab20c097b2e9f2ba5216d
+
+#
+# GET statistics for a given metric
+#
+GET /dreamcloud/mf/statistics/ms2/t2.1/AVQa1RU0GMPeuCn4_2S
+_
