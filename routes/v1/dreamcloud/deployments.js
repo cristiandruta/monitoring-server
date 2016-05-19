@@ -117,6 +117,8 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
                         res.status(500);
                         return next(error);
                     }
+                    json.id = hashvalue;
+                    json.predicted_time = source.estimatedTime;
                     json.href = mf_server + '/dreamcloud/mf/deployments/' +
                         workflow + '/' + task + '/' + platform + '/' + hashvalue;
                     res.json(json);
@@ -125,7 +127,6 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
         } else { /* index new deployment plan */
             var source = req.body;
             source.experiments = { experiment: 1 };
-            experiments.push(experiment);
             client.index({
                 index: 'deployment_on_' + platform,
                 type: workflow + '_' + task,
@@ -136,6 +137,8 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
                     res.status(500);
                     return next(error);
                 }
+                json.id = hashvalue;
+                json.predicted_time = source.estimatedTime;
                 json.href = mf_server + '/dreamcloud/mf/deployments/' +
                     workflow + '/' + task + '/' + platform + '/' + hashvalue;
                 res.json(json);
