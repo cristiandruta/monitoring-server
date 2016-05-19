@@ -90,7 +90,7 @@ router.post('/:id/create', function(req, res, next) {
 
 router.post('/:uid/:eid/create', function(req, res, next) {
     var uid = req.params.uid.toLowerCase(),
-        eid = req.params.eid.toLowerCase(),
+        eid = req.params.eid,
         client = req.app.get('elastic');
 
     var data = req.body;
@@ -122,18 +122,28 @@ router.post('/:uid/:eid/create', function(req, res, next) {
         },
         /* (2) create experiment ID on the fly */
         function(series_callback) {
-            client.index({
+            client.exists({
                 index: 'mf',
                 type: 'experiments',
-                parent: uid,
-                id: eid,
-                body: data
-            }, function(error, response) {
-                if (error) {
-                    res.json(error);
-                } else {
-                    experiment_id = response._id;
+                id: eid
+            }, function (error, exists) {
+                if (exists === true) {
                     series_callback(null);
+                } else {
+                    client.index({
+                        index: 'mf',
+                        type: 'experiments',
+                        parent: uid,
+                        id: eid,
+                        body: data
+                    }, function(error, response){
+                        if(error) {
+                            res.json(error);
+                        } else {
+                            experiment_id = response._id;
+                            series_callback(null);
+                        }
+                    });
                 }
             });
         },
