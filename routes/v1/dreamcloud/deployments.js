@@ -117,7 +117,7 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
                         res.status(500);
                         return next(error);
                     }
-                    json.id = hashvalue;
+                    json.deployment_id = hashvalue;
                     json.predicted_time = source.estimatedTime;
                     json.href = mf_server + '/dreamcloud/mf/deployments/' +
                         workflow + '/' + task + '/' + platform + '/' + hashvalue;
@@ -137,7 +137,7 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
                     res.status(500);
                     return next(error);
                 }
-                json.id = hashvalue;
+                json.deployment_id = hashvalue;
                 json.predicted_time = source.estimatedTime;
                 json.href = mf_server + '/dreamcloud/mf/deployments/' +
                     workflow + '/' + task + '/' + platform + '/' + hashvalue;
