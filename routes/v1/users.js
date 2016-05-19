@@ -125,7 +125,7 @@ router.post('/:uid/:eid/create', function(req, res, next) {
             client.exists({
                 index: 'mf',
                 type: 'experiments',
-                id: eid
+                id: eid,
                 routing: uid
             }, function (error, exists) {
                 if (exists === true) {
