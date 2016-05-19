@@ -13,6 +13,7 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
       dreamcloud_pwm_idx = req.app.get('pwm_idx'),
       expand = req.query.expand,
       experiments = [],
+      predicted_execution_time = 0,
       json = [];
 
     /* (1) get deployment plan for the given hashvalue */
@@ -29,6 +30,7 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
         if (response.found) {
             var source = response._source;
             experiments = source.experiments;
+            predicted_execution_time = source.estimatedTime;
         } else {
             var message = {};
             message.error = "Could not find deployment plan in the database";
@@ -88,16 +90,17 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
 
                     /* add runtime statistics to response object */
                     var data = {};
-                    data.experiment = experiment;
-                    data.workflow = workflow;
-                    data.task = task;
-                    data.deployment = deployment;
+                    data.experiment_id = experiment;
+                    data.workflow_id = workflow;
+                    data.task_id = task;
+                    data.deployment_id = deployment;
                     data.runtime = {};
-                    data.runtime.start = start;
-                    data.runtime.end = end;
-                    data.runtime.actual = (new Date(end) - new Date(start)) / 1000;
-                    if (!data.runtime.actual) {
-                        data.runtime.actual = 0;
+                    data.runtime.start_time = start;
+                    data.runtime.end_time = end;
+                    data.runtime.actual_time = (new Date(end) - new Date(start)) / 1000;
+                    data.runtime.predicted_time = predicted_execution_time;
+                    if (!data.runtime.actual_time) {
+                        data.runtime.actual_time = 0;
                     }
 
                     /* get energy measurments */
@@ -143,6 +146,7 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
                         /* retrieve all metric counters as a set */
                         var index = workflow + '_' + task;
                         var metric_keys = {};
+                        data.metrics = {};
                         client.search({
                             index: index,
                             type: experiment,
@@ -171,7 +175,6 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
                                     }
                                 });
 
-                                data.metrics = {};
                                 /* compute statistics for each identified metric */
                                 async.each(metric_keys, function(metric, inner_callback) {
                                     client.search({
@@ -182,7 +185,6 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
                                     }, function(error, response) {
                                         if (error) {
                                             inner_callback(null);
-                                            return;
                                         }
                                         var aggs = response.aggregations;
                                         data.metrics[metric] = aggs[metric + '_Stats'];
@@ -190,10 +192,10 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
                                     });
                                 }, function(error) {
                                     json.push(data);
+                                    /* finished */
+                                    callback(null);
                                 });
                             }
-                            /* finished */
-                            callback(null);
                         });
                     });
                 });
