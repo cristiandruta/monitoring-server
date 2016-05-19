@@ -14,7 +14,7 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
 
     if (is_defined(latest)) {
         size = 1;
-        sort = [ "@timestamp:desc" ]
+        sort = [ "@timestamp:desc" ];
     }
 
     return client.search({
@@ -24,7 +24,7 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
         body: { "query": { "term": { "type": "progress" } } },
         sort: sort,
     }, function(err, result) {
-        if (result.hits != undefined){
+        if (result.hits !== undefined){
             var only_results = result.hits.hits;
             var es_result = [];
             var keys = Object.keys(only_results);

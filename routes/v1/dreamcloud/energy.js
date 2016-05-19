@@ -22,7 +22,7 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
             res.status(500);
             return next(error);
         }
-        if (result != undefined) {
+        if (result !== undefined) {
             var es_result = {},
                 ranges = {};
             es_result.workflow = workflow;
@@ -48,7 +48,7 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
                             if (error) {
                                 return series_callback(error);
                             }
-                            if (result.hits != undefined) {
+                            if (result.hits !== undefined) {
                                 var only_results = result.hits.hits,
                                     keys = Object.keys(only_results),
                                     start = 0;
@@ -74,7 +74,7 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
                             if (error) {
                                 return series_callback(error);
                             }
-                            if (result.hits != undefined) {
+                            if (result.hits !== undefined) {
                                 var only_results = result.hits.hits,
                                     keys = Object.keys(only_results),
                                     end = 0;
@@ -111,7 +111,7 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
                             if (error) {
                                 return series_callback(error);
                             }
-                            if (response.hits != undefined) {
+                            if (response.hits !== undefined) {
                                 size = response.hits.total;
                                 ranges[task].size = size;
                             }
