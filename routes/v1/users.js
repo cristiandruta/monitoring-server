@@ -126,6 +126,7 @@ router.post('/:uid/:eid/create', function(req, res, next) {
                 index: 'mf',
                 type: 'experiments',
                 id: eid
+                routing: uid
             }, function (error, exists) {
                 if (exists === true) {
                     series_callback(null);
@@ -146,7 +147,7 @@ router.post('/:uid/:eid/create', function(req, res, next) {
                     });
                 }
             });
-        },
+        }
     ], function(error) {
         if (error) {
             res.status(500);
