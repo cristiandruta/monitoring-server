@@ -20,7 +20,7 @@ router.get('/:workflowID/:taskID/:experimentID', function(req, res, next) {
 
 function handle_response(req, res, next, index, type) {
     var client = req.app.get('elastic'),
-      mf_server = req.app.get('mf_server') + '/v1/mf',
+      mf_server = req.app.get('mf_server') + '/mf',
       workflowID = req.params.workflowID.toLowerCase(),
       host = req.query.host,
       metric = req.query.metric,
@@ -51,27 +51,38 @@ function handle_response(req, res, next, index, type) {
             res.json(error);
             return;
         }
-        var answer = {},
-          aggs = response.aggregations;
-
-        answer['user'] = {}
-        answer['user'].href = mf_server + '/users/' + workflowID;
-        answer['metric'] = metric;
-
-        if (is_defined(from) && is_defined(to)) {
-            aggs = aggs['filtered_stats'];
-        }
-        if(aggs['Minimum_' + metric]['hits']['total'] == 0) {
-                var json = {};
-                json.error = "response is empty for the metric";
-                res.json(json);
+        var answers = [];
+        var metrics = [];
+        
+        if (typeof(metric) == "string") {
+            metrics[0] = metric;
         }
         else {
-            answer['statistics'] = aggs[metric + '_Stats'];
-            answer['min'] = aggs['Minimum_' + metric]['hits']['hits'][0]['_source'];
-            answer['max'] = aggs['Maximum_' + metric]['hits']['hits'][0]['_source'];
-            res.json(answer);    
+            metrics = metric;
         }
+        for (var key in metrics) {
+            var answer = {},
+                aggs = response.aggregations;
+            answer['user'] = {};
+            answer['user'].href = mf_server + '/users/' + workflowID;
+            answer['metric'] = metrics[key];
+
+            if (is_defined(from) && is_defined(to)) {
+                aggs = aggs['filtered_stats'];
+            }
+            if(aggs['Minimum_' + metrics[key]]['hits']['total'] == 0) {
+                    var json = {};
+                    json.error = "response is empty for the metric";
+                    res.json(json);
+            }
+            else {
+                answer['statistics'] = aggs[metrics[key] + '_Stats'];
+                answer['min'] = aggs['Minimum_' + metrics[key]]['hits']['hits'][0]['_source'];
+                answer['max'] = aggs['Maximum_' + metrics[key]]['hits']['hits'][0]['_source'];
+                answers.push(answer);
+            }
+        }
+        res.json(answers);
     });
 }
 
@@ -142,39 +153,52 @@ function type_filter(type) {
 }
 
 function aggregation_by(field_name, type) {
-    return '{' + type_filter(type) +
-        '"aggs": {' +
-            '"' + field_name + '_Stats" : {' +
+    var fields = [];
+    var query_msg = '{' + type_filter(type) +
+        '"aggs": {';
+    if(typeof(field_name) == "string") {
+        fields[0] = field_name;
+    }
+    else {
+        fields = field_name;
+    }
+    for (var key in fields) {
+        query_msg +=
+            '"' + fields[key] + '_Stats" : {' +
                 '"extended_stats" : {' +
-                    '"field" : "' + field_name + '"' +
+                    '"field" : "' + fields[key] + '"' +
                 '}' +
             '},' +
-            '"Minimum_' + field_name + '": {' +
+            '"Minimum_' + fields[key] + '": {' +
                 '"top_hits": {' +
                     '"size": 1,' +
                     '"sort": [' +
                         '{' +
-                            '"' + field_name + '": {' +
+                            '"' + fields[key] + '": {' +
                                 '"order": "asc"' +
                             '}' +
                         '}' +
                     ']' +
                 '}' +
             '},' +
-            '"Maximum_' + field_name + '": {' +
+            '"Maximum_' + fields[key] + '": {' +
                 '"top_hits": {' +
                     '"size": 1,' +
                     '"sort": [' +
                         '{' +
-                            '"' + field_name + '": {' +
+                            '"' + fields[key] + '": {' +
                                 '"order": "desc"' +
                             '}' +
                         '}' +
                     ']' +
                 '}' +
-            '}' +
+            '},'
+    }
+    query_msg = query_msg.slice(0, -1);
+    query_msg +=
         '}' +
     '}';
+    return query_msg;
 }
 
 module.exports = router;
