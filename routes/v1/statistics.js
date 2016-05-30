@@ -42,47 +42,54 @@ function handle_response(req, res, next, index, type) {
         body = filter_and_aggregate_by(metric, from, to, type, host);
     }
 
-    client.search({
-        index: index,
-        searchType: 'count',
-        body: body
+    client.indices.refresh({
+        index: index
     }, function(error, response) {
         if (error) {
             res.json(error);
             return;
         }
-        var answers = [];
-        var metrics = [];
-        
-        if (typeof(metric) == "string") {
-            metrics[0] = metric;
-        }
-        else {
-            metrics = metric;
-        }
-        for (var key in metrics) {
-            var answer = {},
-                aggs = response.aggregations;
-            answer['user'] = {};
-            answer['user'].href = mf_server + '/users/' + workflowID;
-            answer['metric'] = metrics[key];
-
-            if (is_defined(from) && is_defined(to)) {
-                aggs = aggs['filtered_stats'];
+        client.search({
+            index: index,
+            searchType: 'count',
+            body: body
+        }, function(error, response) {
+            if (error) {
+                res.json(error);
+                return;
             }
-            if(aggs['Minimum_' + metrics[key]]['hits']['total'] == 0) {
-                    var json = {};
-                    json.error = "response is empty for the metric";
-                    res.json(json);
+            var metrics = [],
+                answers = [];
+            if (typeof(metric) == "string") {
+                metrics[0] = metric;
             }
             else {
-                answer['statistics'] = aggs[metrics[key] + '_Stats'];
-                answer['min'] = aggs['Minimum_' + metrics[key]]['hits']['hits'][0]['_source'];
-                answer['max'] = aggs['Maximum_' + metrics[key]]['hits']['hits'][0]['_source'];
-                answers.push(answer);
+                metrics = metric;
             }
-        }
-        res.json(answers);
+            for (var key in metrics) {
+                var answer = {},
+                    aggs = response.aggregations;
+                answer['user'] = {};
+                answer['user'].href = mf_server + '/users/' + workflowID;
+                answer['metric'] = metrics[key];
+
+                if (is_defined(from) && is_defined(to)) {
+                    aggs = aggs['filtered_stats'];
+                }
+                if(aggs['Minimum_' + metrics[key]]['hits']['total'] == 0) {
+                        var json = {};
+                        json.error = "response is empty for the metric";
+                        res.json(json);
+                }
+                else {
+                    answer['statistics'] = aggs[metrics[key] + '_Stats'];
+                    answer['min'] = aggs['Minimum_' + metrics[key]]['hits']['hits'][0]['_source'];
+                    answer['max'] = aggs['Maximum_' + metrics[key]]['hits']['hits'][0]['_source'];
+                    answers.push(answer);
+                }
+            }
+            res.json(answers);
+        });
     });
 }
 
