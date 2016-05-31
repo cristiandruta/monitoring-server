@@ -79,7 +79,7 @@ function handle_response(req, res, next, index, type) {
                 if(aggs['Minimum_' + metrics[key]]['hits']['total'] == 0) {
                         var json = {};
                         json.error = "response is empty for the metric";
-                        res.json(json);
+                        answers.push(json);
                 }
                 else {
                     answer['statistics'] = aggs[metrics[key] + '_Stats'];
