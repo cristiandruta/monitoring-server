@@ -121,6 +121,8 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
                 if (error) {
                     res.status(500);
                     callback(null, 'id not found');
+                    console.log(error);
+                    return;
                 }
                 var json = {};
                 json[response._id] = {};
