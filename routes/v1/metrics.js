@@ -14,11 +14,13 @@ router.post('/', function(req, res, next) {
     for (i = 0; i != data.length; ++i) {
         var action = JSON.parse(JSON.stringify(tmp));
         var index = data[i]['WorkflowID'];
-        if (data[i]['TaskID']) {
-          index = index + '_' + data[i]['TaskID'];
+        if (data[i]['task']) {
+          index = index + '_' + data[i]['task'];
         } else {
           index = index + '_all';
         }
+        // index: no white spaces allowed
+        index = index.replace(' ', '_');
         action.index['_index'] = index.toLowerCase();
         action.index['_type'] = data[i]['ExperimentID'];
         delete data[i]['WorkflowID'];
