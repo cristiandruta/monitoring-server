@@ -32,6 +32,10 @@ router.put('/:id', function(req, res, next) {
     });
 });
 
+function is_defined(variable) {
+    return (typeof variable !== 'undefined');
+}
+
 router.post('/:id/create', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         client = req.app.get('elastic');
@@ -46,6 +50,10 @@ router.post('/:id/create', function(req, res, next) {
     var now = new Date();
     now = dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss");
     created_on['created_on'] = now;
+
+    if (!is_defined(data['@timestamp'])) {
+        data['@timestamp'] = now;
+    }
 
     async.series([
         /* (1) register workflow, if not exists yet */
@@ -103,6 +111,10 @@ router.post('/:uid/:eid/create', function(req, res, next) {
     var now = new Date();
     now = dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss");
     created_on['created_on'] = now;
+
+    if (!is_defined(data['@timestamp'])) {
+        data['@timestamp'] = now;
+    }
 
     async.series([
         /* (1) register workflow, if not exists yet */
