@@ -51,6 +51,10 @@ router.post('/:id/create', function(req, res, next) {
     now = dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss");
     created_on['created_on'] = now;
 
+    if (!is_defined(data['@timestamp'])) {
+        data['@timestamp'] = now;
+    }
+
     async.series([
         /* (1) register workflow, if not exists yet */
         function(series_callback) {
@@ -107,6 +111,10 @@ router.post('/:uid/:eid/create', function(req, res, next) {
     var now = new Date();
     now = dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss");
     created_on['created_on'] = now;
+
+    if (!is_defined(data['@timestamp'])) {
+        data['@timestamp'] = now;
+    }
 
     async.series([
         /* (1) register workflow, if not exists yet */
