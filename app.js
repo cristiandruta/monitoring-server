@@ -47,7 +47,7 @@ app.set('version', '16.2');
 var port = '3030',
   hostname = os.hostname();
 // redirect backend hostname to front-end
-hostname = hostname.replace("http://be", "http://mf");
+hostname = hostname.replace('be.excess-project.eu', 'mf.excess-project.eu');
 app.set('mf_server', 'http://' + hostname + ':' + port + '/v1');
 app.set('pwm_idx', 'power_dreamcloud');
 
