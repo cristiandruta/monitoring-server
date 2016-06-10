@@ -32,6 +32,10 @@ router.put('/:id', function(req, res, next) {
     });
 });
 
+function is_defined(variable) {
+    return (typeof variable !== 'undefined');
+}
+
 router.post('/:id/create', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         client = req.app.get('elastic');
