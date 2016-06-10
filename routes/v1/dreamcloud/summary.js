@@ -24,6 +24,11 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
         type: workflow + '_' + task,
         searchType: 'count'
     }, function(error, response) {
+        if (error) {
+            res.status(500);
+            return next(error);
+        }
+
         if (response.hits !== undefined) {
             size = response.hits.total;
         }
