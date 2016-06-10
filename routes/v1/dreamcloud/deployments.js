@@ -85,7 +85,6 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
 
     /* generate hash for the request body */
     if (is_defined(req.body)) {
-        console.log("compute hash");
         var hash = crypto.createHash('sha256');
         hash.update(JSON.stringify(req.body));
         hashvalue = hash.digest('hex');
