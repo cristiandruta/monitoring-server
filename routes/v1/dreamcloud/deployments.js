@@ -1,4 +1,4 @@
-var hash = require('json-hash');
+var crypto = require('crypto');
 var express = require('express');
 var router = express.Router();
 
@@ -85,7 +85,13 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
 
     /* generate hash for the request body */
     if (is_defined(req.body)) {
-       hashvalue = hash.digest(req.body);
+        console.log("compute hash");
+        var hash = crypto.createHash('sha256');
+        hash.update(JSON.stringify(req.body));
+        hashvalue = hash.digest('hex');
+    } else {
+        res.json("body is missing");
+        return;
     }
 
     client.exists({
