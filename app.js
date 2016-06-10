@@ -45,13 +45,14 @@ app.set('elastic', elastic);
 app.set('version', '16.2');
 var port = '3030',
   hostname = os.hostname();
-hostname = hostname.replace("http://fe", "http://mf");
+// redirect backend hostname to front-end
+hostname = hostname.replace("http://be", "http://mf");
 app.set('mf_server', 'http://' + hostname + ':' + port + '/v1');
 app.set('pwm_idx', 'power_dreamcloud');
 
 //app.use(logger('combined'));
 app.use(logger('combined', {
-  skip: function (req, res) { return res.statusCode < 400 }
+  skip: function (req, res) { return res.statusCode < 400; }
 }));
 
 app.use(bodyParser.json());
