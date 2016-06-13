@@ -1,127 +1,159 @@
+var crypto = require('crypto');
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res, next) {
-    var mf_server = req.app.get('mf_server'),
-      client = req.app.get('elastic'),
-      size = 1000,
+router.get('/:workflow/:task/:platform', function(req, res, next) {
+    var client = req.app.get('elastic'),
+      workflow = req.params.workflow.toLowerCase(),
+      task = req.params.task.toLowerCase(),
+      platform = req.params.platform.toLowerCase(),
+      mf_server = req.app.get('mf_server'),
+      expand = req.query.expand,
       json = {};
 
     client.search({
-        index: 'mf',
-        type: 'deployments',
+        index: 'deployment_on_' + platform,
+        type: workflow + '_' + task,
         searchType: 'count'
     }, function(error, response) {
-        if (error) {
-            res.status(500);
-            return next(error);
-        } else {
+        if (response.hits !== undefined) {
             size = response.hits.total;
         }
 
         client.search({
-            index: 'mf',
-            type: 'deployments',
-            size: size
+            index: 'deployment_on_' + platform,
+            type: workflow + '_' + task,
+            size: size,
         }, function(error, response) {
             if (error) {
                 res.status(500);
                 return next(error);
-            } else {
-                var results = response.hits.hits;
-                json = get_deployments(results, mf_server);
             }
+            var results = response.hits.hits;
+            var keys = Object.keys(results);
+            keys.forEach(function(key) {
+                var next_deployment = {};
+                if (!is_defined(expand)) {
+                    next_deployment.href = mf_server + '/dreamcloud/mf/deployments/' +
+                        workflow + '/' + task + '/' + platform + '/' + results[key]._id;
+                } else {
+                    next_deployment = results[key]._source;
+                }
+                json[results[key]._id] = next_deployment;
+            });
             res.json(json);
         });
     });
 });
 
-function get_deployments(results, mf_server) {
-    var keys = Object.keys(results),
-      workflow = '',
-      response = {};
-    keys.forEach(function(key) {
-        workflow = results[key]._id
-        var json = {}
-        json.href = mf_server + '/deployments/' + workflow;
-        response[workflow] = json;
-    });
-    return response;
-}
-
-router.get('/:id', function(req, res, next) {
-    var id = req.params.id.toLowerCase(),
-      client = req.app.get('elastic'),
+router.get('/:workflow/:task/:platform/:experiment', function(req, res, next) {
+    var client = req.app.get('elastic'),
+      workflow = req.params.workflow.toLowerCase(),
+      task = req.params.task.toLowerCase(),
+      platform = req.params.platform.toLowerCase(),
+      experiment = req.params.experiment, /* we keep the original case */
+      deployment = req.params.deployment,
       json = {};
 
     client.get({
-        index: 'mf',
-        type: 'deployments',
-        id: id
+        index: 'deployment_on_' + platform,
+        type: workflow + '_' + task,
+        id: experiment
     }, function(error, response) {
         if (error) {
             res.status(500);
             return next(error);
-        } else {
+        }
+        if (response.found) {
             json = response._source;
+        } else {
+            json = "Could not find the deployment plan for the given workflow";
         }
         res.json(json);
     });
 });
 
-router.put('/:id', function(req, res, next) {
-    var id = req.params.id.toLowerCase(),
-      mf_server = req.app.get('mf_server'),
-      client = req.app.get('elastic');
-
-    client.index({
-        index: 'mf',
-        type: 'deployments',
-        id: id,
-        body: req.body
-    },function(error, response) {
-        if (error !== 'undefined') {
-            var json = {};
-            json.href = mf_server + '/deployments/' + id;
-            res.json(json);
-        } else {
-            res.json(error);
-        }
-    });
-});
-
-router.post('/', function(req, res, next) {
-    var data = req.body,
+router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
+    var workflow = req.params.workflow.toLowerCase(),
+      task = req.params.task.toLowerCase(),
+      platform = req.params.platform.toLowerCase(),
+      experiment = req.params.experiment, /* we keep the original case */
       mf_server = req.app.get('mf_server'),
       client = req.app.get('elastic'),
-      bulk_data = [];
+      hashvalue = '',
+      json = {};
 
-    var tmp = {};
-    tmp.index = {};
-    tmp.index['_index'] = 'mf';
-    tmp.index['_type'] = 'deployments';
-    for (i = 0; i != data.length; ++i) {
-        var action = JSON.parse(JSON.stringify(tmp));
-        action.index['_id'] = data[i]['DeploymentID'].toLowerCase();
-        delete data[i]['DeploymentID'];
-        bulk_data.push(action);
-        bulk_data.push(data[i]);
+    /* generate hash for the request body */
+    if (is_defined(req.body)) {
+        var hash = crypto.createHash('sha256');
+        hash.update(JSON.stringify(req.body));
+        hashvalue = hash.digest('hex');
+    } else {
+        res.json("body is missing");
+        return;
     }
 
-    client.bulk({
-        body: bulk_data
-    },function(error, response) {
-        if (error !== 'undefined') {
-            var json = [];
-            for (i in response.items) {
-                console.log(response.items[i]);
-                json.push(mf_server + '/deployments/' + response.items[i].index['_id']);
-            }
-            res.json(json);
-        } else {
-            res.json(error);
+    client.exists({
+        index: 'deployment_on_' + platform,
+        type: workflow + '_' + task,
+        id: hashvalue
+    }, function(error, exists) {
+        if (exists === true) {
+            client.get({
+                index: 'deployment_on_' + platform,
+                type: workflow + '_' + task,
+                id: hashvalue
+            }, function(error, response) {
+                /* add experiment to source.experiments array */
+                var source = response._source;
+                var experiments = source.experiments;
+                experiments = ( typeof experiments != 'undefined' &&
+                                experiments instanceof Object ) ? experiments : {};
+                experiments[experiment] = 1;
+                source.experiments = experiments;
+                /* update document */
+                client.index({
+                    index: 'deployment_on_' + platform,
+                    type: workflow + '_' + task,
+                    id: hashvalue,
+                    body: source
+                },function(error, response) {
+                    if (error) {
+                        res.status(500);
+                        return next(error);
+                    }
+                    json.deployment_id = hashvalue;
+                    json.predicted_time = source.estimatedTime;
+                    json.href = mf_server + '/dreamcloud/mf/deployments/' +
+                        workflow + '/' + task + '/' + platform + '/' + hashvalue;
+                    res.json(json);
+                });
+            });
+        } else { /* index new deployment plan */
+            var source = req.body;
+            source.experiments = { experiment: 1 };
+            client.index({
+                index: 'deployment_on_' + platform,
+                type: workflow + '_' + task,
+                id: hashvalue,
+                body: source
+            },function(error, response) {
+                if (error) {
+                    res.status(500);
+                    return next(error);
+                }
+                json.deployment_id = hashvalue;
+                json.predicted_time = source.estimatedTime;
+                json.href = mf_server + '/dreamcloud/mf/deployments/' +
+                    workflow + '/' + task + '/' + platform + '/' + hashvalue;
+                res.json(json);
+            });
         }
     });
 });
+
+function is_defined(variable) {
+    return (typeof variable !== 'undefined');
+}
 
 module.exports = router;

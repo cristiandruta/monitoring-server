@@ -56,9 +56,12 @@ client.indices.create({
   }
 },function(error, response) {
   if (error) {
-    if (response.status != 400) {
-      //response.status(500);
-      //return next(error);
+    if (is_defined(response)) {
+      if (response.status != 400) { /* index not already created */
+         return;
+      }
+    } else {
+      server.close();
       return;
     }
   }
@@ -129,3 +132,8 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+function is_defined(variable) {
+    return (typeof variable !== 'undefined');
+}
+

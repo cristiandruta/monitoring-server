@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 
     query = '{ "query": { "match_all": {} } }';
     if (typeof workflows !== 'undefined') {
-        query = '{ "query": { "term": { "_parent": "' + workflows + '" } } }'
+        query = '{ "query": { "term": { "_parent": "' + workflows + '" } } }';
     }
 
     client.search({
@@ -21,7 +21,7 @@ router.get('/', function(req, res, next) {
         type: 'experiments',
         searchType: 'count'
     }, function(error, response) {
-        if (response.hits != undefined) {
+        if (response.hits !== undefined) {
             size = response.hits.total;
         }
 
@@ -33,7 +33,7 @@ router.get('/', function(req, res, next) {
             size: size,
             sort: '@timestamp:desc'
         }, function(error, response) {
-            if (response.hits != undefined) {
+            if (response.hits !== undefined) {
                 var results = response.hits.hits;
                 if (is_defined(details)) {
                     json = get_details(results);
@@ -82,7 +82,7 @@ function get_workflows(mf_server, results) {
       workflow = '',
       response = {};
     keys.forEach(function(key) {
-        experimentID = results[key]._id
+        experimentID = results[key]._id;
         workflow = results[key]._parent;
         var json = {};
         json.href = mf_server + '/experiments/' + experimentID + '?workflow=' + workflow;
@@ -116,7 +116,7 @@ router.get('/:id', function(req, res, next) {
         if (response.found) {
             json = response._source;
             if (json['@timestamp'] !== 'undefined') {
-                delete json['timestamp'];
+                delete json.timestamp;
             }
             if (is_defined(extend)) {
                 client.get({
@@ -129,7 +129,7 @@ router.get('/:id', function(req, res, next) {
                         json.tasks = [];
                         for (var i in source.tasks) {
                             json.tasks.push(source.tasks[i].name);
-                        };
+                        }
                     } else {
                         json.error = error;
                     }

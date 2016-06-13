@@ -29,6 +29,7 @@ var statistics_dreamcloud = require('./routes/v1/dreamcloud/statistics');
 var resources = require('./routes/v1/dreamcloud/resources');
 var status = require('./routes/v1/dreamcloud/status');
 var report = require('./routes/v1/dreamcloud/report');
+var summary = require('./routes/v1/dreamcloud/summary');
 
 /* excess and dreamcloud */
 var experiments = require('./routes/v1/experiments');
@@ -36,6 +37,7 @@ var profiles = require('./routes/v1/profiles');
 var profiles_dreamcloud = require('./routes/v1/dreamcloud/profiles');
 var metrics = require('./routes/v1/metrics');
 var units = require('./routes/v1/units');
+var servertime = require('./routes/v1/servertime');
 
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
@@ -44,13 +46,14 @@ app.set('elastic', elastic);
 app.set('version', '16.2');
 var port = '3030',
   hostname = os.hostname();
-hostname = hostname.replace("http://fe", "http://mf");
-app.set('mf_server', 'http://' + hostname + ':' + port);
+// redirect backend hostname to front-end
+hostname = hostname.replace('be.excess-project.eu', 'mf.excess-project.eu');
+app.set('mf_server', 'http://' + hostname + ':' + port + '/v1');
 app.set('pwm_idx', 'power_dreamcloud');
 
 //app.use(logger('combined'));
 app.use(logger('combined', {
-  skip: function (req, res) { return res.statusCode < 400 }
+  skip: function (req, res) { return res.statusCode < 400; }
 }));
 
 app.use(bodyParser.json());
@@ -78,8 +81,10 @@ app.use('/v1/dreamcloud/mf/statistics', statistics_dreamcloud);
 app.use('/v1/dreamcloud/mf/resources', resources);
 app.use('/v1/dreamcloud/mf/status', status);
 app.use('/v1/dreamcloud/mf/report', report);
+app.use('/v1/dreamcloud/mf/summary', summary);
 
 /* both */
+app.use('/v1/mf/time', servertime);
 app.use('/v1/mf/experiments', experiments);
 app.use('/v1/mf/profiles', profiles);
 app.use('/v1/mf/metrics', metrics);
