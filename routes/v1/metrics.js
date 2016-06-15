@@ -5,7 +5,7 @@ var router = express.Router();
 
 router.post('/', function(req, res, next) {
     var data = req.body,
-      mf_server = req.app.get('mf_server') + '/v1/mf',
+      mf_server = req.app.get('mf_server') + '/mf',
       client = req.app.get('elastic'),
       bulk_data = [];
 
@@ -49,7 +49,7 @@ router.post('/', function(req, res, next) {
 router.post('/:workflowID/:experimentID', function(req, res, next) {
     var workflowID = req.params.workflowID.toLowerCase(),
       experimentID = req.params.experimentID,
-      mf_server = req.app.get('mf_server') + '/v1/mf',
+      mf_server = req.app.get('mf_server') + '/mf',
       taskID = req.query.task.toLowerCase(),
       client = req.app.get('elastic'),
       index_missing = false;
