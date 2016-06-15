@@ -41,15 +41,15 @@ router.post('/:id/create', function(req, res, next) {
         client = req.app.get('elastic');
 
     var data = req.body;
-    if (data['application']) {
-        data['application'] = data['application'].replace(' ', '_')
+    if (data.application) {
+        data.application = data.application.replace(' ', '_');
     }
     var experiment_id;
 
     var created_on = {};
     var now = new Date();
     now = dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss");
-    created_on['created_on'] = now;
+    created_on.created_on = now;
 
     if (!is_defined(data['@timestamp'])) {
         data['@timestamp'] = now;
@@ -102,15 +102,15 @@ router.post('/:uid/:eid/create', function(req, res, next) {
         client = req.app.get('elastic');
 
     var data = req.body;
-    if (data['application']) {
-        data['application'] = data['application'].replace(' ', '_')
+    if (data.application) {
+        data.application = data.application.replace(' ', '_');
     }
     var experiment_id;
 
     var created_on = {};
     var now = new Date();
     now = dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss");
-    created_on['created_on'] = now;
+    created_on.created_on = now;
 
     if (!is_defined(data['@timestamp'])) {
         data['@timestamp'] = now;
@@ -141,6 +141,7 @@ router.post('/:uid/:eid/create', function(req, res, next) {
                 routing: uid
             }, function (error, exists) {
                 if (exists === true) {
+                    experiment_id = eid;
                     series_callback(null);
                 } else {
                     client.index({
