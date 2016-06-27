@@ -9,6 +9,7 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
       platform = req.params.platform.toLowerCase(),
       mf_server = req.app.get('mf_server'),
       expand = req.query.expand,
+      size = 1000,
       json = {};
 
     client.search({
