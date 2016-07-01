@@ -56,6 +56,7 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
                         if (error) {
                             return next(error);
                         }
+
                         /* parse all experiments that use this deployment plan */
                         if (response.found) {
                             var source = response._source;
@@ -70,6 +71,7 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
 
                         var index = workflow + '_' + task;
                         async.forEachOf(experiments, function(value, experiment, callback) {
+
                             /* get start of experiment */
                             client.search({
                                 index: index,
@@ -141,36 +143,36 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
                                         body: body
                                     }, function(error, response) {
                                         if (error) {
-                                            callback(null);
-                                            return;
-                                        }
-                                        var answer = {},
-                                            aggs = response.aggregations;
+                                            // do nothing
+                                        } else {
+                                            var answer = {},
+                                                aggs = response.aggregations;
 
-                                        data.energy = {};
-                                        var power_data = {};
-                                        var average = aggs.power_metrics.NODE01.value;
-                                        data.energy.NODE01 = {};
-                                        data.energy.NODE01.avg_watt_consumption = average;
-                                        var duration = (new Date(end) - new Date(start)) / 1000;
-                                        var joule = average * duration;
-                                        data.energy.NODE01.total_energy_consumption = joule;
+                                            data.energy = {};
+                                            var power_data = {};
+                                            var average = aggs.power_metrics.NODE01.value;
+                                            data.energy.NODE01 = {};
+                                            data.energy.NODE01.avg_watt_consumption = average;
+                                            var duration = (new Date(end) - new Date(start)) / 1000;
+                                            var joule = average * duration;
+                                            data.energy.NODE01.total_energy_consumption = joule;
 
-                                        average = aggs.power_metrics.NODE02.value;
-                                        data.energy.NODE02 = {};
-                                        data.energy.NODE02.avg_watt_consumption = average;
-                                        joule = average * duration;
-                                        data.energy.NODE02.total_energy_consumption = joule;
+                                            average = aggs.power_metrics.NODE02.value;
+                                            data.energy.NODE02 = {};
+                                            data.energy.NODE02.avg_watt_consumption = average;
+                                            joule = average * duration;
+                                            data.energy.NODE02.total_energy_consumption = joule;
 
-                                        average = aggs.power_metrics.NODE03.value;
-                                        data.energy.NODE03 = {};
-                                        data.energy.NODE03.avg_watt_consumption = average;
-                                        joule = average * duration;
-                                        data.energy.NODE03.total_energy_consumption = joule;
+                                            average = aggs.power_metrics.NODE03.value;
+                                            data.energy.NODE03 = {};
+                                            data.energy.NODE03.avg_watt_consumption = average;
+                                            joule = average * duration;
+                                            data.energy.NODE03.total_energy_consumption = joule;
 
-                                        /* no energy measurements available */
-                                        if (!is_defined(average) || average === null) {
-                                            data.energy = [];
+                                            /* no energy measurements available */
+                                            if (!is_defined(average) || average === null) {
+                                                data.energy = [];
+                                            }
                                         }
 
                                         /* retrieve all metric counters as a set */
@@ -200,6 +202,7 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
                                                     delete items.host;
                                                     delete items.task;
                                                     delete items.type;
+                                                    delete items.platform;
                                                     for (var item in items) {
                                                         metric_keys[item] = item;
                                                     }
