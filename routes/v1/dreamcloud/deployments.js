@@ -9,6 +9,7 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
       platform = req.params.platform.toLowerCase(),
       mf_server = req.app.get('mf_server'),
       expand = req.query.expand,
+      size = 1000,
       json = {};
 
     client.search({
@@ -131,7 +132,8 @@ router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
             });
         } else { /* index new deployment plan */
             var source = req.body;
-            source.experiments = { experiment: 1 };
+            source.experiments = {};
+            source.experiments[experiment] = 1;
             client.index({
                 index: 'deployment_on_' + platform,
                 type: workflow + '_' + task,
