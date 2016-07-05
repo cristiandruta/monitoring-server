@@ -13,16 +13,16 @@ router.post('/', function(req, res, next) {
     tmp.index = {};
     for (i = 0; i != data.length; ++i) {
         var action = JSON.parse(JSON.stringify(tmp));
-        var index = data[i]['WorkflowID'];
-        if (data[i]['TaskID']) {
-          index = index + '_' + data[i]['TaskID'];
+        var index = data[i].WorkflowID;
+        if (data[i].TaskID) {
+          index = index + '_' + data[i].TaskID;
         } else {
           index = index + '_all';
         }
-        action.index['_index'] = index.toLowerCase();
-        action.index['_type'] = data[i]['ExperimentID'];
-        delete data[i]['WorkflowID'];
-        delete data[i]['ExperimentID'];
+        action.index._index = index.toLowerCase();
+        action.index._type = data[i].ExperimentID;
+        delete data[i].WorkflowID;
+        delete data[i].ExperimentID;
         bulk_data.push(action);
         bulk_data.push(data[i]);
     }
@@ -32,11 +32,11 @@ router.post('/', function(req, res, next) {
     },function(error, response) {
         if (error !== 'undefined') {
             var json = [];
-            for (i in response.items) {
+            for (var i in response.items) {
                 json.push(mf_server +
                   '/profiles/' +
-                  response.items[i].create['_index'].replace('_all', '/all') +
-                  '/' + response.items[i].create['_type']);
+                  response.items[i].create._index.replace('_all', '/all') +
+                  '/' + response.items[i].create._type);
             }
             res.json(json);
         } else {
@@ -55,7 +55,7 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
 
     var index = workflowID;
     if (typeof taskID == 'undefined') {
-        taskID = 'all'
+        taskID = '_all';
     }
 
     index = workflowID + '_' + taskID;
@@ -107,9 +107,9 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
         },
         function(callback) {
             /* work-around for plug-ins sending the old timestamp format */
-            if (req.body['Timestamp']) {
-                req.body['@timestamp'] = req.body['Timestamp'];
-                delete req.body['Timestamp'];
+            if (req.body.Timestamp) {
+                req.body['@timestamp'] = req.body.Timestamp;
+                delete req.body.Timestamp;
             }
             client.index({
                 index: index,
@@ -128,12 +128,12 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
                 } else {
                     res.json(error);
                 }
-                callback(null, '3=' + JSON.stringify(json));
+                callback(null, '3');
             });
         }
     ],
     function(err, results){
-        console.log(results);
+        //console.log(results);
     });
 });
 
