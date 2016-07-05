@@ -203,6 +203,7 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
                                                     delete items.task;
                                                     delete items.type;
                                                     delete items.platform;
+                                                    deleteKeysByPrefix(items, "info_");
                                                     for (var item in items) {
                                                         metric_keys[item] = item;
                                                     }
@@ -425,6 +426,8 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
                                     delete items.host;
                                     delete items.task;
                                     delete items.type;
+                                    delete items.platform;
+                                    deleteKeysByPrefix(items, "info_");
                                     for (var item in items) {
                                         metric_keys[item] = item;
                                     }
@@ -467,6 +470,14 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
 
 function is_defined(variable) {
     return (typeof variable !== 'undefined');
+}
+
+function deleteKeysByPrefix(object, prefix) {
+    for (var property in object) {
+        if (object.hasOwnProperty(property) && property.toString().startsWith(prefix)) {
+            delete object.property;
+        }
+    }
 }
 
 function compute_average_on(metric_name_a, metric_name_b, metric_name_c, from, to) {
