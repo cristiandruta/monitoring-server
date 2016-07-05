@@ -31,7 +31,7 @@ function handle_response(req, res, next, index) {
             'error': {
                 'message': 'parameter metric is missing'
             }
-        }
+        };
         res.json(error);
         return;
     }
@@ -41,12 +41,12 @@ function handle_response(req, res, next, index) {
             var terms = filter.split("==");
             body = filter_and_aggregate_by(terms[0], terms[1], metric, from, to);
         } else {
-            var error = {
+            var error_message= {
                 'error': {
                     'message': 'only the operator == is supported'
                 }
-            }
-            res.json(error);
+            };
+            res.json(error_message);
             return;
         }
     }
@@ -63,17 +63,17 @@ function handle_response(req, res, next, index) {
         var answer = {},
           aggs = response.aggregations;
 
-        answer['workflow'] = {}
-        answer['workflow'].href = mf_server + '/workflows/' + workflowID;
-        answer['metric'] = metric;
+        answer.workflow = {};
+        answer.workflow.href = mf_server + '/workflows/' + workflowID;
+        answer.metric = metric;
 
         if (is_defined(filter)) {
-            answer['filter'] = filter;
-            aggs = aggs['filtered_stats'];
+            answer.filter = filter;
+            aggs = aggs.filtered_stats;
         }
-        answer['statistics'] = aggs[metric + '_Stats'];
-        answer['min'] = aggs['Minimum_' + metric]['hits']['hits'][0]['_source'];
-        answer['max'] = aggs['Maximum_' + metric]['hits']['hits'][0]['_source'];
+        answer.statistics = aggs[metric + '_Stats'];
+        answer.min = aggs['Minimum_' + metric].hits.hits[0]._source;
+        answer.max = aggs['Maximum_' + metric].hits.hits[0]._source;
         res.json(answer);
     });
 }
