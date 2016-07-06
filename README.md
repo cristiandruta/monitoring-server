@@ -180,6 +180,7 @@ Please [create](https://github.com/excess-project/monitoring-server/website/issu
 
 | Date        | Version | Comment          |
 | ----------- | ------- | ---------------- |
+| 2016-06-22  | 16.6    | Bugfixes and new features |
 | 2016-02-26  | 16.2    | 2nd release (removed backend interface) |
 | 2015-12-18  | 1.0     | Public release.  |
 
