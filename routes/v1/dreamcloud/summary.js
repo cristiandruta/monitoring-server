@@ -475,7 +475,7 @@ function is_defined(variable) {
 function deleteKeysByPrefix(object, prefix) {
     var newObject = {};
     for (var property in object) {
-        if (object.hasOwnProperty(property) && !property.toString().startsWith(prefix)) {
+        if (object.hasOwnProperty(property) && property.toString().indexOf(prefix) !== 0) {
             console.log("add " + property);
             newObject[property] = object[property];
         }
