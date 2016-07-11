@@ -8,7 +8,7 @@ var os = require("os");
 var elasticsearch = require('elasticsearch');
 var elastic = new elasticsearch.Client({
   host: 'localhost:9200',
-  log: 'error'
+  log: 'info'
 });
 
 /* root */

@@ -221,6 +221,12 @@ router.put('/:workflowID/:experimentID', function(req, res, next) {
         data = req.body;
     }
 
+    /* ensure compatibility with front-end: experiments table */
+    data.user = workflowID;
+    if (is_defined(data.task)) {
+        data.application = data.task;
+    }
+
     async.series([
         /* register the given workflow */
         function(series_callback) {
@@ -244,17 +250,17 @@ router.put('/:workflowID/:experimentID', function(req, res, next) {
         },
         /* create new experiment using an existing id */
         function(series_callback) {
-            var body = {};
             var now = new Date();
             now = dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss");
-            body['@timestamp'] = now;
+            data['@timestamp'] = now;
+            data.job_id = experimentID;
 
             client.index({
                 index: 'mf',
                 type: 'experiments',
                 parent: workflowID,
                 id: experimentID,
-                body: body
+                body: data
             }, function(error, response) {
                 if (error) {
                     return series_callback(error);
