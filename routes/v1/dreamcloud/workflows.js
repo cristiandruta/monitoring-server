@@ -3,6 +3,40 @@ var router = express.Router();
 var async = require('async');
 var dateFormat = require('dateformat');
 
+/**
+ * @api {get} /workflows Request a list of registered workflows
+ * @apiVersion 1.0.0
+ * @apiName GetWorkflows
+ * @apiGroup Workflows
+ *
+ * @apiSuccess {Object} :workflowID       References a registered workflow by its ID
+ * @apiSuccess {String} :workflowID.href  Resource location of the given workflow
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "hpcdhopp": {
+ *         "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows/hpcdhopp"
+ *       },
+ *       "hpcdkhab": {
+ *         "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows/hpcdkhab"
+ *       },
+ *       "hpcfapix": {
+ *         "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows/hpcfapix"
+ *       }
+ *     }
+ *
+ * @apiError WorkflowsNotAvailable No workflows found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "No workflows found."
+ *     }
+ */
 router.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
         mf_server = req.app.get('mf_server'),
@@ -12,9 +46,9 @@ router.get('/', function(req, res, next) {
         json = {};
 
     if (is_defined(excess)) {
-        mf_server = mf_server + '/v1/mf';
+        mf_server = mf_server + '/mf';
     } else {
-        mf_server = mf_server + '/v1/dreamcloud/mf';
+        mf_server = mf_server + '/dreamcloud/mf';
     }
 
     client.search({
@@ -28,6 +62,12 @@ router.get('/', function(req, res, next) {
         }
         if (response.hits !== undefined) {
             size = response.hits.total;
+        }
+        if (size === 0) {
+            res.status(404);
+            json.error = "No workflows found.";
+            res.json(json);
+            return;
         }
 
         client.search({
@@ -90,6 +130,54 @@ function get_workflows(results, mf_server, excess) {
     return response;
 }
 
+/**
+ * @api {get} /workflows/:workflowID Get information about a specific workflow
+ * @apiVersion 1.0.0
+ * @apiName GetWorkflow
+ * @apiGroup Workflows
+ *
+ * @apiParam {String} workflowID Unique workflow identifier
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows/ms2
+ *
+ * @apiSuccess (body) {String} wf_id   References a registered workflow by its ID
+ * @apiSuccess (body) {String} author  Author name if provided while registering a new workflow
+ * @apiSuccess (body) {String} optimization    Optimization criterium: time, energy, balanced
+ * @apiSuccess (body) {Array}  tasks   List of individual tasks the workflow is composed of
+ * @apiSuccess (body) {String} tasks.name  ID of the given task (:taskID)
+ * @apiSuccess (body) {String} tasks.exec  Executable for the given task
+ * @apiSuccess (body) {String} tasks.cores_nr  Range of CPU cores used for executing the task on
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "wf_id": "ms2",
+ *       "author": "Random Guy",
+ *       "optimization": "Time",
+ *       "tasks": [
+ *         {
+ *           "name": "T1",
+ *           "exec": "/home/ubuntu/ms2/t1.sh",
+ *           "cores_nr": "1-2"
+ *         },
+ *         {
+ *           "name": "T2.1",
+ *           "exec": "/home/ubuntu/ms2/t21.sh",
+ *           "previous": "T1",
+ *           "cores_nr": "1-2"
+ *          }
+ *       ]
+ *     }
+ *
+ * @apiError WorkflowNotAvailable Given ID does not refer to a workflow.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Workflow with the ID ':workflowID' not found."
+ *     }
+ */
 router.get('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         client = req.app.get('elastic'),
@@ -103,16 +191,69 @@ router.get('/:id', function(req, res, next) {
         if (response.found) {
             json = response._source;
         } else {
-            json.error = error;
+            json.error = "Workflow with the ID '" + id + "' not found.";
         }
         res.json(json);
     });
 });
 
+/**
+ * @api {put} /workflows/:workflowID Register a new workflow with the given ID
+ * @apiVersion 1.0.0
+ * @apiName PutWorkflow
+ * @apiGroup Workflows
+ *
+ * @apiParam {String} workflowID Unique workflow identifier
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "wf_id": "ms2",
+ *       "author": "Random Guy",
+ *       "optimization": "Time",
+ *       "tasks": [
+ *         {
+ *           "name": "T1",
+ *           "exec": "/home/ubuntu/ms2/t1.sh",
+ *           "cores_nr": "1-2"
+ *         },
+ *         {
+ *           "name": "T2.1",
+ *           "exec": "/home/ubuntu/ms2/t21.sh",
+ *           "previous": "T1",
+ *           "cores_nr": "1-2"
+ *          }
+ *       ]
+ *     }
+ *
+ * @apiParam {String} [wf_id]   References a registered workflow by its ID
+ * @apiParam {String} [author]  Author name if provided while registering a new workflow
+ * @apiParam {String} [optimization]    Optimization criterium: time, energy, balanced
+ * @apiParam {Array}  [tasks]   List of individual tasks the workflow is composed of
+ * @apiParam {String} [tasks.name]  ID of the given task (:taskID)
+ * @apiParam {String} [tasks.exec]  Executable for the given task
+ * @apiParam {String} [tasks.cores_nr]  Range of CPU cores used for executing the task on
+ *
+ * @apiSuccess {String} href Link to the stored workflow resource
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows/ms2",
+ *     }
+ *
+ * @apiError StorageError Given workflow could not be stored.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "error": "Resource could not be stored"
+ *     }
+ */
 router.put('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         mf_server = req.app.get('mf_server'),
-        client = req.app.get('elastic');
+        client = req.app.get('elastic'),
+        json = {};
 
     client.index({
         index: 'mf',
@@ -121,12 +262,14 @@ router.put('/:id', function(req, res, next) {
         body: req.body
     }, function(error, response) {
         if (error !== 'undefined') {
-            var json = {};
             json.href = mf_server + '/workflows/' + id;
-            res.json(json);
         } else {
-            res.json(error);
+            res.status(500);
+            json.error = "Resource could not be stored.";
+            console.log(error);
         }
+
+        res.json(json);
     });
 });
 
