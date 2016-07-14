@@ -198,12 +198,15 @@ router.get('/:id', function(req, res, next) {
 });
 
 /**
- * @api {put} /workflows/:workflowID Register a new workflow with the given ID
+ * @api {put} /workflows/:workflowID Register a new workflow with a custom ID
  * @apiVersion 1.0.0
- * @apiName PutWorkflow
+ * @apiName PutWorkflowID
  * @apiGroup Workflows
  *
  * @apiParam {String} workflowID Unique workflow identifier
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows/ms2
  *
  * @apiParamExample {json} Request-Example:
  *     {
@@ -273,6 +276,78 @@ router.put('/:id', function(req, res, next) {
     });
 });
 
+/**
+ * @api {put} /workflows Register a new workflow and create a new experiment
+ * @apiVersion 1.0.0
+ * @apiName PutWorkflow
+ * @apiGroup Workflows
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "wf_id": "ms2",
+ *       "author": "Random Guy",
+ *       "optimization": "Time",
+ *       "tasks": [
+ *         {
+ *           "name": "T1",
+ *           "exec": "/home/ubuntu/ms2/t1.sh",
+ *           "cores_nr": "1-2"
+ *         },
+ *         {
+ *           "name": "T2.1",
+ *           "exec": "/home/ubuntu/ms2/t21.sh",
+ *           "previous": "T1",
+ *           "cores_nr": "1-2"
+ *          }
+ *       ]
+ *     }
+ *
+ * @apiParam {String} wf_id   References a registered workflow by its ID
+ * @apiParam {String} [author]  Author name if provided while registering a new workflow
+ * @apiParam {String} [optimization]    Optimization criterium: time, energy, balanced
+ * @apiParam {Array}  [tasks]   List of individual tasks the workflow is composed of
+ * @apiParam {String} [tasks.name]  ID of the given task (:taskID)
+ * @apiParam {String} [tasks.exec]  Executable for the given task
+ * @apiParam {String} [tasks.cores_nr]  Range of CPU cores used for executing the task on
+ *
+ * @apiSuccess {Object} workflow Workflow-related information
+ * @apiSuccess {String} workflow.id Unique ID of a given workflow
+ * @apiSuccess {String} workflow.href Link to the workflow resource
+ * @apiSuccess {Object} experiment Experiment-related information
+ * @apiSuccess {String} experiment.id Unique ID of the experiment associated with the workflow
+ * @apiSuccess {String} experiment.href Link to the experiment resource
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "workflow": {
+ *         "id":   "ms2",
+ *         "href": "http://mf.excess-project.eu:3030/v1/workflows/ms2"
+ *       },
+ *       "experiment": {
+ *         "id":   "AVXotMWFA9kSggr_MSq2",
+ *         "href": "http://mf.excess-project.eu:3030/v1/experiments/AVXotMWFA9kSggr_MSq2?workflow=ms2"
+ *       }
+ *     }
+ *
+ * @apiError StorageError Given workflow could not be stored.
+ * @apiError WorkflowIDMissing The key wf_id is missing
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "error": "Resource could not be stored"
+ *     }
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *       "error": "The parameter 'wf_id' to reference a workflow ID is missing."
+ *     }
+ */
 router.put('/', function(req, res, next) {
     var mf_server = req.app.get('mf_server'),
         client = req.app.get('elastic');
@@ -280,9 +355,10 @@ router.put('/', function(req, res, next) {
     var workflow = req.body;
     if (workflow.wf_id === undefined) {
         var message = {};
-        message.error = "Please provide a workflow ID (wf_id).";
-        res.status(500);
-        return next(message);
+        message.error = "The parameter 'wf_id' to reference a workflow ID is missing";
+        res.status(400);
+        res.json(message);
+        return;
     }
     workflow.wf_id = workflow.wf_id.toLowerCase();
     id = workflow.wf_id;
@@ -349,6 +425,74 @@ function isEmpty(obj) {
     }
 }
 
+/**
+ * @api {put} /workflows/:workflowID/:experimentID Register a new workflow and experiment using custom IDs
+ * @apiVersion 1.0.0
+ * @apiName PutWorkflowIDExperimentID
+ * @apiGroup Workflows
+ *
+ * @apiParam {String} workflowID Unique workflow identifier
+ * @apiParam {String} experimentID Unique experiment identifier
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows/ms2/myUniqueID
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "wf_id": "ms2",
+ *       "author": "Random Guy",
+ *       "optimization": "Time",
+ *       "tasks": [
+ *         {
+ *           "name": "T1",
+ *           "exec": "/home/ubuntu/ms2/t1.sh",
+ *           "cores_nr": "1-2"
+ *         },
+ *         {
+ *           "name": "T2.1",
+ *           "exec": "/home/ubuntu/ms2/t21.sh",
+ *           "previous": "T1",
+ *           "cores_nr": "1-2"
+ *          }
+ *       ]
+ *     }
+ *
+ * @apiParam {String} [wf_id]   References a registered workflow by its ID
+ * @apiParam {String} [author]  Author name if provided while registering a new workflow
+ * @apiParam {String} [optimization]    Optimization criterium: time, energy, balanced
+ * @apiParam {Array}  [tasks]   List of individual tasks the workflow is composed of
+ * @apiParam {String} [tasks.name]  ID of the given task (:taskID)
+ * @apiParam {String} [tasks.exec]  Executable for the given task
+ * @apiParam {String} [tasks.cores_nr]  Range of CPU cores used for executing the task on
+ *
+ * @apiSuccess {Object} workflow Workflow-related information
+ * @apiSuccess {String} workflow.id Unique ID of a given workflow
+ * @apiSuccess {String} workflow.href Link to the workflow resource
+ * @apiSuccess {Object} experiment Experiment-related information
+ * @apiSuccess {String} experiment.id Unique ID of the experiment associated with the workflow
+ * @apiSuccess {String} experiment.href Link to the experiment resource
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "workflow": {
+ *         "id":   "ms2",
+ *         "href": "http://mf.excess-project.eu:3030/v1/workflows/ms2"
+ *       },
+ *       "experiment": {
+ *         "id":   "myUniqueID",
+ *         "href": "http://mf.excess-project.eu:3030/v1/experiments/myUniqueID?workflow=ms2"
+ *       }
+ *     }
+ *
+ * @apiError StorageError Given workflow could not be stored.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "error": "Resource could not be stored"
+ *     }
+ */
 router.put('/:workflowID/:experimentID', function(req, res, next) {
     var mf_server = req.app.get('mf_server'),
         client = req.app.get('elastic'),
@@ -420,8 +564,12 @@ router.put('/:workflowID/:experimentID', function(req, res, next) {
         },
     ], function(error) {
         if (error) {
+            var json = {};
+            json.error = "Resource could not be stored".
+            console.log(error);
             res.status(500);
-            return next(error);
+            res.json(json);
+            return;
         }
         res.json(workflow_response);
     });
