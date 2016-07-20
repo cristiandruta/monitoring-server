@@ -1,6 +1,76 @@
 var express = require('express');
 var router = express.Router();
-
+/**
+ * @api {get} /statistics/:workflowID/:taskID Request the statistics of a specific task
+ * @apiVersion 1.0.0
+ * @apiName GetStatsTask
+ * @apiGroup Statistics
+ *
+ * @apiParam {String} [workflowID] Workflow identifer
+ * @apiParam {String} [taskID] Task name
+ * @apiParam {String} [metric] Name of the desired metric
+ * @apiParam {String} host Hostname of the system
+ * @apiParam {String} from Start point of the time interval
+ * @apiParam {String} to End point of the time interval
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i 'http://mf.excess-project.eu:3030/v1/mf/statistics/hpcfapix/vector_scal01?metric=DRAM_POWER:PACKAGE0&metric=DRAM_POWER:PACKAGE1&host=node01&from=2016-05-10T17:35:57.610&to=2016-05-10T17:36:57.610'
+ *
+ * @apiSuccess {Object} user Link to the correspondence user
+ * @apiSuccess {String} metric Name of the metric
+ * @apiSuccess {Object} statistics Statistics of the metric during the time interval
+ * @apiSuccess {Object} min Minimum measurement during the time interval
+ * @apiSuccess {Object} max Maximum measurement during the time interval
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *        {
+ *            "user":
+ *                   {"href":"http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix"},
+ *            "metric":"DRAM_POWER:PACKAGE0",
+ *            "statistics":
+ *                   {"count":6,
+ *                    "min":1.5568,
+ *                    "max":1.5724,
+ *                    "avg":1.5640333333333334,
+ *                    "sum":9.3842,
+ *                    "sum_of_squares":14.677405239999999,
+ *                    "variance":0.000033938888888881045,
+ *                    "std_deviation":0.0058257093034995355,
+ *                    "std_deviation_bounds":
+ *                           {"upper":1.5756847519403325,
+ *                            "lower":1.5523819147263342}
+ *                   },
+ *            "min":
+ *                   {"@timestamp":"2016-05-10T17:36:00.851",
+ *                    "host":"node01.excess-project.eu",
+ *                    "task":"vector_scal01",
+ *                    "type":"energy",
+ *                    "DRAM_ENERGY:PACKAGE0":1.5573,
+ *                    "DRAM_POWER:PACKAGE0":1.5568,
+ *                    "DRAM_ENERGY:PACKAGE1":1.5584,
+ *                    "DRAM_POWER:PACKAGE1":1.5578}
+ *            "max":{
+ *                    "@timestamp":"2016-05-10T17:35:57.610",
+ *                    "host":"node01.excess-project.eu",
+ *                    "task":"vector_scal01",
+ *                    "type":"energy",
+ *                    "DRAM_ENERGY:PACKAGE0":1.5727,
+ *                    "DRAM_POWER:PACKAGE0":1.5724,
+ *                    "DRAM_ENERGY:PACKAGE1":1.5692,
+ *                    "DRAM_POWER:PACKAGE1":1.5689}
+ *        }
+ *     ]
+ *
+ * @apiError NoResults response is empty for the metric.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "error": "response is empty for the metric."
+ *     }
+ */
 router.get('/:workflowID/:taskID', function(req, res, next) {
     var workflowID = req.params.workflowID.toLowerCase(),
       taskID = req.params.taskID.toLowerCase(),
@@ -9,6 +79,78 @@ router.get('/:workflowID/:taskID', function(req, res, next) {
     return handle_response(req, res, next, index);
 });
 
+/**
+ * @api {get} /statistics/:workflowID/:taskID/:experimentID Request the statistics of a specific experiment
+ * @apiVersion 1.0.0
+ * @apiName GetStatsExperiment
+ * @apiGroup Statistics
+ *
+ * @apiParam {String} [workflowID] Workflow identifer
+ * @apiParam {String} [taskID] Task name
+ * @apiParam {String} [experimentID] Experiment identifier
+ * @apiParam {String} [metric] Name of the desired metric
+ * @apiParam {String} host Hostname of the system
+ * @apiParam {String} from Start point of the time interval
+ * @apiParam {String} to End point of the time interval
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i 'http://mf.excess-project.eu:3030/v1/mf/statistics/hpcfapix/vector_scal01/AVSbT0ChGMPeuCn4QYjq?metric=DRAM_POWER:PACKAGE0&metric=DRAM_POWER:PACKAGE1&host=node01&from=2016-05-10T17:35:57.610&to=2016-05-10T17:36:57.610'
+ *
+ * @apiSuccess {Object} user Link to the correspondence user
+ * @apiSuccess {String} metric Name of the metric
+ * @apiSuccess {Object} statistics Statistics of the metric during the time interval
+ * @apiSuccess {Object} min Minimum measurement during the time interval
+ * @apiSuccess {Object} max Maximum measurement during the time interval
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *        {
+ *            "user":
+ *                   {"href":"http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix"},
+ *            "metric":"DRAM_POWER:PACKAGE0",
+ *            "statistics":
+ *                   {"count":6,
+ *                    "min":1.5568,
+ *                    "max":1.5724,
+ *                    "avg":1.5640333333333334,
+ *                    "sum":9.3842,
+ *                    "sum_of_squares":14.677405239999999,
+ *                    "variance":0.000033938888888881045,
+ *                    "std_deviation":0.0058257093034995355,
+ *                    "std_deviation_bounds":
+ *                           {"upper":1.5756847519403325,
+ *                            "lower":1.5523819147263342}
+ *                   },
+ *            "min":
+ *                   {"@timestamp":"2016-05-10T17:36:00.851",
+ *                    "host":"node01.excess-project.eu",
+ *                    "task":"vector_scal01",
+ *                    "type":"energy",
+ *                    "DRAM_ENERGY:PACKAGE0":1.5573,
+ *                    "DRAM_POWER:PACKAGE0":1.5568,
+ *                    "DRAM_ENERGY:PACKAGE1":1.5584,
+ *                    "DRAM_POWER:PACKAGE1":1.5578}
+ *            "max":{
+ *                    "@timestamp":"2016-05-10T17:35:57.610",
+ *                    "host":"node01.excess-project.eu",
+ *                    "task":"vector_scal01",
+ *                    "type":"energy",
+ *                    "DRAM_ENERGY:PACKAGE0":1.5727,
+ *                    "DRAM_POWER:PACKAGE0":1.5724,
+ *                    "DRAM_ENERGY:PACKAGE1":1.5692,
+ *                    "DRAM_POWER:PACKAGE1":1.5689}
+ *        }
+ *     ]
+ *
+ * @apiError NoResults response is empty for the metric.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "error": "response is empty for the metric."
+ *     }
+ */
 router.get('/:workflowID/:taskID/:experimentID', function(req, res, next) {
     var workflowID = req.params.workflowID.toLowerCase(),
       taskID = req.params.taskID.toLowerCase(),

@@ -3,6 +3,54 @@ var http = require('http');
 var async = require('async');
 var router = express.Router();
 
+/**
+ * @api {post} /metrics Send bulk of metrics
+ * @apiVersion 1.0.0
+ * @apiName PostBulkMetrics
+ * @apiGroup Metrics
+ *
+ * @apiParam {String} WorkflowID Hostname of the system
+ * @apiParam {String} task Type of the metric, e.g. power, temperature, and so on
+ * @apiParam {String} ExperimentID When the metric is collected
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/metrics
+ *
+ * @apiParamExample {json} Request-Example:
+ *     [
+ *         {
+ *              "WorkflowID":"hoppe",
+ *              "task":"testing",
+ *              "ExperimentID":"AVUWnydqGMPeuCn4l-cj",
+ *              "type":"power", "host": "node01.excess-project.eu", 
+ *              "@timestamp": "2016-02-15T12:46:48.749", 
+ *              "GPU1:power": "168.519"
+ *          }, {
+ *              "WorkflowID":"athena",
+ *              "task":"bvlc_alexnet_time_profile",
+ *              "ExperimentID":"AVNXMXcvGMPeuCn4bMe0",
+ *              "type": "power", 
+ *              "host": "node01.excess-project.eu", 
+ *              "@timestamp": "2016-02-15T12:43:48.524", 
+ *              "GPU0:power": "152.427"
+ *          }
+ *     ]
+ *
+ * @apiParam {String} [host] Hostname of the system
+ * @apiParam {String} [type] Type of the metric, e.g. power, temperature, and so on
+ * @apiParam {String} [timestamp] When the metric is collected
+ * @apiParam {String} [metric] Value of the metric
+ *
+ * @apiSuccess {String} href Links to all updated experiments' profiled metrics
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *           "http://mf.excess-project.eu:3030/v1/mf/profiles/hoppe_testing/AVUWnydqGMPeuCn4l-cj",
+ *           "http://mf.excess-project.eu:3030/v1/mf/profiles/athena_bvlc_alexnet_time_profile/AVNXMXcvGMPeuCn4bMe0"
+ *     ]
+ *
+ */
 router.post('/', function(req, res, next) {
     var data = req.body,
       mf_server = req.app.get('mf_server') + '/mf',
@@ -46,6 +94,43 @@ router.post('/', function(req, res, next) {
     });
 });
 
+/**
+ * @api {post} /metrics/:workflowID/:experimentID Send one metric
+ * @apiVersion 1.0.0
+ * @apiName PostMetrics
+ * @apiGroup Metrics
+ *
+ * @apiParam {String} workflowID Workflow identifier
+ * @apiParam {String} experimentID Experiment identifier
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/metrics/athena/AVNXMXcvGMPeuCn4bMe0?task=bvlc_alexnet_time_profile
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "host": "fe.excess-project.eu",
+ *       "type": "power",
+ *       "@timestamp": "2016-02-15T12:42:22.000",
+ *       "GPU0:power": "152.427"
+ *     }
+ *
+ * @apiParam {String} [host] Hostname of the system
+ * @apiParam {String} [type] Type of the metric, e.g. power, temperature, and so on
+ * @apiParam {String} [timestamp] When the metric is collected
+ * @apiParam {String} [metric] Value of the metric
+ *
+ * @apiSuccess {Object} metricID References a sent metric by its ID
+ * @apiSuccess {String} metricID.href Link to the specfic experiment all profiled metrics
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "AVXt3coOz5chEwIt8_Ma": {
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/profiles/athena/bvlc_alexnet_time_profile/AVNXMXcvGMPeuCn4bMe0"
+ *       }
+ *     }
+ *
+ */
 router.post('/:workflowID/:experimentID', function(req, res, next) {
     var workflowID = req.params.workflowID.toLowerCase(),
       experimentID = req.params.experimentID,

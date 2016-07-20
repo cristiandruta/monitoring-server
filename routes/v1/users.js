@@ -11,6 +11,25 @@ router.get('/:id', function(req, res, next) {
     res.redirect('/v1/dreamcloud/mf/workflows/' + req.params.id + '?users');
 });
 
+/**
+ * @api {put} /users/:id Register/Update a user's information
+ * @apiVersion 1.0.0
+ * @apiName PutUsers
+ * @apiGroup Users
+ *
+ * @apiParam {String} id User identifier
+ * @apiSuccess {String} href Link to the registered/updated user
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *          "href":"http://fangli-ThinkPad-T450s:3030/v1/v1/mf/users/hpcfapix"
+ *     }
+ *
+ */
 router.put('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         mf_server = req.app.get('mf_server') + '/v1/mf/',
@@ -36,6 +55,25 @@ function is_defined(variable) {
     return (typeof variable !== 'undefined');
 }
 
+/**
+ * @api {post} /users/:id/create Create a user and associated experiment
+ * @apiVersion 1.0.0
+ * @apiName PostUsers
+ * @apiGroup Users
+ *
+ * @apiParam {String} id User identifier
+ * @apiSuccess {String} experimentID Experiment identifier
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix/create
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *          AVX9O-3oz5chEwIt8_M9
+ *     }
+ *
+ */
 router.post('/:id/create', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         client = req.app.get('elastic');
@@ -95,7 +133,26 @@ router.post('/:id/create', function(req, res, next) {
         res.send(experiment_id);
     });
 });
-
+/**
+ * @api {post} /users/:uid/:eid/create Create a user and associated experiment with an experiment ID
+ * @apiVersion 1.0.0
+ * @apiName PostUserExperiment
+ * @apiGroup Users
+ *
+ * @apiParam {String} uid User identifier
+ * @apiParam {String} eid Experiment identifier
+ * @apiSuccess {String} eid The specified experiment identifier
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix/AVX9O-3oz5chEwIt8_M9/create
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *          AVX9O-3oz5chEwIt8_M9
+ *     }
+ *
+ */
 router.post('/:uid/:eid/create', function(req, res, next) {
     var uid = req.params.uid.toLowerCase(),
         eid = req.params.eid,

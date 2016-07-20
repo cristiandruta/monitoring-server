@@ -2,6 +2,40 @@ var express = require('express');
 var dateFormat = require('dateformat');
 var router = express.Router();
 
+/**
+ * @api {get} /experiments Request a list of registered experiments
+ * @apiVersion 1.0.0
+ * @apiName GetExperiments
+ * @apiGroup Experiments
+ *
+ * @apiSuccess {Object} experimentID References a registered experiment by its ID
+ * @apiSuccess {String} experimentID.href Resource location of the given experiment
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "AVUWoIRDGMPeuCn4l-cl": {
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVUWoIRDGMPeuCn4l-cl?workflow=test_hoppe"
+ *       },
+ *       "AVNXMbaBGMPeuCn4bMfv": {
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMbaBGMPeuCn4bMfv?workflow=goud"
+ *       },
+ *       "AVNXMsA_GMPeuCn4bMj7": {
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMsA_GMPeuCn4bMj7?workflow=athena"
+ *       }
+ *     }
+ *
+ * @apiError NotFound Not Found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 NotFound
+ *     {
+ *       "error": "Not Found."
+ *     }
+ */
 router.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
       mf_server = req.app.get('mf_server') + '/v1/mf',
@@ -91,6 +125,41 @@ function get_workflows(mf_server, results) {
     return response;
 }
 
+/**
+ * @api {get} /experiments/:id Request a registered experiment
+ * @apiVersion 1.0.0
+ * @apiName GetExperimentsID
+ * @apiGroup Experiments
+ *
+ * @apiParam {String} experimentID Experiment identifier
+ *
+ * @apiSuccess {String} user User name of the experiment
+ * @apiSuccess {String} application Application name of the experiment
+ * @apiSuccess {String} host System hostname
+ * @apiSuccess {String} timestamp Timestamp when the experiment is registered
+ * @apiSuccess {String} job_id Job ID of the experiment
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMXcvGMPeuCn4bMe0?workflow=athena
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "application":"bvlc_alexnet_time_profile",
+ *       "host":"fe.excess-project.eu",
+ *       "user":"athena",
+ *       "@timestamp":"2016-02-15T12:42:22.000",
+ *       "job_id":"143249.fe.excess-project.eu"
+ *     }
+ *
+ * @apiError NoWorkflow No workflow is given.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 NoWorkflow
+ *     {
+ *       "error": "URL parameter 'workflow' is missing"
+ *     }
+ */
 router.get('/:id', function(req, res, next) {
     var client = req.app.get('elastic'),
       id = req.params.id,
@@ -143,7 +212,44 @@ router.get('/:id', function(req, res, next) {
         }
     });
 });
-
+/**
+ * @api {post} /experiments/:workflowID Create a new experiment with given workflow ID
+ * @apiVersion 1.0.0
+ * @apiName PostExperiments
+ * @apiGroup Experiments
+ *
+ * @apiParam {String} workflowID Workflow identifier
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments/abc123456_def
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "application": "bvlc_alexnet_time_profile",
+ *       "host": "fe.excess-project.eu",
+ *       "user": "athena",
+ *       "@timestamp": "2016-02-15T12:42:22.000",
+ *       "job_id": "143249.fe.excess-project.eu"
+ *     }
+ *
+ * @apiParam {String} [application] Application name, provided while registering a new experiment
+ * @apiParam {String} [host] Hostname of the system
+ * @apiParam {String} [user] Username, like who is registering the experiment
+ * @apiParam {String} [timestamp] When the experiment is registered
+ * @apiParam {String} [job_id] Job ID, provided while registering a new experiment
+ *
+ * @apiSuccess {Object} experimentID References a registered experiment by its ID
+ * @apiSuccess {String} experimentID.href Link to the created experiment resource
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "AVXt3coOz5chEwIt8_Ma": {
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVXt3coOz5chEwIt8_Ma?workflow=abc123456_def"
+ *       }
+ *     }
+ *
+ */
 router.post('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
       mf_server = req.app.get('mf_server') + '/v1/mf',
