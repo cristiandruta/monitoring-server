@@ -360,12 +360,23 @@ router.put('/', function(req, res, next) {
         res.json(message);
         return;
     }
-    workflow.wf_id = workflow.wf_id.toLowerCase();
-    id = workflow.wf_id;
+
+    /* ensure compatibility with excess front-end */
+    workflow.application = workflow.wf_id.toLowerCase();
+    workflow.task = workflow.application;
+    var id = workflow.application;
+    if (is_defined(workflow.author)) {
+        workflow.user = workflow.author.toLowerCase();
+    } else {
+        var error_message = {};
+        error_message.error = "Please provide a user name (author).";
+        res.status(500);
+        return next(error_message);
+    }
 
     var workflow_response = {};
 
-    async.series([
+    async.waterfall([
         /* REGISTER WORKFLOW */
         function(series_callback) {
             client.index({
@@ -380,22 +391,21 @@ router.put('/', function(req, res, next) {
 
                 workflow_response.workflow = {};
                 workflow_response.workflow.id = id;
-                workflow_response.workflow.href = mf_server + '/workflows/' + id;
+                workflow_response.workflow.href = mf_server + '/dreamcloud/mf/workflows/' + id;
                 series_callback(null);
             });
         },
         /* CREATE EXPERIMENT ID */
         function(series_callback) {
-            var body = {};
             var now = new Date();
             now = dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss");
-            body['@timestamp'] = now;
+            workflow['@timestamp'] = now;
 
             client.index({
                 index: 'mf',
                 type: 'experiments',
                 parent: id,
-                body: body
+                body: workflow
             }, function(error, response) {
                 if (error) {
                     return series_callback(error);
@@ -403,7 +413,29 @@ router.put('/', function(req, res, next) {
                 workflow_response.experiment = {};
                 workflow_response.experiment.id = response._id;
                 workflow_response.experiment.href = mf_server +
-                    '/experiments/' + response._id + '?workflow=' + id;
+                    '/dreamcloud/mf/experiments/' + response._id + '?workflow=' + id;
+                series_callback(null, response._id);
+            });
+        },
+        /* ADD JOB_ID */
+        function(experiment_id, series_callback) {
+            console.log(experiment_id);
+            client.update({
+                index: 'mf',
+                type: 'experiments',
+                id: experiment_id,
+                parent: id,
+                body: {
+                    'doc': {
+                      'job_id': experiment_id
+                    }
+                }
+            }, function(error, response) {
+                console.log(error);
+                console.log(response);
+                if (error) {
+                    return series_callback(error);
+                }
                 series_callback(null);
             });
         },
