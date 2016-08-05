@@ -1,7 +1,7 @@
 define({
-  "name": "monitoring-server",
+  "name": "monitoring-api",
   "version": "1.0.0",
-  "description": "RESTful services for the ATOM monitoring framework",
+  "description": "RESTful service of the EXCESS monitoring framework",
   "title": "ATOM RESTful API",
   "url": "http://mf.excess-project.eu:3030/v1/mf",
   "header": {
@@ -24,7 +24,7 @@ define({
   "apidoc": "0.2.0",
   "generator": {
     "name": "apidoc",
-    "time": "2016-07-18T09:55:06.480Z",
+    "time": "2016-08-05T09:22:39.325Z",
     "url": "http://apidocjs.com",
     "version": "0.16.1"
   }

@@ -12,23 +12,44 @@ router.get('/:id', function(req, res, next) {
 });
 
 /**
- * @api {put} /users/:id Register/Update a user's information
+ * @api {put} /users/:userID Registers a new user
  * @apiVersion 1.0.0
  * @apiName PutUsers
  * @apiGroup Users
  *
- * @apiParam {String} id User identifier
- * @apiSuccess {String} href Link to the registered/updated user
+ * @apiParam {String} userID identifier for a user, e.g. 'excess'
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix
  *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "name": "Fangli Pi",
+ *       "affiliation": "HLRS",
+ *       "applications": [
+ *          "avx"
+ *       ]
+ *     }
+ *
+ * @apiParam {String} [name] name of the user
+ * @apiParam {String} [affiliation] affiliation of the user
+ * @apiParam {Array}  [applications] list of applications to be monitored
+ *
+ * @apiSuccess {String} href link to the data stored for the given user
+ *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *          "href":"http://fangli-ThinkPad-T450s:3030/v1/v1/mf/users/hpcfapix"
+ *          "href":"http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix"
  *     }
  *
+ * @apiError DatabaseError The given user could not be registered at the database
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "error": "Resource could not be stored."
+ *     }
  */
 router.put('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
@@ -42,8 +63,10 @@ router.put('/:id', function(req, res, next) {
         body: req.body
     }, function(error, response) {
         if (error) {
+            var message = 'Resource could not be stored.';
+            console.log(error);
             res.status(500);
-            return next(error);
+            return next(message);
         }
         var json = {};
         json.href = mf_server + 'users/' + id;
