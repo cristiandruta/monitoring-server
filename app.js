@@ -9,6 +9,7 @@ var elasticsearch = require('elasticsearch');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var flash = require('connect-flash');
+var requestIp = require('request-ip');
 
 var elastic = new elasticsearch.Client({
   host: 'localhost:9200',
@@ -16,9 +17,9 @@ var elastic = new elasticsearch.Client({
 });
 
 function isLoggedIn(req, res, next){
-    console.log(req.session);
-    console.log(req.ip);
-    if(req.isAuthenticated() || req.ip.indexOf("127.0.0.1") > -1){
+    var ip = req.clientIp;
+    console.log(ip);
+    if(req.isAuthenticated() || ip.indexOf("127.0.0.1") > -1 || ip.indexOf("192.168.0") > -1 ){
         return next();
     }
     res.redirect('/login');
@@ -77,6 +78,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
+app.use(requestIp.mw());
 
 /* root */
 app.use('/', routes);
@@ -84,7 +86,8 @@ app.use('/v2/mf', routes);
 app.use('/v2/dreamcloud/mf', routes);
 
 /* excess */
-app.use('/v2/mf/users', isLoggedIn, users);
+app.use('/v2/mf/users', users.unprotected);
+app.use('/v2/mf/users', isLoggedIn, users.protected);
 app.use('/v2/mf/runtime', runtime);
 app.use('/v2/mf/statistics', statistics);
 
@@ -102,11 +105,13 @@ app.use('/v2/dreamcloud/mf/summary', summary);
 
 /* both */
 app.use('/v2/mf/time', servertime);
-app.use('/v2/mf/experiments', experiments);
+app.use('/v2/mf/experiments', experiments.unprotected);
+app.use('/v2/mf/experiments', isLoggedIn, experiments.protected);
 app.use('/v2/mf/profiles', profiles);
-app.use('/v2/mf/metrics', metrics);
-app.use('/v2/mf/units', units);
-app.use('/v2/dreamcloud/mf/experiments', experiments);
+app.use('/v2/mf/metrics', isLoggedIn, metrics);
+app.use('/v2/mf/units', units.unprotected);
+app.use('/v2/mf/units', isLoggedIn, units.protected);
+app.use('/v2/dreamcloud/mf/experiments', experiments.unprotected);
 app.use('/v2/dreamcloud/mf/profiles', profiles_dreamcloud);
 app.use('/v2/dreamcloud/mf/metrics', metrics);
 
@@ -159,7 +164,7 @@ passport.use(new Strategy(
           return cb(null, response.hits.hits[0]._source);
         }
         else {
-          return cb(null, false);
+          return cb('Invalid username or password.', false);
         }
       }
     });

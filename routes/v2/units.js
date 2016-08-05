@@ -1,5 +1,6 @@
 var express = require('express');
-var router = express.Router();
+var routerP = express.Router(),
+    routerU = express.Router();
 /**
  * @api {get} /units Request a list of registered units
  * @apiVersion 1.0.0
@@ -39,7 +40,7 @@ var router = express.Router();
  *       "error": "Not Found."
  *     }
  */
-router.get('/', function(req, res, next) {
+routerU.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
       json = {},
       size = 1000;
@@ -84,7 +85,7 @@ router.get('/', function(req, res, next) {
  *     }
  *
  */
-router.put('/:metric_id', require('connect-ensure-login').ensureLoggedIn(),
+routerP.put('/:metric_id',
     function(req, res, next) {
     var mf_server = req.app.get('mf_server'),
       metric_id = req.params.metric_id,
@@ -106,4 +107,7 @@ router.put('/:metric_id', require('connect-ensure-login').ensureLoggedIn(),
     });
 });
 
-module.exports = router;
+module.exports = {
+    protected: routerP,
+    unprotected: routerU
+};

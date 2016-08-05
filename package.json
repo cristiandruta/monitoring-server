@@ -25,7 +25,8 @@
     "request": "~2.69.0",
     "async": "~1.5.2",
     "moment": "~2.11.2",
-    "connect-flash": "0.1.1"
+    "connect-flash": "0.1.1",
+    "request-ip": "1.2.1"
   },
   "devDependencies": {
     "standard": "~5.4.1",

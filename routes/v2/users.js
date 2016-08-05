@@ -1,13 +1,14 @@
 var express = require('express');
-var router = express.Router();
+var routerP = express.Router(),
+    routerU = express.Router();
 var async = require('async');
 var dateFormat = require('dateformat');
 
-router.get('/', function(req, res, next) {
+routerU.get('/', function(req, res, next) {
     res.redirect('/v2/dreamcloud/mf/workflows?users');
 });
 
-router.get('/:id', function(req, res, next) {
+routerU.get('/:id', function(req, res, next) {
     res.redirect('/v2/dreamcloud/mf/workflows/' + req.params.id + '?users');
 });
 
@@ -30,7 +31,7 @@ router.get('/:id', function(req, res, next) {
  *     }
  *
  */
-router.put('/:id',
+routerP.put('/:id',
     function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         mf_server = req.app.get('mf_server') + '/mf',
@@ -75,7 +76,7 @@ function is_defined(variable) {
  *     }
  *
  */
-router.post('/:id/create', require('connect-ensure-login').ensureLoggedIn(),
+routerP.post('/:id/create',
     function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         client = req.app.get('elastic');
@@ -155,7 +156,7 @@ router.post('/:id/create', require('connect-ensure-login').ensureLoggedIn(),
  *     }
  *
  */
-router.post('/:uid/:eid/create', require('connect-ensure-login').ensureLoggedIn(),
+routerP.post('/:uid/:eid/create',
     function(req, res, next) {
     var uid = req.params.uid.toLowerCase(),
         eid = req.params.eid,
@@ -230,4 +231,7 @@ router.post('/:uid/:eid/create', require('connect-ensure-login').ensureLoggedIn(
     });
 });
 
-module.exports = router;
+module.exports = {
+    protected: routerP,
+    unprotected: routerU
+};

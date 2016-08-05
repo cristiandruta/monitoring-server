@@ -51,7 +51,7 @@ var router = express.Router();
  *     ]
  *
  */
-router.post('/', require('connect-ensure-login').ensureLoggedIn(), 
+router.post('/', 
   function(req, res, next) {
     var data = req.body,
       mf_server = req.app.get('mf_server') + '/mf',
@@ -132,7 +132,7 @@ router.post('/', require('connect-ensure-login').ensureLoggedIn(),
  *     }
  *
  */
-router.post('/:workflowID/:experimentID', require('connect-ensure-login').ensureLoggedIn(),
+router.post('/:workflowID/:experimentID',
   function(req, res, next) {
     var workflowID = req.params.workflowID.toLowerCase(),
       experimentID = req.params.experimentID,

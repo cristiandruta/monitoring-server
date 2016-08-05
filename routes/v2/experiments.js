@@ -1,6 +1,7 @@
 var express = require('express');
 var dateFormat = require('dateformat');
-var router = express.Router();
+var routerP = express.Router(),
+    routerU = express.Router();
 
 /**
  * @api {get} /experiments Request a list of registered experiments
@@ -36,7 +37,7 @@ var router = express.Router();
  *       "error": "Not Found."
  *     }
  */
-router.get('/', function(req, res, next) {
+routerU.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
       mf_server = req.app.get('mf_server') + '/mf',
       details = req.query.details,
@@ -160,7 +161,7 @@ function get_workflows(mf_server, results) {
  *       "error": "URL parameter 'workflow' is missing"
  *     }
  */
-router.get('/:id', function(req, res, next) {
+routerU.get('/:id', function(req, res, next) {
     var client = req.app.get('elastic'),
       id = req.params.id,
       workflow = req.query.workflow,
@@ -250,7 +251,7 @@ router.get('/:id', function(req, res, next) {
  *     }
  *
  */
-router.post('/:id', require('connect-ensure-login').ensureLoggedIn(),
+routerP.post('/:id',
     function(req, res, next) {
     var id = req.params.id.toLowerCase(),
       mf_server = req.app.get('mf_server') + '/mf',
@@ -278,4 +279,7 @@ router.post('/:id', require('connect-ensure-login').ensureLoggedIn(),
     });
 });
 
-module.exports = router;
+module.exports = {
+    protected: routerP,
+    unprotected: routerU
+};
