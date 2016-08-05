@@ -8,28 +8,7 @@ var os = require("os");
 var elasticsearch = require('elasticsearch');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
-var db = require('./db');
-
-passport.use(new Strategy(
-  function(username, password, cb) {
-    db.users.findByUsername(username, function(err, user) {
-      if (err) { return cb(err); }
-      if (!user) { return cb(null, false); }
-      if (user.password != password) { return cb(null, false); }
-      return cb(null, user);
-    });
-  }));
-
-passport.serializeUser(function(user, cb) {
-  cb(null, user.id);
-});
-
-passport.deserializeUser(function(id, cb) {
-  db.users.findById(id, function (err, user) {
-    if (err) { return cb(err); }
-    cb(null, user);
-  });
-});
+var flash = require('connect-flash');
 
 var elastic = new elasticsearch.Client({
   host: 'localhost:9200',
@@ -88,6 +67,7 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: false, save
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
 
 /* root */
 app.use('/', routes);
@@ -145,6 +125,43 @@ app.use(function(err, req, res, next) {
   var error = {};
   error.error = err;
   res.json(error);
+});
+
+passport.use(new Strategy(
+  function(username, password, cb) {
+    var bodyString = '{'+
+      '"query": {' +
+        '"match": {' +
+          '"username":' + '"' + username + '"' +
+        '}'+
+      '}' +
+    '}';
+  
+    elastic.search({
+      index: 'credentials',
+      type: 'user',
+      body: bodyString
+    },function(error, response){
+      if (error || response.hits.total === 0) {
+        return cb('Invalid username or password.');
+      } 
+      else {
+        if(password === response.hits.hits[0]._source.password) {
+          return cb(null, response.hits.hits[0]._source);
+        }
+        else {
+          return cb(null, false);
+        }
+      }
+    });
+}));
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
 });
 
 module.exports = app;

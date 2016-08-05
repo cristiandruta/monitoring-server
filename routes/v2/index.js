@@ -11,9 +11,10 @@ router.get('/', function(req, res, next) {
     res.json(json);
 });
 
-//curl -c cookie.txt -d "username=excess&password=nobelstr-19" -XPOST localhost:3030/v2/mf/login
+//curl -c cookie.txt -d "username=excess&password=EU-611183" -XPOST localhost:3030/v2/mf/login
 router.post('/login', 
-  passport.authenticate('local', { failureRedirect: '/login'}),
+  passport.authenticate('local', { failureRedirect: '/login',
+                                   failureFlash: true}),
   function(req, res) {
     res.json('logged in successfully!');
   });
