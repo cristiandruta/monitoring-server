@@ -30,7 +30,7 @@ router.get('/:id', function(req, res, next) {
  *     }
  *
  */
-router.put('/:id', require('connect-ensure-login').ensureLoggedIn(),
+router.put('/:id',
     function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         mf_server = req.app.get('mf_server') + '/mf',

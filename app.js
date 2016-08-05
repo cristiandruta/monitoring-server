@@ -15,6 +15,15 @@ var elastic = new elasticsearch.Client({
   log: 'error'
 });
 
+function isLoggedIn(req, res, next){
+    console.log(req.session);
+    console.log(req.ip);
+    if(req.isAuthenticated() || req.ip.indexOf("127.0.0.1") > -1){
+        return next();
+    }
+    res.redirect('/login');
+}
+
 /* root */
 var routes = require('./routes/v2/index');
 
@@ -75,7 +84,7 @@ app.use('/v2/mf', routes);
 app.use('/v2/dreamcloud/mf', routes);
 
 /* excess */
-app.use('/v2/mf/users', users);
+app.use('/v2/mf/users', isLoggedIn, users);
 app.use('/v2/mf/runtime', runtime);
 app.use('/v2/mf/statistics', statistics);
 
