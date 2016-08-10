@@ -1,15 +1,15 @@
 var express = require('express');
 var router = express.Router();
 /**
- * @api {get} /units Request a list of registered units
+ * @api {get} /units 1. Request a list of registered units
  * @apiVersion 1.0.0
  * @apiName GetUnits
  * @apiGroup Units
  *
- * @apiSuccess {Object} metric Metric object
- * @apiSuccess {String} metric.name Name of the metric
- * @apiSuccess {String} metric.plugin Plugin, to whom the metric belong
- * @apiSuccess {String} metric.unit Unit of the metric
+ * @apiSuccess {Object} metric metric object
+ * @apiSuccess {String} metric.name name of the metric
+ * @apiSuccess {String} metric.plugin plugin, to whom the metric belongs
+ * @apiSuccess {String} metric.unit unit of the metric
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v1/mf/units
@@ -66,13 +66,13 @@ router.get('/', function(req, res, next) {
     });
 });
 /**
- * @api {put} /units/:metric_id Register a unit of a metric
+ * @api {put} /units/:metricID 2. Register a unit for a metric
  * @apiVersion 1.0.0
  * @apiName PutUnits
  * @apiGroup Units
  *
- * @apiParam {String} metric_id Metric identifier
- * @apiSuccess {String} href Link to the registered metric and its unit
+ * @apiParam {String} metricID identifier of a metric
+ * @apiSuccess {String} href link to the registered metric and its unit
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v1/mf/units/GPU1:MEM_used

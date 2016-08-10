@@ -4,14 +4,18 @@ var async = require('async');
 var router = express.Router();
 
 /**
- * @api {post} /metrics Send bulk of metrics
+ * @api {post} /metrics 1. Send bulk of metrics
  * @apiVersion 1.0.0
  * @apiName PostBulkMetrics
  * @apiGroup Metrics
  *
- * @apiParam {String} WorkflowID Hostname of the system
- * @apiParam {String} task Type of the metric, e.g. power, temperature, and so on
- * @apiParam {String} ExperimentID When the metric is collected
+ * @apiParam {String} WorkflowID identifier of a workflow
+ * @apiParam {String} task identifier of a task
+ * @apiParam {String} ExperimentID identifier of an experiment
+ * @apiParam {String} type type of the metric, e.g. power, temperature, and so on
+ * @apiParam {String} host hostname of the system 
+ * @apiParam {String} timestamp timestamp, when the metric is collected
+ * @apiParam {String} metric value of the metric
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v1/mf/metrics
@@ -19,15 +23,15 @@ var router = express.Router();
  * @apiParamExample {json} Request-Example:
  *     [
  *         {
- *              "WorkflowID":"hoppe",
- *              "task":"testing",
+ *              "WorkflowID":"hpcfapix",
+ *              "task":"vector_scal01",
  *              "ExperimentID":"AVUWnydqGMPeuCn4l-cj",
  *              "type":"power", "host": "node01.excess-project.eu", 
  *              "@timestamp": "2016-02-15T12:46:48.749", 
  *              "GPU1:power": "168.519"
  *          }, {
- *              "WorkflowID":"athena",
- *              "task":"bvlc_alexnet_time_profile",
+ *              "WorkflowID":"hoppe",
+ *              "task":"testing",
  *              "ExperimentID":"AVNXMXcvGMPeuCn4bMe0",
  *              "type": "power", 
  *              "host": "node01.excess-project.eu", 
@@ -36,18 +40,13 @@ var router = express.Router();
  *          }
  *     ]
  *
- * @apiParam {String} [host] Hostname of the system
- * @apiParam {String} [type] Type of the metric, e.g. power, temperature, and so on
- * @apiParam {String} [timestamp] When the metric is collected
- * @apiParam {String} [metric] Value of the metric
- *
- * @apiSuccess {String} href Links to all updated experiments' profiled metrics
+ * @apiSuccess {String} href links to all updated experiments' profiled metrics
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     [
- *           "http://mf.excess-project.eu:3030/v1/mf/profiles/hoppe_testing/AVUWnydqGMPeuCn4l-cj",
- *           "http://mf.excess-project.eu:3030/v1/mf/profiles/athena_bvlc_alexnet_time_profile/AVNXMXcvGMPeuCn4bMe0"
+ *           "http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix_vector_scal01/AVUWnydqGMPeuCn4l-cj",
+ *           "http://mf.excess-project.eu:3030/v1/mf/profiles/hoppe_testing/AVNXMXcvGMPeuCn4bMe0"
  *     ]
  *
  */
@@ -95,38 +94,37 @@ router.post('/', function(req, res, next) {
 });
 
 /**
- * @api {post} /metrics/:workflowID/:experimentID Send one metric
+ * @api {post} /metrics/:workflowID/:experimentID 2. Send one metric with given workflow ID and experiment ID
  * @apiVersion 1.0.0
  * @apiName PostMetrics
  * @apiGroup Metrics
  *
- * @apiParam {String} workflowID Workflow identifier
- * @apiParam {String} experimentID Experiment identifier
+ * @apiParam {String} workflowID identifier of a workflow
+ * @apiParam {String} experimentID identifier of an experiment
+ * @apiParam {String} type type of the metric, e.g. power, temperature, and so on
+ * @apiParam {String} host hostname of the system
+ * @apiParam {String} timestamp timestamp, when the metric is collected
+ * @apiParam {String} metric value of the metric
  *
  * @apiExample {curl} Example usage:
- *     curl -i http://mf.excess-project.eu:3030/v1/mf/metrics/athena/AVNXMXcvGMPeuCn4bMe0?task=bvlc_alexnet_time_profile
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/metrics/hpcfapix/AVNXMXcvGMPeuCn4bMe0?task=vector_scal01
  *
  * @apiParamExample {json} Request-Example:
  *     {
- *       "host": "fe.excess-project.eu",
  *       "type": "power",
+ *       "host": "fe.excess-project.eu",
  *       "@timestamp": "2016-02-15T12:42:22.000",
  *       "GPU0:power": "152.427"
  *     }
  *
- * @apiParam {String} [host] Hostname of the system
- * @apiParam {String} [type] Type of the metric, e.g. power, temperature, and so on
- * @apiParam {String} [timestamp] When the metric is collected
- * @apiParam {String} [metric] Value of the metric
- *
- * @apiSuccess {Object} metricID References a sent metric by its ID
- * @apiSuccess {String} metricID.href Link to the specfic experiment all profiled metrics
+ * @apiSuccess {Object} metricID identifier of the sent metric
+ * @apiSuccess {String} metricID.href link to the experiment with updated metrics
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *       "AVXt3coOz5chEwIt8_Ma": {
- *         "href": "http://mf.excess-project.eu:3030/v1/mf/profiles/athena/bvlc_alexnet_time_profile/AVNXMXcvGMPeuCn4bMe0"
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVNXMXcvGMPeuCn4bMe0"
  *       }
  *     }
  *

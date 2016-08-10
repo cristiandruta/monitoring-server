@@ -12,7 +12,7 @@ router.get('/:id', function(req, res, next) {
 });
 
 /**
- * @api {put} /users/:userID Registers a new user
+ * @api {put} /users/:userID 1. Registers a new user
  * @apiVersion 1.0.0
  * @apiName PutUsers
  * @apiGroup Users
@@ -79,22 +79,22 @@ function is_defined(variable) {
 }
 
 /**
- * @api {post} /users/:id/create Create a user and associated experiment
+ * @api {post} /users/:userID/create 2. Create a user and an associated experiment
  * @apiVersion 1.0.0
  * @apiName PostUsers
  * @apiGroup Users
  *
- * @apiParam {String} id User identifier
- * @apiSuccess {String} experimentID Experiment identifier
+ * @apiParam {String} userID identifier for a user, e.g. 'excess'
+ * @apiSuccess {String} experimentID unique identifier generated for the experiment
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix/create
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     {
+ *     
  *          AVX9O-3oz5chEwIt8_M9
- *     }
+ *     
  *
  */
 router.post('/:id/create', function(req, res, next) {
@@ -157,23 +157,23 @@ router.post('/:id/create', function(req, res, next) {
     });
 });
 /**
- * @api {post} /users/:uid/:eid/create Create a user and associated experiment with an experiment ID
+ * @api {post} /users/:userID/:experimentID/create 3. Create a user and an associated experiment with given experiment ID
  * @apiVersion 1.0.0
  * @apiName PostUserExperiment
  * @apiGroup Users
  *
- * @apiParam {String} uid User identifier
- * @apiParam {String} eid Experiment identifier
- * @apiSuccess {String} eid The specified experiment identifier
+ * @apiParam {String} userID identifier for a user, e.g. 'excess'
+ * @apiParam {String} experimentID identifier given for the experiment
+ * @apiSuccess {String} experimentID identifier given for the experiment
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix/AVX9O-3oz5chEwIt8_M9/create
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     {
+ *     
  *          AVX9O-3oz5chEwIt8_M9
- *     }
+ *     
  *
  */
 router.post('/:uid/:eid/create', function(req, res, next) {

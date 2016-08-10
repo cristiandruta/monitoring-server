@@ -3,13 +3,13 @@ var dateFormat = require('dateformat');
 var router = express.Router();
 
 /**
- * @api {get} /experiments Request a list of registered experiments
+ * @api {get} /experiments 1. Request a list of registered experiments
  * @apiVersion 1.0.0
  * @apiName GetExperiments
  * @apiGroup Experiments
  *
- * @apiSuccess {Object} experimentID References a registered experiment by its ID
- * @apiSuccess {String} experimentID.href Resource location of the given experiment
+ * @apiSuccess {Object} experimentID identifier of an experiment
+ * @apiSuccess {String} experimentID.href link to the experiment
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments
@@ -18,13 +18,13 @@ var router = express.Router();
  *     HTTP/1.1 200 OK
  *     {
  *       "AVUWoIRDGMPeuCn4l-cl": {
- *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVUWoIRDGMPeuCn4l-cl?workflow=test_hoppe"
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVUWoIRDGMPeuCn4l-cl?workflow=hpcfapix"
  *       },
  *       "AVNXMbaBGMPeuCn4bMfv": {
- *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMbaBGMPeuCn4bMfv?workflow=goud"
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMbaBGMPeuCn4bMfv?workflow=hoppe"
  *       },
  *       "AVNXMsA_GMPeuCn4bMj7": {
- *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMsA_GMPeuCn4bMj7?workflow=athena"
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMsA_GMPeuCn4bMj7?workflow=dmitry"
  *       }
  *     }
  *
@@ -126,28 +126,28 @@ function get_workflows(mf_server, results) {
 }
 
 /**
- * @api {get} /experiments/:id Request a registered experiment
+ * @api {get} /experiments/:experimentid 2. Request a registered experiment with given experiment ID
  * @apiVersion 1.0.0
  * @apiName GetExperimentsID
  * @apiGroup Experiments
  *
- * @apiParam {String} experimentID Experiment identifier
+ * @apiParam {String} experimentID identifier of an experiment
  *
- * @apiSuccess {String} user User name of the experiment
- * @apiSuccess {String} application Application name of the experiment
- * @apiSuccess {String} host System hostname
- * @apiSuccess {String} timestamp Timestamp when the experiment is registered
- * @apiSuccess {String} job_id Job ID of the experiment
+ * @apiSuccess {String} application application name of the experiment
+ * @apiSuccess {String} host hostname of the system
+ * @apiSuccess {String} user user identifier of the experiment
+ * @apiSuccess {String} timestamp timestamp, when the experiment is registered
+ * @apiSuccess {String} job_id job identifier of the experiment
  *
  * @apiExample {curl} Example usage:
- *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMXcvGMPeuCn4bMe0?workflow=athena
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMXcvGMPeuCn4bMe0?workflow=hpcfapix
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "application":"bvlc_alexnet_time_profile",
+ *       "application":"vector_scal01",
  *       "host":"fe.excess-project.eu",
- *       "user":"athena",
+ *       "user":"hpcfapix",
  *       "@timestamp":"2016-02-15T12:42:22.000",
  *       "job_id":"143249.fe.excess-project.eu"
  *     }
@@ -213,39 +213,39 @@ router.get('/:id', function(req, res, next) {
     });
 });
 /**
- * @api {post} /experiments/:workflowID Create a new experiment with given workflow ID
+ * @api {post} /experiments/:workflowID 3. Create a new experiment with given workflow ID
  * @apiVersion 1.0.0
  * @apiName PostExperiments
  * @apiGroup Experiments
  *
- * @apiParam {String} workflowID Workflow identifier
+ * @apiParam {String} workflowID identifier of a workflow
  *
  * @apiExample {curl} Example usage:
- *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments/abc123456_def
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments/hpcfapix
  *
  * @apiParamExample {json} Request-Example:
  *     {
- *       "application": "bvlc_alexnet_time_profile",
+ *       "application": "vector_scal01",
  *       "host": "fe.excess-project.eu",
- *       "user": "athena",
+ *       "user": "hpcfapix",
  *       "@timestamp": "2016-02-15T12:42:22.000",
  *       "job_id": "143249.fe.excess-project.eu"
  *     }
  *
- * @apiParam {String} [application] Application name, provided while registering a new experiment
- * @apiParam {String} [host] Hostname of the system
- * @apiParam {String} [user] Username, like who is registering the experiment
- * @apiParam {String} [timestamp] When the experiment is registered
- * @apiParam {String} [job_id] Job ID, provided while registering a new experiment
+ * @apiParam {String} application application name, provided while registering a new experiment
+ * @apiParam {String} host hostname of the system
+ * @apiParam {String} user username, like who is registering the experiment
+ * @apiParam {String} timestamp timestamp, when the experiment is registered
+ * @apiParam {String} [job_id] job identifier, provided while registering a new experiment
  *
- * @apiSuccess {Object} experimentID References a registered experiment by its ID
- * @apiSuccess {String} experimentID.href Link to the created experiment resource
+ * @apiSuccess {Object} experimentID identifier of an experiment
+ * @apiSuccess {String} experimentID.href link to the experiment
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *       "AVXt3coOz5chEwIt8_Ma": {
- *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVXt3coOz5chEwIt8_Ma?workflow=abc123456_def"
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/experiments/AVXt3coOz5chEwIt8_Ma?workflow=hpcfapix"
  *       }
  *     }
  *

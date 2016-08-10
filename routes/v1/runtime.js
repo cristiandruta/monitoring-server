@@ -2,22 +2,22 @@ var express = require('express');
 var async = require('async');
 var router = express.Router();
 /**
- * @api {get} /runtime/:workflowID/:taskID/:expID Request the duration of an experiment
+ * @api {get} /runtime/:workflowID/:taskID/:experimentID 1. Request the runtime of an experiment with given workflow ID, task ID and experiment ID
  * @apiVersion 1.0.0
  * @apiName GetRuntime
  * @apiGroup Runtime
  *
- * @apiParam {String} [workflowID] Workflow identifer
- * @apiParam {String} [taskID] Task name
- * @apiParam {String} [expID] Experiment identifer
+ * @apiParam {String} workflowID identifer of a workflow
+ * @apiParam {String} taskID identifier of a task
+ * @apiParam {String} expID Experiment identifer of an experiment
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v1/mf/runtime/hpcfapix/vector_scal01/AVSbT0ChGMPeuCn4QYjq
  *
- * @apiSuccess {String} start Start timestamp of the experiment
- * @apiSuccess {String} end End timestamp of the experiment
- * @apiSuccess {String} runtime Duration of the experiment in seconds
- * @apiSuccess {String} host Hostname of the system
+ * @apiSuccess {String} start start timestamp of the experiment
+ * @apiSuccess {String} end end timestamp of the experiment
+ * @apiSuccess {String} runtime duration of the experiment in seconds
+ * @apiSuccess {String} host hostname of the system
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
