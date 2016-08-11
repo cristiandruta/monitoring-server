@@ -4,7 +4,7 @@ var async = require('async');
 var dateFormat = require('dateformat');
 
 /**
- * @api {get} /workflows Request a list of registered workflows
+ * @api {get} /workflows 3. Request a list of registered workflows
  * @apiVersion 1.0.0
  * @apiName GetWorkflows
  * @apiGroup Workflows
@@ -37,7 +37,7 @@ var dateFormat = require('dateformat');
  *       "error": "No workflows found."
  *     }
  */
-router.get('/', function(req, res, next) {
+router.get('/test', function(req, res, next) {
     var client = req.app.get('elastic'),
         mf_server = req.app.get('mf_server'),
         details = req.query.details,
@@ -131,7 +131,7 @@ function get_workflows(results, mf_server, excess) {
 }
 
 /**
- * @api {get} /workflows/:workflowID Get information about a specific workflow
+ * @api {get} /workflows/:workflowID 2. Get information about a specific workflow
  * @apiVersion 1.0.0
  * @apiName GetWorkflow
  * @apiGroup Workflows
@@ -198,7 +198,7 @@ router.get('/:id', function(req, res, next) {
 });
 
 /**
- * @api {put} /workflows/:workflowID Register a new workflow with a custom ID
+ * @api {put} /workflows/:workflowID 1. Register a new workflow with a custom ID
  * @apiVersion 1.0.0
  * @apiName PutWorkflowID
  * @apiGroup Workflows
@@ -277,7 +277,7 @@ router.put('/:id', function(req, res, next) {
 });
 
 /**
- * @api {put} /workflows Register a new workflow and create a new experiment
+ * @api {put} /workflows 4. Register a new workflow and create a new experiment
  * @apiVersion 1.0.0
  * @apiName PutWorkflow
  * @apiGroup Workflows
@@ -458,7 +458,7 @@ function isEmpty(obj) {
 }
 
 /**
- * @api {put} /workflows/:workflowID/:experimentID Register a new workflow and experiment using custom IDs
+ * @api {put} /workflows/:workflowID/:experimentID 5. Register a new workflow and experiment using custom IDs
  * @apiVersion 1.0.0
  * @apiName PutWorkflowIDExperimentID
  * @apiGroup Workflows

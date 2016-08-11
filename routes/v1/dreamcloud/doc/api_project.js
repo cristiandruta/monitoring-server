@@ -8,8 +8,8 @@ define({
     "title": "DreamCloud API"
   },
   "order": [
-    "GetWorkflows",
-    "PostWorkflows"
+    "Workflows",
+    "Deployment Plans"
   ],
   "template": {
     "withCompare": true,
@@ -19,7 +19,7 @@ define({
   "apidoc": "0.2.0",
   "generator": {
     "name": "apidoc",
-    "time": "2016-07-14T09:43:40.227Z",
+    "time": "2016-08-11T15:17:28.788Z",
     "url": "http://apidocjs.com",
     "version": "0.16.1"
   }
