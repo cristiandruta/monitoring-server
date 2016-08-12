@@ -1,6 +1,7 @@
 var express = require('express');
 var async = require('async');
 var router = express.Router();
+
 /**
  * @api {get} /runtime/:workflowID/:taskID/:experimentID 1. Request the runtime of an experiment with given workflow ID, task ID and experiment ID
  * @apiVersion 1.0.0
@@ -59,7 +60,7 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
             res.status(500);
             return next(err);
         } else {
-            if (result.hits != undefined) {
+            if (result.hits !== undefined) {
                 var only_results = result.hits.hits;
                 var keys = Object.keys(only_results);
                 keys.forEach(function(key) {
@@ -85,12 +86,12 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
                 res.status(500);
                 return next(err);
             } else {
-                if (result.hits != undefined) {
+                if (result.hits !== undefined) {
                     var only_results = result.hits.hits;
                     var keys = Object.keys(only_results);
                     keys.forEach(function(key) {
                         var metric_data = only_results[key]._source;
-                        host = metric_data['host'];
+                        host = metric_data.host;
                         end = metric_data['@timestamp'];
                         end_original = end;
                         end = end.replace(/\s/g, '0');
@@ -100,7 +101,7 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
                 }
             }
 
-            var response = {};
+            response = {};
             response.start = start_original;
             response.end = end_original;
             response.runtime = (end - start);

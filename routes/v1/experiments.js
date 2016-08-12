@@ -11,8 +11,12 @@ var router = express.Router();
  * @apiSuccess {Object} experimentID identifier of an experiment
  * @apiSuccess {String} experimentID.href link to the experiment
  *
+ * @apiParam {Boolean} [details] if set, more detailed information for each experiment is given
+ * @apiParam {String} [workflow] filters results by the given user, e.g. 'hpcfapix'
+ *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments
+ *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments?workflow=hpcfapix&details
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -38,7 +42,7 @@ var router = express.Router();
  */
 router.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
-      mf_server = req.app.get('mf_server') + '/v1/mf',
+      mf_server = req.app.get('mf_server') + '/mf',
       details = req.query.details,
       workflows = req.query.workflows,
       json = {},
@@ -126,12 +130,14 @@ function get_workflows(mf_server, results) {
 }
 
 /**
- * @api {get} /experiments/:experimentid 2. Request a registered experiment with given experiment ID
+ * @api {get} /experiments/:experimentID 2. Request a registered experiment with given experiment ID
  * @apiVersion 1.0.0
  * @apiName GetExperimentsID
  * @apiGroup Experiments
  *
  * @apiParam {String} experimentID identifier of an experiment
+ * @apiParam {String} workflow the username the given experiment is associated with, e.g. 'hpcfapix'
+ * @apiParam {Boolean} [extends] returns detailed information about tasks, if present
  *
  * @apiSuccess {String} application application name of the experiment
  * @apiSuccess {String} host hostname of the system
@@ -212,13 +218,14 @@ router.get('/:id', function(req, res, next) {
         }
     });
 });
+
 /**
  * @api {post} /experiments/:workflowID 3. Create a new experiment with given workflow ID
  * @apiVersion 1.0.0
  * @apiName PostExperiments
  * @apiGroup Experiments
  *
- * @apiParam {String} workflowID identifier of a workflow
+ * @apiParam {String} workflowID identifier of a workflow for which an experiment shall be created, e.g. 'hpcfapix'
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v1/mf/experiments/hpcfapix
@@ -232,9 +239,9 @@ router.get('/:id', function(req, res, next) {
  *       "job_id": "143249.fe.excess-project.eu"
  *     }
  *
- * @apiParam {String} application application name, provided while registering a new experiment
- * @apiParam {String} host hostname of the system
- * @apiParam {String} user username, like who is registering the experiment
+ * @apiParam {String} [application] application name, provided while registering a new experiment
+ * @apiParam {String} [host] hostname of the system
+ * @apiParam {String} [user] username, like who is registering the experiment
  * @apiParam {String} timestamp timestamp, when the experiment is registered
  * @apiParam {String} [job_id] job identifier, provided while registering a new experiment
  *
