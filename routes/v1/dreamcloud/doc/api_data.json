@@ -946,6 +946,646 @@
     "groupTitle": "Experiments"
   },
   {
+    "type": "post",
+    "url": "/metrics",
+    "title": "2. Update multiple metrics at once (bulk query)",
+    "version": "1.0.0",
+    "name": "PostBulkMetrics",
+    "group": "Metrics",
+    "parameter": {
+      "fields": {
+        "body": [
+          {
+            "group": "body",
+            "type": "String",
+            "optional": false,
+            "field": "WorkflowID",
+            "description": "<p>identifier of a workflow</p>"
+          },
+          {
+            "group": "body",
+            "type": "String",
+            "optional": false,
+            "field": "ExperimentID",
+            "description": "<p>identifier of an experiment</p>"
+          },
+          {
+            "group": "body",
+            "type": "String",
+            "optional": true,
+            "field": "TaskID",
+            "description": "<p>identifier of a task, equals '_all' if not set</p>"
+          },
+          {
+            "group": "body",
+            "type": "String",
+            "optional": true,
+            "field": "type",
+            "description": "<p>type of the metric, e.g. power, temperature, and so on</p>"
+          },
+          {
+            "group": "body",
+            "type": "String",
+            "optional": true,
+            "field": "host",
+            "description": "<p>hostname of the system</p>"
+          },
+          {
+            "group": "body",
+            "type": "String",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>timestamp, when the metric is collected</p>"
+          },
+          {
+            "group": "body",
+            "type": "String",
+            "optional": false,
+            "field": "metric",
+            "description": "<p>value of the metric</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "[\n  {\n    \"WorkflowID\": \"ms2\",\n    \"ExperimentID\": \"AVUWnydqGMPeuCn4l-cj\",\n    \"TaskID\": \"t2.1\",\n    \"@timestamp\": \"2016-02-15T12:43:48.749\",\n    \"type\": \"power\",\n    \"host\": \"node01.excess-project.eu\",\n    \"GPU1:power\": \"168.519\"\n  }, {\n    \"WorkflowID\": \"ms2\",\n    \"ExperimentID\":\"AVNXMXcvGMPeuCn4bMe0\",\n    \"TaskID\": \"t2.2\",\n    \"@timestamp\": \"2016-02-15T12:46:48.524\",\n    \"type\": \"power\",\n    \"host\": \"node01.excess-project.eu\",\n    \"GPU0:power\": \"152.427\"\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/metrics",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "href",
+            "description": "<p>links to all updated profiled metrics</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n  \"http://mf.excess-project.eu:3030/v1/mf/profiles/ms2_t2.1/AVUWnydqGMPeuCn4l-cj\",\n  \"http://mf.excess-project.eu:3030/v1/mf/profiles/ms2_t2.2/AVNXMXcvGMPeuCn4bMe0\"\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "DatabaseError",
+            "description": "<p>Elasticsearch specific error message.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "routes/v1/dreamcloud/metrics.js",
+    "groupTitle": "Metrics"
+  },
+  {
+    "type": "post",
+    "url": "/metrics/:workflowID/:experimentID",
+    "title": "1. Update a single metric",
+    "version": "1.0.0",
+    "name": "PostMetric",
+    "group": "Metrics",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "workflowID",
+            "description": "<p>identifier of a workflow</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "experimentID",
+            "description": "<p>identifier of an experiment</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "taskID",
+            "description": "<p>identifier for a given task; equals '_all' if not set</p>"
+          }
+        ],
+        "body": [
+          {
+            "group": "body",
+            "type": "String",
+            "optional": true,
+            "field": "type",
+            "description": "<p>type of the metric, e.g. power</p>"
+          },
+          {
+            "group": "body",
+            "type": "String",
+            "optional": true,
+            "field": "host",
+            "description": "<p>hostname of the system</p>"
+          },
+          {
+            "group": "body",
+            "type": "String",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>timestamp, when the metric is collected</p>"
+          },
+          {
+            "group": "body",
+            "type": "String",
+            "optional": false,
+            "field": "metric",
+            "description": "<p>value of the metric</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n  \"type\": \"power\",\n  \"host\": \"fe.excess-project.eu\",\n  \"@timestamp\": \"2016-02-15T12:42:22.000\",\n  \"GPU0:power\": \"152.427\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/metrics/ms2/AVNXMXcvGMPeuCn4bMe0?task=t2.1",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "metricID",
+            "description": "<p>identifier of the sent metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "metricID.href",
+            "description": "<p>link to the experiment with updated metrics</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"AVXt3coOz5chEwIt8_Ma\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVNXMXcvGMPeuCn4bMe0\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "DatabaseError",
+            "description": "<p>Elasticsearch specific error message.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "routes/v1/dreamcloud/metrics.js",
+    "groupTitle": "Metrics"
+  },
+  {
+    "type": "get",
+    "url": "/profiles/:workflowID/:taskID/:experimentID",
+    "title": "3. Get profiles by workflow, task and experiment ID",
+    "version": "1.0.0",
+    "name": "GetProfilesExperiment",
+    "group": "Profiles",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "workflowID",
+            "description": "<p>identifer of a workflow</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "taskID",
+            "description": "<p>identifier of a registered task</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "experimentID",
+            "description": "<p>identifier of an experiment</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.1/AVQ-MczMGMPeuCn4FHqi",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "Metrics",
+            "description": "<p>measurements based on a system</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Metrics.timestamp",
+            "description": "<p>timestamp, when the metric data is collected</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Metrics.host",
+            "description": "<p>hostname of the system</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Metrics.task",
+            "description": "<p>task identifier</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Metrics.type",
+            "description": "<p>metrics type</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "Metrics.metric",
+            "description": "<p>value of the specific metric</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n   {\n      \"@timestamp\": \"2016-04-22T15:43:19.614\",\n      \"host\": \"node02.excess-project.eu\",\n      \"task\": \"t2.1\",\n      \"type\": \"progress\",\n      \"value\": \"68\"\n   },\n   {\n      \"@timestamp\": \"2016-04-22T15:41:28.732\",\n      \"host\": \"node02.excess-project.eu\",\n      \"task\": \"t2.1\",\n      \"type\": \"progress\",\n      \"value\": \"2\"\n   },\n   {\n      \"@timestamp\": \"2016-04-22T15:41:36.406\",\n      \"host\": \"node02.excess-project.eu\",\n      \"task\": \"t2.1\",\n      \"type\": \"progress\",\n      \"value\": \"6\"\n   },\n   ...\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InternalSeverError",
+            "description": "<p>No results found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Sever Error\n{\n  \"error\": \"No results found.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/v1/dreamcloud/profiles.js",
+    "groupTitle": "Profiles"
+  },
+  {
+    "type": "get",
+    "url": "/profiles/:workflowID/:taskID",
+    "title": "2. Get a list of experiments by workflow and task ID",
+    "version": "1.0.0",
+    "name": "GetProfilesTask",
+    "group": "Profiles",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "workflowID",
+            "description": "<p>identifer of a workflow</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "taskID",
+            "description": "<p>identifier of a registered task</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.1",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "date",
+            "description": "<p>date, when the task is registered</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "date.experimentID",
+            "description": "<p>identifier of an experiment</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "date.experimentID.href",
+            "description": "<p>link to the experiment</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n   \"2016-06-17\": {\n      \"AVVe9xN-LeaeU4rxxTaT\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVe9xN-LeaeU4rxxTaT\"\n      },\n      \"AVVejDH1LeaeU4rxwuw-\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVejDH1LeaeU4rxwuw-\"\n      },\n      \"AVVeiND0LeaeU4rxwtIV\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeiND0LeaeU4rxwtIV\"\n      },\n      \"AVVeQmcUenoRsEhyFlHu\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeQmcUenoRsEhyFlHu\"\n      },\n      \"AVVeQANeenoRsEhyFjlu\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeQANeenoRsEhyFjlu\"\n      },\n      \"AVVeX5NRenoRsEhyF4We\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeX5NRenoRsEhyF4We\"\n      }\n   },\n   \"2016-04-14\": {\n      \"AVQUiW67GMPeuCn47XpS\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVQUiW67GMPeuCn47XpS\"\n      }\n   },\n   ...\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InternalSeverError",
+            "description": "<p>No results found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Sever Error\n{\n  \"error\": \"no such index.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/v1/dreamcloud/profiles.js",
+    "groupTitle": "Profiles"
+  },
+  {
+    "type": "get",
+    "url": "/profiles/:workflowID",
+    "title": "1. Get a list of profiled tasks associated with the given workflow ID",
+    "version": "1.0.0",
+    "name": "GetProfilesWorkflow",
+    "group": "Profiles",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "workflowID",
+            "description": "<p>identifer of a workflow</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "taskID",
+            "description": "<p>identifier of a registered task</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "taskID.experimentID",
+            "description": "<p>identifier of an experiment</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "taskID.experimentID.href",
+            "description": "<p>link to the experiment</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n   \"t2.5\": {\n      \"AVYoZ31mLeaeU4rxUm0O\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.5/AVYoZ31mLeaeU4rxUm0O\"\n      },\n      \"AVVuCj1kLeaeU4rxxT4d\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.5/AVVuCj1kLeaeU4rxxT4d\"\n      }\n   },\n   \"t2.4\": {\n      \"AVQtI20EGMPeuCn4A_V3\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.4/AVQtI20EGMPeuCn4A_V3\"\n      },\n      \"AVQ-HJxhGMPeuCn4E_u6\": {\n         \"href\": \"http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.4/AVQ-HJxhGMPeuCn4E_u6\"\n      }\n   },\n   ...\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InternalSeverError",
+            "description": "<p>No results found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Sever Error\n{\n  \"error\": \"No results found.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/v1/dreamcloud/profiles.js",
+    "groupTitle": "Profiles"
+  },
+  {
+    "type": "get",
+    "url": "/progress/:workflowID/:taskID/:experimentID",
+    "title": "1. Get progress information for a given experiment",
+    "version": "1.0.0",
+    "name": "GetProgress",
+    "group": "Progress",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "workflowID",
+            "description": "<p>identifer of a workflow</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "taskID",
+            "description": "<p>identifier of a registered task</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "experimentID",
+            "description": "<p>identifier of an experiment</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/progress/ms2/t2.1/AVQ-MczMGMPeuCn4FHqi\ncurl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/progress/ms2/t2.1/AVQ-MczMGMPeuCn4FHqi?latest",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "progress",
+            "description": "<p>measurements based on a system</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "progress.timestamp",
+            "description": "<p>timestamp, when the progress information was collected</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "progress.host",
+            "description": "<p>hostname of the system</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "progress.task",
+            "description": "<p>task identifier</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "progress.type",
+            "description": "<p>metrics type</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "progress.value",
+            "description": "<p>progress in percentage</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n   {\n      \"@timestamp\": \"2016-04-22T15:41:20.409\",\n      \"host\": \"node02.excess-project.eu\",\n      \"task\": \"t2.1\",\n      \"type\": \"progress\",\n      \"value\": \"0\"\n   },\n   {\n      \"@timestamp\": \"2016-04-22T15:41:28.732\",\n      \"host\": \"node02.excess-project.eu\",\n      \"task\": \"t2.1\",\n      \"type\": \"progress\",\n      \"value\": \"2\"\n   },\n   {\n      \"@timestamp\": \"2016-04-22T15:41:36.406\",\n      \"host\": \"node02.excess-project.eu\",\n      \"task\": \"t2.1\",\n      \"type\": \"progress\",\n      \"value\": \"6\"\n   },\n\n   ...\n\n   {\n      \"@timestamp\": \"2016-04-22T15:44:13.668\",\n      \"host\": \"node02.excess-project.eu\",\n      \"task\": \"t2.1\",\n      \"type\": \"progress\",\n      \"value\": \"100\"\n   }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "InternalSeverError",
+            "description": "<p>No results found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Sever Error\n{\n  \"error\": \"No data found in the database.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/v1/dreamcloud/progress.js",
+    "groupTitle": "Progress"
+  },
+  {
     "type": "get",
     "url": "/runtime/:workflowID/:taskID/:experimentID",
     "title": "1. Get the runtime of a specific task",

@@ -3,6 +3,55 @@ var http = require('http');
 var async = require('async');
 var router = express.Router();
 
+/**
+ * @api {post} /metrics 2. Update multiple metrics at once (bulk query)
+ * @apiVersion 1.0.0
+ * @apiName PostBulkMetrics
+ * @apiGroup Metrics
+ *
+ * @apiParam (body) {String} WorkflowID identifier of a workflow
+ * @apiParam (body) {String} ExperimentID identifier of an experiment
+ * @apiParam (body) {String} [TaskID] identifier of a task, equals '_all' if not set
+ * @apiParam (body) {String} [type] type of the metric, e.g. power, temperature, and so on
+ * @apiParam (body) {String} [host] hostname of the system
+ * @apiParam (body) {String} timestamp timestamp, when the metric is collected
+ * @apiParam (body) {String} metric value of the metric
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/metrics
+ *
+ * @apiParamExample {json} Request-Example:
+ *     [
+ *       {
+ *         "WorkflowID": "ms2",
+ *         "ExperimentID": "AVUWnydqGMPeuCn4l-cj",
+ *         "TaskID": "t2.1",
+ *         "@timestamp": "2016-02-15T12:43:48.749",
+ *         "type": "power",
+ *         "host": "node01.excess-project.eu",
+ *         "GPU1:power": "168.519"
+ *       }, {
+ *         "WorkflowID": "ms2",
+ *         "ExperimentID":"AVNXMXcvGMPeuCn4bMe0",
+ *         "TaskID": "t2.2",
+ *         "@timestamp": "2016-02-15T12:46:48.524",
+ *         "type": "power",
+ *         "host": "node01.excess-project.eu",
+ *         "GPU0:power": "152.427"
+ *       }
+ *     ]
+ *
+ * @apiSuccess {String} href links to all updated profiled metrics
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *       "http://mf.excess-project.eu:3030/v1/mf/profiles/ms2_t2.1/AVUWnydqGMPeuCn4l-cj",
+ *       "http://mf.excess-project.eu:3030/v1/mf/profiles/ms2_t2.2/AVNXMXcvGMPeuCn4bMe0"
+ *     ]
+ *
+ * @apiError DatabaseError Elasticsearch specific error message.
+ */
 router.post('/', function(req, res, next) {
     var data = req.body,
       mf_server = req.app.get('mf_server'),
@@ -45,6 +94,45 @@ router.post('/', function(req, res, next) {
     });
 });
 
+/**
+ * @api {post} /metrics/:workflowID/:experimentID 1. Update a single metric
+ * @apiVersion 1.0.0
+ * @apiName PostMetric
+ * @apiGroup Metrics
+ *
+ * @apiParam {String} workflowID identifier of a workflow
+ * @apiParam {String} experimentID identifier of an experiment
+ * @apiParam {String} [taskID] identifier for a given task; equals '_all' if not set
+ *
+ * @apiParam (body) {String} [type] type of the metric, e.g. power
+ * @apiParam (body) {String} [host] hostname of the system
+ * @apiParam (body) {String} timestamp timestamp, when the metric is collected
+ * @apiParam (body) {String} metric value of the metric
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/metrics/ms2/AVNXMXcvGMPeuCn4bMe0?task=t2.1
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "type": "power",
+ *       "host": "fe.excess-project.eu",
+ *       "@timestamp": "2016-02-15T12:42:22.000",
+ *       "GPU0:power": "152.427"
+ *     }
+ *
+ * @apiSuccess {Object} metricID identifier of the sent metric
+ * @apiSuccess {String} metricID.href link to the experiment with updated metrics
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "AVXt3coOz5chEwIt8_Ma": {
+ *         "href": "http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVNXMXcvGMPeuCn4bMe0"
+ *       }
+ *     }
+ *
+ * @apiError DatabaseError Elasticsearch specific error message.
+ */
 router.post('/:workflowID/:experimentID', function(req, res, next) {
     var workflowID = req.params.workflowID.toLowerCase(),
       experimentID = req.params.experimentID,

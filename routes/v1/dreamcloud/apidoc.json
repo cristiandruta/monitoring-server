@@ -9,7 +9,13 @@
   },
   "order": [
     "Workflows",
-    "Deployment Plans"
+    "Experiments",
+    "Deployment Plans",
+    "Metrics",
+    "Profiles",
+    "Progress",
+    "Energy",
+    "Runtime"
   ],
   "template": {
   	"withCompare": true,

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var async = require('async');
+
 /**
  * @api {get} /profiles/:workflowID 1. Request a list of profiled tasks with given workflow ID
  * @apiVersion 1.0.0
@@ -53,9 +54,9 @@ router.get('/:workID', function(req, res, next) {
       json = {};
 
     if (is_defined(dreamcloud)) {
-        mf_server = mf_server + '/v1/dreamcloud/mf';
+        mf_server = mf_server + '/dreamcloud/mf';
     } else {
-        mf_server = mf_server + '/v1/mf';
+        mf_server = mf_server + '/mf';
     }
 
     client.indices.getSettings({
@@ -79,10 +80,10 @@ router.get('/:workID', function(req, res, next) {
                 client.indices.getMapping({
                     index: index,
                 }, function(error, response) {
-                    if (error == undefined) {
+                    if (error === undefined) {
                         var mappings = response[index].mappings;
                         mappings = Object.keys(mappings);
-                        if (json[task] == undefined) {
+                        if (json[task] === undefined) {
                             json[task] = {};
                         }
                         for (var i in mappings) {
@@ -128,6 +129,7 @@ function isEmpty(obj) {
     }
     return true;
 }
+
 /**
  * @api {get} /profiles/:workflowID/:taskID 2. Request a list of profiled experiments with given workflow ID and task ID
  * @apiVersion 1.0.0
@@ -183,9 +185,9 @@ router.get('/:workID/:taskID', function(req, res, next) {
       json = {};
 
     if (is_defined(dreamcloud)) {
-        mf_server = mf_server + '/v1/dreamcloud/mf';
+        mf_server = mf_server + '/dreamcloud/mf';
     } else {
-        mf_server = mf_server + '/v1/mf';
+        mf_server = mf_server + '/mf';
     }
 
     // assign default taskID when application has no workflow
@@ -196,7 +198,7 @@ router.get('/:workID/:taskID', function(req, res, next) {
         return;
     }
     var index = workflow + '_' + task;
-    index = index.toLowerCase()
+    index = index.toLowerCase();
 
     client.indices.getMapping({
         index: index,
@@ -222,14 +224,14 @@ router.get('/:workID/:taskID', function(req, res, next) {
                         var element = {};
                         element.href = href;
                         if (typeof timestamp !== 'undefined') {
-                            timestamp = timestamp.split('-')[0]
-                            timestamp = timestamp.replace(/\./g, '-')
-                            if (json[timestamp] == undefined) {
+                            timestamp = timestamp.split('-')[0];
+                            timestamp = timestamp.replace(/\./g, '-');
+                            if (json[timestamp] === undefined) {
                                 json[timestamp] = {};
                             }
                         } else if (typeof result['@timestamp'] !== 'undefined') {
-                            timestamp = result['@timestamp'].split('T')[0]
-                            if (json[timestamp] == undefined) {
+                            timestamp = result['@timestamp'].split('T')[0];
+                            if (json[timestamp] === undefined) {
                                 json[timestamp] = {};
                             }
                         }
@@ -328,7 +330,7 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
             res.status(500);
             return next(error);
         }
-        if (response.hits != undefined) {
+        if (response.hits !== undefined) {
             size = response.hits.total;
         }
 
