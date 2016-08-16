@@ -1,23 +1,24 @@
 var express = require('express');
 var async = require('async');
 var router = express.Router();
+
 /**
- * @api {get} /runtime/:workflowID/:taskID/:expID Request the duration of an experiment
+ * @api {get} /runtime/:workflowID/:taskID/:experimentID 1. Request the runtime of an experiment with given workflow ID, task ID and experiment ID
  * @apiVersion 1.0.0
  * @apiName GetRuntime
  * @apiGroup Runtime
  *
- * @apiParam {String} [workflowID] Workflow identifer
- * @apiParam {String} [taskID] Task name
- * @apiParam {String} [expID] Experiment identifer
+ * @apiParam {String} workflowID identifer of a workflow
+ * @apiParam {String} taskID identifier of a task
+ * @apiParam {String} expID Experiment identifer of an experiment
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v2/mf/runtime/hpcfapix/vector_scal01/AVSbT0ChGMPeuCn4QYjq
  *
- * @apiSuccess {String} start Start timestamp of the experiment
- * @apiSuccess {String} end End timestamp of the experiment
- * @apiSuccess {String} runtime Duration of the experiment in seconds
- * @apiSuccess {String} host Hostname of the system
+ * @apiSuccess {String} start start timestamp of the experiment
+ * @apiSuccess {String} end end timestamp of the experiment
+ * @apiSuccess {String} runtime duration of the experiment in seconds
+ * @apiSuccess {String} host hostname of the system
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -59,7 +60,7 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
             res.status(500);
             return next(err);
         } else {
-            if (result.hits != undefined) {
+            if (result.hits !== undefined) {
                 var only_results = result.hits.hits;
                 var keys = Object.keys(only_results);
                 keys.forEach(function(key) {
@@ -85,12 +86,12 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
                 res.status(500);
                 return next(err);
             } else {
-                if (result.hits != undefined) {
+                if (result.hits !== undefined) {
                     var only_results = result.hits.hits;
                     var keys = Object.keys(only_results);
                     keys.forEach(function(key) {
                         var metric_data = only_results[key]._source;
-                        host = metric_data['host'];
+                        host = metric_data.host;
                         end = metric_data['@timestamp'];
                         end_original = end;
                         end = end.replace(/\s/g, '0');
@@ -100,7 +101,7 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
                 }
             }
 
-            var response = {};
+            response = {};
             response.start = start_original;
             response.end = end_original;
             response.runtime = (end - start);

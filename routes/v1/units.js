@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+
 /**
  * @api {get} /units 1. Request a list of registered units
  * @apiVersion 1.0.0
@@ -65,6 +66,7 @@ router.get('/', function(req, res, next) {
     	}
     });
 });
+
 /**
  * @api {put} /units/:metricID 2. Register a unit for a metric
  * @apiVersion 1.0.0
@@ -80,7 +82,7 @@ router.get('/', function(req, res, next) {
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *          "href":"http://fangli-ThinkPad-T450s:3030/v1/v1/mf/units/GPU1:MEM_used"
+ *          "href":"http://mf.excess-project.eu:3030/v1/mf/units/GPU1:MEM_used"
  *     }
  *
  */
@@ -100,7 +102,7 @@ router.put('/:metric_id', function(req, res, next) {
     		return next(error);
     	}
         var json = {};
-        json.href = mf_server + '/v1/mf' + '/units/' + metric_id;
+        json.href = mf_server + '/mf' + '/units/' + metric_id;
         res.json(json);
     });
 });

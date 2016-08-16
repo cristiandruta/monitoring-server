@@ -259,7 +259,7 @@ router.get('/:id', function(req, res, next) {
  */
 router.post('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
-      mf_server = req.app.get('mf_server') + '/v1/mf',
+      mf_server = req.app.get('mf_server') + '/mf',
       client = req.app.get('elastic');
 
     var body = req.body;

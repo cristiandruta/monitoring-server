@@ -1,20 +1,21 @@
 var express = require('express');
 var router = express.Router();
 var async = require('async');
+
 /**
- * @api {get} /profiles/:workflowID Request a list of profiled tasks
+ * @api {get} /profiles/:workflowID 1. Request a list of profiled tasks with given workflow ID
  * @apiVersion 1.0.0
  * @apiName GetProfilesWorkflow
  * @apiGroup Profiles
  *
- * @apiParam {String} [workflowID] Workflow identifer
+ * @apiParam {String} workflowID identifer of a workflow
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix
  *
- * @apiSuccess {Object} task References a registered task by its name
- * @apiSuccess {Object} task.experimentID References an experiment by its experimentID
- * @apiSuccess {String} task.experimentID.href Resource location of the specific experiment
+ * @apiSuccess {Object} taskID identifier of a registered task
+ * @apiSuccess {Object} taskID.experimentID identifier of an experiment
+ * @apiSuccess {String} taskID.experimentID.href link to the experiment
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -79,10 +80,10 @@ router.get('/:workID', function(req, res, next) {
                 client.indices.getMapping({
                     index: index,
                 }, function(error, response) {
-                    if (error == undefined) {
+                    if (error === undefined) {
                         var mappings = response[index].mappings;
                         mappings = Object.keys(mappings);
-                        if (json[task] == undefined) {
+                        if (json[task] === undefined) {
                             json[task] = {};
                         }
                         for (var i in mappings) {
@@ -128,26 +129,27 @@ function isEmpty(obj) {
     }
     return true;
 }
+
 /**
- * @api {get} /profiles/:workflowID/:taskID Request a list of profiled experiments
+ * @api {get} /profiles/:workflowID/:taskID 2. Request a list of profiled experiments with given workflow ID and task ID
  * @apiVersion 1.0.0
  * @apiName GetProfilesTask
  * @apiGroup Profiles
  *
- * @apiParam {String} [workflowID] Workflow identifer
- * @apiParam {String} [taskID] Task name
+ * @apiParam {String} workflowID identifer of a workflow
+ * @apiParam {String} taskID identifier of a registered task
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01
  *
- * @apiSuccess {Object} date Date, when the task is registered
- * @apiSuccess {Object} date.experimentID References in experiment by its experimentID
- * @apiSuccess {String} date.experimentID.href Resource location of the specific experiment
+ * @apiSuccess {Object} date date, when the task is registered
+ * @apiSuccess {Object} date.experimentID identifier of an experiment
+ * @apiSuccess {String} date.experimentID.href link to the experiment
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       ""2016-05-11"":{
+ *       "2016-05-11":{
  *          "AVSf5_wVGMPeuCn4Qdw2":{
  *                "href":"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01/AVSf5_wVGMPeuCn4Qdw2"
  *          },
@@ -196,7 +198,7 @@ router.get('/:workID/:taskID', function(req, res, next) {
         return;
     }
     var index = workflow + '_' + task;
-    index = index.toLowerCase()
+    index = index.toLowerCase();
 
     client.indices.getMapping({
         index: index,
@@ -222,14 +224,14 @@ router.get('/:workID/:taskID', function(req, res, next) {
                         var element = {};
                         element.href = href;
                         if (typeof timestamp !== 'undefined') {
-                            timestamp = timestamp.split('-')[0]
-                            timestamp = timestamp.replace(/\./g, '-')
-                            if (json[timestamp] == undefined) {
+                            timestamp = timestamp.split('-')[0];
+                            timestamp = timestamp.replace(/\./g, '-');
+                            if (json[timestamp] === undefined) {
                                 json[timestamp] = {};
                             }
                         } else if (typeof result['@timestamp'] !== 'undefined') {
-                            timestamp = result['@timestamp'].split('T')[0]
-                            if (json[timestamp] == undefined) {
+                            timestamp = result['@timestamp'].split('T')[0];
+                            if (json[timestamp] === undefined) {
                                 json[timestamp] = {};
                             }
                         }
@@ -254,24 +256,24 @@ router.get('/:workID/:taskID', function(req, res, next) {
 });
 
 /**
- * @api {get} /profiles/:workflowID/:taskID/:expID Request a profiled experiment
+ * @api {get} /profiles/:workflowID/:taskID/:experimentID 3. Request a profiled experiment with given workflow ID, task ID and experiment ID
  * @apiVersion 1.0.0
  * @apiName GetProfilesExperiment
  * @apiGroup Profiles
  *
- * @apiParam {String} [workflowID] Workflow identifer
- * @apiParam {String} [taskID] Task name
- * @apiParam {String} [expID] Experiment identifer
+ * @apiParam {String} workflowID identifer of a workflow
+ * @apiParam {String} taskID identifier of a registered task
+ * @apiParam {String} experimentID identifier of an experiment
  *
  * @apiExample {curl} Example usage:
  *     curl -i http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01/AVSbT0ChGMPeuCn4QYjq
  *
- * @apiSuccess {Object} Metrics Measurements based on a system
- * @apiSuccess {String} Metrics.timestamp Timestamp when the metric data is collected
- * @apiSuccess {String} Metrics.host Hostname of the system
- * @apiSuccess {String} Metrics.task Task name
- * @apiSuccess {String} Metrics.type Metrics type
- * @apiSuccess {Number} Metrics.metric Value of the specific metric
+ * @apiSuccess {Object} Metrics measurements based on a system
+ * @apiSuccess {String} Metrics.timestamp timestamp, when the metric data is collected
+ * @apiSuccess {String} Metrics.host hostname of the system
+ * @apiSuccess {String} Metrics.task task identifier
+ * @apiSuccess {String} Metrics.type metrics type
+ * @apiSuccess {Number} Metrics.metric value of the specific metric
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -328,7 +330,7 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
             res.status(500);
             return next(error);
         }
-        if (response.hits != undefined) {
+        if (response.hits !== undefined) {
             size = response.hits.total;
         }
 

@@ -53,7 +53,7 @@ router.get('/:id', function(req, res, next) {
  */
 router.put('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
-        mf_server = req.app.get('mf_server') + '/v1/mf/',
+        mf_server = req.app.get('mf_server') + '/mf',
         client = req.app.get('elastic');
 
     client.index({
@@ -69,7 +69,7 @@ router.put('/:id', function(req, res, next) {
             return next(message);
         }
         var json = {};
-        json.href = mf_server + 'users/' + id;
+        json.href = mf_server + '/users/' + id;
         res.json(json);
     });
 });
@@ -156,6 +156,7 @@ router.post('/:id/create', function(req, res, next) {
         res.send(experiment_id);
     });
 });
+
 /**
  * @api {post} /users/:userID/:experimentID/create 3. Create a user and an associated experiment with given experiment ID
  * @apiVersion 1.0.0
