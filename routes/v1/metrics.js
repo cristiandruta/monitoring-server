@@ -13,7 +13,7 @@ var router = express.Router();
  * @apiParam {String} task identifier of a task
  * @apiParam {String} ExperimentID identifier of an experiment
  * @apiParam {String} type type of the metric, e.g. power, temperature, and so on
- * @apiParam {String} host hostname of the system 
+ * @apiParam {String} host hostname of the system
  * @apiParam {String} timestamp timestamp, when the metric is collected
  * @apiParam {String} metric value of the metric
  *
@@ -26,16 +26,16 @@ var router = express.Router();
  *              "WorkflowID":"hpcfapix",
  *              "task":"vector_scal01",
  *              "ExperimentID":"AVUWnydqGMPeuCn4l-cj",
- *              "type":"power", "host": "node01.excess-project.eu", 
- *              "@timestamp": "2016-02-15T12:46:48.749", 
+ *              "type":"power", "host": "node01.excess-project.eu",
+ *              "@timestamp": "2016-02-15T12:46:48.749",
  *              "GPU1:power": "168.519"
  *          }, {
  *              "WorkflowID":"hoppe",
  *              "task":"testing",
  *              "ExperimentID":"AVNXMXcvGMPeuCn4bMe0",
- *              "type": "power", 
- *              "host": "node01.excess-project.eu", 
- *              "@timestamp": "2016-02-15T12:43:48.524", 
+ *              "type": "power",
+ *              "host": "node01.excess-project.eu",
+ *              "@timestamp": "2016-02-15T12:43:48.524",
  *              "GPU0:power": "152.427"
  *          }
  *     ]
@@ -60,18 +60,18 @@ router.post('/', function(req, res, next) {
     tmp.index = {};
     for (i = 0; i != data.length; ++i) {
         var action = JSON.parse(JSON.stringify(tmp));
-        var index = data[i]['WorkflowID'];
-        if (data[i]['task']) {
-          index = index + '_' + data[i]['task'];
+        var index = data[i].WorkflowID;
+        if (data[i].task) {
+          index = index + '_' + data[i].task;
         } else {
           index = index + '_all';
         }
         // index: no white spaces allowed
         index = index.replace(' ', '_');
-        action.index['_index'] = index.toLowerCase();
-        action.index['_type'] = data[i]['ExperimentID'];
-        delete data[i]['WorkflowID'];
-        delete data[i]['ExperimentID'];
+        action.index._index = index.toLowerCase();
+        action.index._type = data[i].ExperimentID;
+        delete data[i].WorkflowID;
+        delete data[i].ExperimentID;
         bulk_data.push(action);
         bulk_data.push(data[i]);
     }
@@ -84,10 +84,10 @@ router.post('/', function(req, res, next) {
             return next(error);
         }
         var json = [];
-        for (i in response.items) {
+        for (var i in response.items) {
             json.push(mf_server + '/profiles/' +
-              response.items[i].create['_index'].replace('_all', '/all') +
-              '/' + response.items[i].create['_type']);
+              response.items[i].create._index.replace('_all', '/all') +
+              '/' + response.items[i].create._type);
         }
         res.json(json);
     });
@@ -138,11 +138,11 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
       index_missing = false;
 
     // taskID will later be used as an index, no white spaces allowed
-    taskID = taskID.replace(' ', '_')
+    taskID = taskID.replace(' ', '_');
 
     var index = workflowID;
     if (typeof taskID == 'undefined') {
-        taskID = 'manual_monitoring'
+        taskID = 'manual_monitoring';
     }
 
     index = workflowID + '_' + taskID;
@@ -194,9 +194,9 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
         },
         function(callback) {
             /* work-around for plug-ins sending the old timestamp format */
-            if (req.body['Timestamp']) {
-                req.body['@timestamp'] = req.body['Timestamp'];
-                delete req.body['Timestamp'];
+            if (req.body.Timestamp) {
+                req.body['@timestamp'] = req.body.Timestamp;
+                delete req.body.Timestamp;
             }
             client.index({
                 index: index,

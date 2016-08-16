@@ -9,7 +9,13 @@
   },
   "order": [
     "Workflows",
-    "Deployment Plans"
+    "Experiments",
+    "Deployment Plans",
+    "Metrics",
+    "Profiles",
+    "Progress",
+    "Energy",
+    "Runtime"
   ],
   "template": {
     "withCompare": true,
@@ -19,7 +25,7 @@
   "apidoc": "0.2.0",
   "generator": {
     "name": "apidoc",
-    "time": "2016-08-12T13:49:35.075Z",
+    "time": "2016-08-15T15:50:05.326Z",
     "url": "http://apidocjs.com",
     "version": "0.16.1"
   }
