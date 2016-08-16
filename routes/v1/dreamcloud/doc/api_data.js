@@ -1278,7 +1278,7 @@ define({ "api": [
           {
             "group": "Error 4xx",
             "optional": false,
-            "field": "InternalSeverError",
+            "field": "NotFound",
             "description": "<p>No results found.</p>"
           }
         ]
@@ -1286,7 +1286,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 500 Internal Sever Error\n{\n  \"error\": \"No results found.\"\n}",
+          "content": "HTTP/1.1 404 NotFound\n{\n  \"error\": \"No results found.\"\n}",
           "type": "json"
         }
       ]
@@ -1569,7 +1569,7 @@ define({ "api": [
           {
             "group": "Error 4xx",
             "optional": false,
-            "field": "InternalSeverError",
+            "field": "NotFound",
             "description": "<p>No results found.</p>"
           }
         ]
@@ -1577,13 +1577,668 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 500 Internal Sever Error\n{\n  \"error\": \"No data found in the database.\"\n}",
+          "content": "HTTP/1.1 404 NotFound\n{\n  \"error\": \"No data found in the database.\"\n}",
           "type": "json"
         }
       ]
     },
     "filename": "routes/v1/dreamcloud/progress.js",
     "groupTitle": "Progress"
+  },
+  {
+    "type": "get",
+    "url": "/report/:workflowID/:experimentID",
+    "title": "1. Get experiment report",
+    "version": "1.0.0",
+    "name": "GetReport",
+    "group": "Reports",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "workflowID",
+            "description": "<p>identifer of a workflow</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "experimentID",
+            "description": "<p>identifier of an experiment</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/report/ms2/AVQ-MczMGMPeuCn4FHqi",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "workflow",
+            "description": "<p>report for a given workflow</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "workflow.id",
+            "description": "<p>workflow identifier</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "workflow.runtime",
+            "description": "<p>aggregates runtime information for the whole workflow</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "workflow.runtime.start",
+            "description": "<p>time when the first task started its execution</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "workflow.runtime.stop",
+            "description": "<p>time when the last task finished execution</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "workflow.runtime.seconds",
+            "description": "<p>total execution time in seconds</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "workflow.energy",
+            "description": "<p>energy-related information for the workflow</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "workflow.energy.node",
+            "description": "<p>energy data for a given target platform (cluster node)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "workflow.energy.node.avg_watt_consumption",
+            "description": "<p>average Watt consumption</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "workflow.energy.node.total_energy_consumption",
+            "description": "<p>total energy consumption</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "tasks",
+            "description": "<p>list of individual task-related reports</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "tasks.task",
+            "description": "<p>specific task information (key = workflowID_taskID)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "tasks.task.host",
+            "description": "<p>hostname on which the task was executed</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "tasks.task.runtime",
+            "description": "<p>aggregates runtime information for the whole workflow</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "tasks.task.runtime.start",
+            "description": "<p>time when the first task started its execution</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "tasks.task.runtime.stop",
+            "description": "<p>time when the last task finished execution</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "tasks.task.runtime.seconds",
+            "description": "<p>total execution time in seconds</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "tasks.task.energy",
+            "description": "<p>energy-related information for the workflow</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "tasks.task.energy.node",
+            "description": "<p>energy data for a given target platform (cluster node)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "tasks.task.energy.node.avg_watt_consumption",
+            "description": "<p>average Watt consumption</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "tasks.task.energy.node.total_energy_consumption",
+            "description": "<p>total energy consumption</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n   \"workflow\": {\n      \"id\": \"ms2\",\n      \"runtime\": {\n         \"start\": \"2016-04-22T15:39:48.496\",\n         \"end\": \"2016-04-22T16:10:34.883\",\n         \"seconds\": 1846.387\n      },\n      \"energy\": {\n         \"NODE01\": {\n            \"avg_watt_consumption\": 358.6157820189599,\n            \"total_energy_consumption\": 662143.5179146413\n         },\n         \"NODE02\": {\n            \"avg_watt_consumption\": 250.0514119089924,\n            \"total_energy_consumption\": 461691.67628040875\n         },\n         \"NODE03\": {\n            \"avg_watt_consumption\": 267.59218242524383,\n            \"total_energy_consumption\": 494078.7269315987\n         }\n      }\n   },\n   \"tasks\": {\n      \"ms2_t2.4\": {\n         \"host\": \"node02.excess-project.eu\",\n         \"runtime\": {\n            \"start\": \"2016-04-22T15:41:55.661\",\n            \"end\": \"2016-04-22T15:46:29.116\",\n            \"seconds\": 273.455\n         },\n         \"energy\": {\n            \"NODE01\": {\n               \"avg_watt_consumption\": 363.7616224652014,\n               \"total_energy_consumption\": 99472.43447122164\n            },\n            \"NODE02\": {\n               \"avg_watt_consumption\": 445.1300451245421,\n               \"total_energy_consumption\": 121723.03648953166\n            },\n            \"NODE03\": {\n               \"avg_watt_consumption\": 336.11323218681315,\n               \"total_energy_consumption\": 91911.84390764499\n            }\n         }\n      },\n      ...\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>No results found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 NotFound\n{\n  \"error\": \"No data found in the database.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/v1/dreamcloud/report.js",
+    "groupTitle": "Reports"
+  },
+  {
+    "type": "get",
+    "url": "/summary/:workflowID/:taskID/:platformID",
+    "title": "2. Get summary including statistics",
+    "version": "1.0.0",
+    "name": "GetSummary",
+    "group": "Reports",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "workflowID",
+            "description": "<p>identifer of a workflow</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "taskID",
+            "description": "<p>identifier of a task</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "platformID",
+            "description": "<p>identifier for a given platform, e.g. 'excesscluster' or 'laptop'</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/summary/ms2/t2.1/excesscluster",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "experiment_id",
+            "description": "<p>identifier for an experiment</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "workflow_id",
+            "description": "<p>identifier for the workflow</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "task_id",
+            "description": "<p>identifier of a task</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "deployment_id",
+            "description": "<p>identifier (here: hashvalue) of a deployment plan</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "runtime",
+            "description": "<p>runtime information</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "runtime.start_time",
+            "description": "<p>time when the first task started its execution</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "runtime.end_time",
+            "description": "<p>time when the last task finished execution</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "runtime.actual_time",
+            "description": "<p>total execution time in seconds</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "runtime.predicted_time",
+            "description": "<p>predicted total execution time (data filled by heuristic manager)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "energy",
+            "description": "<p>energy-related information for the workflow</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "energy.node",
+            "description": "<p>energy data for a given target platform (cluster node)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "energy.node.avg_watt_consumption",
+            "description": "<p>average Watt consumption</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "energy.node.total_energy_consumption",
+            "description": "<p>total energy consumption</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "metrics",
+            "description": "<p>list of individual metric-related statistics</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "metrics.metric",
+            "description": "<p>statistics on a given metric (metric equals name of counter)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "metrics.metric.count",
+            "description": "<p>number of metric values available</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "metrics.metric.min",
+            "description": "<p>minimum value obtained</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "metrics.metric.max",
+            "description": "<p>maximum value obtained</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "metrics.metric.avg",
+            "description": "<p>average value based on number of values</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "metrics.metric.sum",
+            "description": "<p>sum of all obtained data points</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n   {\n      \"experiment_id\": \"AVZVoX2SGYwmTvCu75Mo\",\n      \"workflow_id\": \"ms2\",\n      \"task_id\": \"t2.1\",\n      \"deployment_id\": \"79f2e72501da8a8bcff9d6cd711b44a0fe8174a751e897c51ef7a7d110b925d8\",\n      \"runtime\": {\n         \"start_time\": \"2016-08-04T14:59:38.755\",\n         \"end_time\": \"2016-08-04T15:38:23.667\",\n         \"actual_time\": 2324.912,\n         \"predicted_time\": 0\n      },\n      \"energy\": {\n         \"NODE01\": {\n            \"avg_watt_consumption\": 153.34391120137695,\n            \"total_energy_consumption\": 356511.0992790157\n         },\n         \"NODE02\": {\n            \"avg_watt_consumption\": 140.82331453872632,\n            \"total_energy_consumption\": 327401.81385085924\n         },\n         \"NODE03\": {\n            \"avg_watt_consumption\": 123.82224931497417,\n            \"total_energy_consumption\": 287875.8332993752\n         }\n      },\n      \"metrics\": {\n         \"PP0_ENERGY:PACKAGE1\": {\n            \"count\": 25,\n            \"min\": 2.9063,\n            \"max\": 71.1607,\n            \"avg\": 45.523972,\n            \"sum\": 1138.0993\n         },\n         \"CPU0::PAPI_FP_INS\": {\n            \"count\": 24,\n            \"min\": 869,\n            \"max\": 565864880,\n            \"avg\": 219248143.20833334,\n            \"sum\": 5261955437\n         },\n         ...\n   }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>No results found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 NotFound\n{\n  \"error\": \"No data found in the database.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/v1/dreamcloud/summary.js",
+    "groupTitle": "Reports"
+  },
+  {
+    "type": "get",
+    "url": "/summary/:workflowID/:taskID/:platformID/:deploymentID",
+    "title": "3. Get summary filtered by deployment ID",
+    "version": "1.0.0",
+    "name": "GetSummaryByID",
+    "group": "Reports",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "workflowID",
+            "description": "<p>identifer of a workflow</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "taskID",
+            "description": "<p>identifier of a task</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "platformID",
+            "description": "<p>identifier for a given platform, e.g. 'excesscluster' or 'laptop'</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "deploymentID",
+            "description": "<p>identifier (= hashvalue) of a given deployment plan</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/summary/ms2/t2.1/test_cluster/4e165a82309000fd5a6ab20c097b2e9f2ba5216d",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "experiment_id",
+            "description": "<p>identifier for an experiment</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "workflow_id",
+            "description": "<p>identifier for the workflow</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "task_id",
+            "description": "<p>identifier of a task</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "deployment_id",
+            "description": "<p>identifier (here: hashvalue) of a deployment plan</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "runtime",
+            "description": "<p>runtime information</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "runtime.start_time",
+            "description": "<p>time when the first task started its execution</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "runtime.end_time",
+            "description": "<p>time when the last task finished execution</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "runtime.actual_time",
+            "description": "<p>total execution time in seconds</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "runtime.predicted_time",
+            "description": "<p>predicted total execution time (data filled by heuristic manager)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "energy",
+            "description": "<p>energy-related information for the workflow</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "energy.node",
+            "description": "<p>energy data for a given target platform (cluster node)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "energy.node.avg_watt_consumption",
+            "description": "<p>average Watt consumption</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "energy.node.total_energy_consumption",
+            "description": "<p>total energy consumption</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "metrics",
+            "description": "<p>list of individual metric-related statistics</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "metrics.metric",
+            "description": "<p>statistics on a given metric (metric equals name of counter)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "metrics.metric.count",
+            "description": "<p>number of metric values available</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "metrics.metric.min",
+            "description": "<p>minimum value obtained</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "metrics.metric.max",
+            "description": "<p>maximum value obtained</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "metrics.metric.avg",
+            "description": "<p>average value based on number of values</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "metrics.metric.sum",
+            "description": "<p>sum of all obtained data points</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n   {\n      \"experiment_id\": \"AVRMbxnvGMPeuCn4HOiA\",\n      \"workflow_id\": \"ms2\",\n      \"task_id\": \"t2.1\",\n      \"deployment_id\": \"4e165a82309000fd5a6ab20c097b2e9f2ba5216d\",\n      \"runtime\": {\n         \"start_time\": \"2016-04-25T10:02:07.103\",\n         \"end_time\": \"2016-04-25T10:04:55.274\",\n         \"actual_time\": 168.171,\n         \"predicted_time\": 2015\n      },\n      \"energy\":  [ .. ],\n      \"metrics\": { .. }\n   },\n   {\n      \"experiment_id\": \"AVS_GvCNGMPeuCn4T-pC\",\n      \"workflow_id\": \"ms2\",\n      \"task_id\": \"t2.1\",\n      \"deployment_id\": \"4e165a82309000fd5a6ab20c097b2e9f2ba5216d\",\n      \"runtime\": {\n         \"start_time\": \"2016-05-17T16:25:47.122\",\n         \"end_time\": \"2016-05-17T16:26:22.296\",\n         \"actual_time\": 35.174,\n         \"predicted_time\": 2015\n      },\n      \"energy\":  [ .. ],\n      \"metrics\": { .. }\n   }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>No results found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 NotFound\n{\n  \"error\": \"No data found in the database.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/v1/dreamcloud/summary.js",
+    "groupTitle": "Reports"
   },
   {
     "type": "get",
@@ -1806,6 +2461,487 @@ define({ "api": [
     },
     "filename": "routes/v1/dreamcloud/runtime.js",
     "groupTitle": "Runtime"
+  },
+  {
+    "type": "get",
+    "url": "/statistics/:workflowID",
+    "title": "1. Get statistics on a metric across all tasks",
+    "version": "1.0.0",
+    "name": "GetStats",
+    "group": "Statistics",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "workflowID",
+            "description": "<p>identifer of a workflow</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "metric",
+            "description": "<p>name of a metric, e.g., metric=CPU0::PAPI_TOT_CYC</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "host",
+            "description": "<p>hostname of the system, e.g., host=node01</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "from",
+            "description": "<p>start time of the statistics, e.g., from=2016-05-10T17:35:57.610</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "to",
+            "description": "<p>end time of the statistics, e.g., to=2016-05-10T17:35:57.610</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i 'http://mf.excess-project.eu:3030/v1/mf/statistics/ms2?metric=CPU0::PAPI_TOT_CYC'",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "workflow",
+            "description": "<p>workflow-related data</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "workflow.href",
+            "description": "<p>link to the stored workflow information</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "metric",
+            "description": "<p>name of the metric for which statistics are captured</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "statistics",
+            "description": "<p>extended set of statistics as provided by Elasticsearch</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.count",
+            "description": "<p>number of metric values sampled</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.min",
+            "description": "<p>minimum value obtained for the given metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.max",
+            "description": "<p>maximum value obtained for the given metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.avg",
+            "description": "<p>average value across all metric values</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.sum",
+            "description": "<p>sum of all sampled metric values</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.sum_of_squares",
+            "description": "<p>sum of squares for the given metric values</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.variance",
+            "description": "<p>variance of the given metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.std_deviation",
+            "description": "<p>standard deviation computed for the given metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "statistics.std_deviation_bounds",
+            "description": "<p>deviation bounds of the given metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.std_deviation_bounds.upper",
+            "description": "<p>upper bounds</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.std_deviation_bounds.lower",
+            "description": "<p>lower bounds</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "min",
+            "description": "<p>experiment that has the minimum value of the metric included</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>time when the experiment was executed</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "host",
+            "description": "<p>hostname on which the experiment was executed</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "task",
+            "description": "<p>identifier for a task</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>type of plug-in the metric is associated with</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "max",
+            "description": "<p>experiment that has the maximum value of the metric included</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n   \"workflow\": {\n      \"href\": \"http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/workflows/ms2\"\n   },\n   \"metric\": \"CPU0::PAPI_TOT_CYC\",\n   \"statistics\": {\n      \"count\": 314,\n      \"min\": 2188289,\n      \"max\": 140712658075784,\n      \"avg\": 27784198121927.688,\n      \"sum\": 8724238210285294,\n      \"sum_of_squares\": 1.2276032329935587e+30,\n      \"variance\": 3.1376027710066886e+27,\n      \"std_deviation\": 56014308627409.555,\n      \"std_deviation_bounds\": {\n         \"upper\": 139812815376746.8,\n         \"lower\": -84244419132891.42\n      }\n   },\n   \"min\": {\n      \"@timestamp\": \"2016-05-17T16:25:48.123\",\n      \"host\": \"node01.excess-project.eu\",\n      \"task\": \"t2.1\",\n      \"type\": \"performance\",\n      \"CPU0::PAPI_FP_INS\": 869,\n      \"CPU0::PAPI_TOT_CYC\": 2188289,\n      \"CPU1::PAPI_FP_INS\": 891,\n      \"CPU1::PAPI_TOT_CYC\": 1214959,\n      \"CPU2::PAPI_FP_INS\": 8126,\n      ...\n   },\n   \"max\": {\n      ...\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NoResults",
+            "description": "<p>response is empty for the metric.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"error\": \"response is empty for the metric.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/v1/dreamcloud/statistics.js",
+    "groupTitle": "Statistics"
+  },
+  {
+    "type": "get",
+    "url": "/statistics/:workflowID/:taskID",
+    "title": "2. Get statistics on a metric filtered by task ID",
+    "version": "1.0.0",
+    "name": "GetStatsTask",
+    "group": "Statistics",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "workflowID",
+            "description": "<p>identifer of a workflow</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "taskID",
+            "description": "<p>identifier of a task</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "metric",
+            "description": "<p>name of a metric, e.g., metric=CPU0::PAPI_TOT_CYC</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "host",
+            "description": "<p>hostname of the system, e.g., host=node01</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "from",
+            "description": "<p>start time of the statistics, e.g., from=2016-05-10T17:35:57.610</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "to",
+            "description": "<p>end time of the statistics, e.g., to=2016-05-10T17:35:57.610</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example usage:",
+        "content": "curl -i 'http://mf.excess-project.eu:3030/v1/mf/statistics/ms2/t2.1?metric=CPU0::PAPI_TOT_CYC'",
+        "type": "curl"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "workflow",
+            "description": "<p>workflow-related data</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "workflow.href",
+            "description": "<p>link to the stored workflow information</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "metric",
+            "description": "<p>name of the metric for which statistics are captured</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "statistics",
+            "description": "<p>extended set of statistics as provided by Elasticsearch</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.count",
+            "description": "<p>number of metric values sampled</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.min",
+            "description": "<p>minimum value obtained for the given metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.max",
+            "description": "<p>maximum value obtained for the given metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.avg",
+            "description": "<p>average value across all metric values</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.sum",
+            "description": "<p>sum of all sampled metric values</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.sum_of_squares",
+            "description": "<p>sum of squares for the given metric values</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.variance",
+            "description": "<p>variance of the given metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.std_deviation",
+            "description": "<p>standard deviation computed for the given metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "statistics.std_deviation_bounds",
+            "description": "<p>deviation bounds of the given metric</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.std_deviation_bounds.upper",
+            "description": "<p>upper bounds</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "statistics.std_deviation_bounds.lower",
+            "description": "<p>lower bounds</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "min",
+            "description": "<p>experiment that has the minimum value of the metric included</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>time when the experiment was executed</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "host",
+            "description": "<p>hostname on which the experiment was executed</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "task",
+            "description": "<p>identifier for a task</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>type of plug-in the metric is associated with</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "max",
+            "description": "<p>experiment that has the maximum value of the metric included</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n   \"workflow\": {\n      \"href\": \"http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/workflows/ms2\"\n   },\n   \"metric\": \"CPU0::PAPI_TOT_CYC\",\n   \"statistics\": {\n      \"count\": 314,\n      \"min\": 2188289,\n      \"max\": 140712658075784,\n      \"avg\": 27784198121927.688,\n      \"sum\": 8724238210285294,\n      \"sum_of_squares\": 1.2276032329935587e+30,\n      \"variance\": 3.1376027710066886e+27,\n      \"std_deviation\": 56014308627409.555,\n      \"std_deviation_bounds\": {\n         \"upper\": 139812815376746.8,\n         \"lower\": -84244419132891.42\n      }\n   },\n   \"min\": {\n      \"@timestamp\": \"2016-05-17T16:25:48.123\",\n      \"host\": \"node01.excess-project.eu\",\n      \"task\": \"t2.1\",\n      \"type\": \"performance\",\n      \"CPU0::PAPI_FP_INS\": 869,\n      \"CPU0::PAPI_TOT_CYC\": 2188289,\n      \"CPU1::PAPI_FP_INS\": 891,\n      \"CPU1::PAPI_TOT_CYC\": 1214959,\n      \"CPU2::PAPI_FP_INS\": 8126,\n      ...\n   },\n   \"max\": {\n      ...\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "NoResults",
+            "description": "<p>response is empty for the metric.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"error\": \"response is empty for the metric.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/v1/dreamcloud/statistics.js",
+    "groupTitle": "Statistics"
   },
   {
     "type": "get",

@@ -15,7 +15,8 @@ define({
     "Profiles",
     "Progress",
     "Energy",
-    "Runtime"
+    "Runtime",
+    "Reports"
   ],
   "template": {
     "withCompare": true,
@@ -25,7 +26,7 @@ define({
   "apidoc": "0.2.0",
   "generator": {
     "name": "apidoc",
-    "time": "2016-08-15T15:50:05.326Z",
+    "time": "2016-08-16T15:01:51.329Z",
     "url": "http://apidocjs.com",
     "version": "0.16.1"
   }
