@@ -8,8 +8,8 @@
 ### Features
 - Updated some API routes
 - Added API routes documentation with the help of apidoc; created documentation web page (source in branch gh-pages)
-- Added authentication for post/put queries from outside
-
+- Added v2 routes with authentication for post/put queries from outside
+- Further updates will be based on v2
 
 ## 16.6 (22/06/2016)
 
