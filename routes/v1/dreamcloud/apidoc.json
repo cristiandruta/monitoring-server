@@ -10,13 +10,15 @@
   "order": [
     "Workflows",
     "Experiments",
-    "Deployment Plans",
+    "Deployment_Plans",
     "Metrics",
     "Profiles",
     "Progress",
     "Energy",
     "Runtime",
     "Reports",
+    "Status",
+    "Resources",
     "Statistics"
   ],
   "template": {
