@@ -2,6 +2,42 @@ var express = require('express');
 var dateFormat = require('dateformat');
 var router = express.Router();
 
+/**
+ * @api {get} /resources 1. Get a list of available resources by target platform
+ * @apiVersion 1.0.0
+ * @apiName GetResources
+ * @apiGroup Resources
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/resources
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *        "alexlaptop": {
+ *           "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/resources/alexlaptop"
+ *        },
+ *        "amitlaptop": {
+ *           "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/resources/amitlaptop"
+ *        },
+ *        "excesscluster": {
+ *           "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/resources/excesscluster"
+ *        }
+ *     }
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *        "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/resources"
+ *     }
+ *
+ * @apiError InternalSeverError No results found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Internal Sever Error
+ *     {
+ *       "error": "No results found."
+ *     }
+ */
 router.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
         mf_server = req.app.get('mf_server'),
@@ -18,7 +54,7 @@ router.get('/', function(req, res, next) {
             res.status(500);
             return next(error);
         }
-        if (response.hits != undefined) {
+        if (response.hits !== undefined) {
             size = response.hits.total;
         }
 
@@ -31,7 +67,7 @@ router.get('/', function(req, res, next) {
                 res.status(500);
                 return next(error);
             }
-            if (response.hits != undefined) {
+            if (response.hits !== undefined) {
                 var results = response.hits.hits;
                 if (is_defined(details)) {
                     json = get_details(results);
@@ -64,7 +100,7 @@ function get_resource(mf_server, results) {
       platform = '',
       response = {};
     keys.forEach(function(key) {
-        platform = results[key]._id
+        platform = results[key]._id;
         var json = {};
         json.href = mf_server + '/resources/' + platform;
         response[platform] = json;
@@ -72,6 +108,58 @@ function get_resource(mf_server, results) {
     return response;
 }
 
+/**
+ * @api {get} /resources/:platformID 2. Get resource information for a given platform
+ * @apiVersion 1.0.0
+ * @apiName GetResource
+ * @apiGroup Resources
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/resources/excesscluster
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *        "nodes": [
+ *           {
+ *              "id": "node01",
+ *              "cpus": [
+ *                 {
+ *                    "id": "cpu0",
+ *                    "cores": [
+ *                       {
+ *                          "id": "core0",
+ *                          "pwMode": 0,
+ *                          "status": "allocated",
+ *                          "availTime": "null"
+ *                       },
+ *                       {
+ *                          "id": "core1",
+ *                          "pwMode": 0,
+ *                          "status": "allocated",
+ *                          "availTime": "null"
+ *                       },
+ *                       ...
+ *                    ]
+ *                 }
+ *              ]
+ *           }
+ *        ]
+ *     }
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *        "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/resources/excesscluster"
+ *     }
+ *
+ * @apiError InternalServerError Likely to be caused by an error while inserting data into the database.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "error": "Elasticsearch-specific error message."
+ *     }
+ */
 router.get('/:id', function(req, res, next) {
     var client = req.app.get('elastic'),
       id = req.params.id.toLowerCase(),
@@ -83,15 +171,62 @@ router.get('/:id', function(req, res, next) {
         id: id
     }, function(error, response) {
         if (error) {
-            res.status(500)
+            res.status(500);
             return next(error);
-        } else {
-            json = response._source;
         }
+
+        json = response._source;
         res.json(json);
     });
 });
 
+/**
+ * @api {put} /resources/:platformID 3. Add resource information for a given platform
+ * @apiVersion 1.0.0
+ * @apiName PutResource
+ * @apiGroup Resources
+ *
+ * @apiExample {curl} Example usage:
+ *     curl -i http://mf.excess-project.eu:3030/v1/dreamcloud/mf/resources/excesscluster
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *        "nodes": [
+ *           {
+ *              "id": "node01",
+ *              "cpus": [
+ *                 {
+ *                    "id": "cpu0",
+ *                    "cores": [
+ *                       {
+ *                          "id": "core0",
+ *                          "pwMode": 0,
+ *                          "status": "allocated",
+ *                          "availTime": "null"
+ *                       },
+ *                       {
+ *                          "id": "core1",
+ *                          "pwMode": 0,
+ *                          "status": "allocated",
+ *                          "availTime": "null"
+ *                       },
+ *                       ...
+ *                    ]
+ *                 }
+ *              ]
+ *           }
+ *        ]
+ *     }
+ *
+ * @apiError InternalServerError Likely to be caused by an error while inserting data into the database.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "error": "Elasticsearch-specific error message."
+ *     }
+ */
 router.put('/:id', function(req, res, next) {
     var mf_server = req.app.get('mf_server'),
       id = req.params.id.toLowerCase(),
@@ -107,13 +242,14 @@ router.put('/:id', function(req, res, next) {
         id: id,
         body: req.body
     },function(error, response) {
-        if (error !== 'undefined') {
-            var json = {};
-            json.href = mf_server + '/resources/' + id;
-            res.json(json);
-        } else {
-            res.json(error);
+        if (error) {
+            res.status(500);
+            return next(error);
         }
+
+        var json = {};
+        json.href = mf_server + '/resources/' + id;
+        res.json(json);
     });
 });
 

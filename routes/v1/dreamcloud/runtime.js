@@ -29,10 +29,10 @@ var router = express.Router();
  *        "host": "node02.excess-project.eu"
  *     }
  *
- * @apiError InternalSeverError No results found.
+ * @apiError InternalServerError No results found.
  *
  * @apiErrorExample Error-Response:
- *     HTTP/1.1 500 Internal Sever Error
+ *     HTTP/1.1 500 Internal Server Error
  *     {
  *       "error": "No results found."
  *     }
@@ -95,10 +95,10 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
  *        "total_runtime": 463.721
  *     }
  *
- * @apiError InternalSeverError No results found.
+ * @apiError InternalServerError No results found.
  *
  * @apiErrorExample Error-Response:
- *     HTTP/1.1 500 Internal Sever Error
+ *     HTTP/1.1 500 Internal Server Error
  *     {
  *       "error": "No results found."
  *     }
