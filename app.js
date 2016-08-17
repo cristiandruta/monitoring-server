@@ -92,14 +92,18 @@ app.use('/v2/mf/runtime', runtime);
 app.use('/v2/mf/statistics', statistics);
 
 /* dreamcloud */
-app.use('/v2/dreamcloud/mf/workflows', workflows);
+app.use('/v2/dreamcloud/mf/workflows', workflows.unprotected);
+app.use('/v2/dreamcloud/mf/workflows', isLoggedIn, workflows.protected);
 app.use('/v2/dreamcloud/mf/runtime', runtime_dreamcloud);
 app.use('/v2/dreamcloud/mf/progress', progress);
 app.use('/v2/dreamcloud/mf/energy', energy);
-app.use('/v2/dreamcloud/mf/deployments', deployments);
+app.use('/v2/dreamcloud/mf/deployments', deployments.unprotected);
+app.use('/v2/dreamcloud/mf/deployments', isLoggedIn, deployments.protected);
 app.use('/v2/dreamcloud/mf/statistics', statistics_dreamcloud);
-app.use('/v2/dreamcloud/mf/resources', resources);
-app.use('/v2/dreamcloud/mf/status', status);
+app.use('/v2/dreamcloud/mf/resources', resources.unprotected);
+app.use('/v2/dreamcloud/mf/resources', isLoggedIn, resources.protected);
+app.use('/v2/dreamcloud/mf/status', status.unprotected);
+app.use('/v2/dreamcloud/mf/status', isLoggedIn, status.protected);
 app.use('/v2/dreamcloud/mf/report', report);
 app.use('/v2/dreamcloud/mf/summary', summary);
 
@@ -112,8 +116,9 @@ app.use('/v2/mf/metrics', isLoggedIn, metrics);
 app.use('/v2/mf/units', units.unprotected);
 app.use('/v2/mf/units', isLoggedIn, units.protected);
 app.use('/v2/dreamcloud/mf/experiments', experiments.unprotected);
+app.use('/v2/dreamcloud/mf/experiments', isLoggedIn, experiments.protected);
 app.use('/v2/dreamcloud/mf/profiles', profiles_dreamcloud);
-app.use('/v2/dreamcloud/mf/metrics', metrics);
+app.use('/v2/dreamcloud/mf/metrics', isLoggedIn, metrics);
 
 /* catch 404 and forward to error handler */
 app.use(function(req, res, next) {
@@ -150,7 +155,7 @@ passport.use(new Strategy(
         '}'+
       '}' +
     '}';
-  
+
     elastic.search({
       index: 'credentials',
       type: 'user',
@@ -158,8 +163,7 @@ passport.use(new Strategy(
     },function(error, response){
       if (error || response.hits.total === 0) {
         return cb('Invalid username or password.');
-      } 
-      else {
+      } else {
         if(password === response.hits.hits[0]._source.password) {
           return cb(null, response.hits.hits[0]._source);
         }

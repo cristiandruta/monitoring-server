@@ -1,7 +1,8 @@
 var express = require('express');
-var router = express.Router();
 var async = require('async');
 var dateFormat = require('dateformat');
+var secure_router = express.Router(),
+    open_router = express.Router();
 
 /**
  * @api {get} /workflows 3. Request a list of registered workflows
@@ -37,7 +38,7 @@ var dateFormat = require('dateformat');
  *       "error": "No workflows found."
  *     }
  */
-router.get('/', function(req, res, next) {
+open_router.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
         mf_server = req.app.get('mf_server'),
         details = req.query.details,
@@ -178,7 +179,7 @@ function get_workflows(results, mf_server, excess) {
  *       "error": "Workflow with the ID ':workflowID' not found."
  *     }
  */
-router.get('/:id', function(req, res, next) {
+open_router.get('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         client = req.app.get('elastic'),
         json = {};
@@ -252,7 +253,7 @@ router.get('/:id', function(req, res, next) {
  *       "error": "Resource could not be stored"
  *     }
  */
-router.put('/:id', function(req, res, next) {
+secure_router.put('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
         mf_server = req.app.get('mf_server'),
         client = req.app.get('elastic'),
@@ -348,7 +349,7 @@ router.put('/:id', function(req, res, next) {
  *       "error": "The parameter 'wf_id' to reference a workflow ID is missing."
  *     }
  */
-router.put('/', function(req, res, next) {
+secure_router.put('/', function(req, res, next) {
     var mf_server = req.app.get('mf_server'),
         client = req.app.get('elastic');
 
@@ -525,7 +526,7 @@ function isEmpty(obj) {
  *       "error": "Resource could not be stored"
  *     }
  */
-router.put('/:workflowID/:experimentID', function(req, res, next) {
+secure_router.put('/:workflowID/:experimentID', function(req, res, next) {
     var mf_server = req.app.get('mf_server'),
         client = req.app.get('elastic'),
         workflowID = req.params.workflowID.toLowerCase(),
@@ -607,4 +608,7 @@ router.put('/:workflowID/:experimentID', function(req, res, next) {
     });
 });
 
-module.exports = router;
+module.exports = {
+    protected: secure_router,
+    unprotected: open_router
+};

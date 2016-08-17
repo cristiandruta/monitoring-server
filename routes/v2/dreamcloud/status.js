@@ -1,6 +1,7 @@
 var express = require('express');
 var dateFormat = require('dateformat');
-var router = express.Router();
+var secure_router = express.Router(),
+    open_router = express.Router();
 
 /**
  * @api {get} /runtime/:workflowID/:experimentID 1. Get status report
@@ -102,7 +103,7 @@ var router = express.Router();
  *       "error": "No status report available."
  *     }
  */
-router.get('/:workflowID/:experimentID', function(req, res, next) {
+open_router.get('/:workflowID/:experimentID', function(req, res, next) {
     var client = req.app.get('elastic'),
       workflow = req.params.workflowID.toLowerCase(),
       experiment = req.params.experimentID;
@@ -157,7 +158,7 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
  *       "error": "Elasticsearch-specific error message"
  *     }
  */
-router.put('/:workflowID/:experimentID', function(req, res, next) {
+secure_router.put('/:workflowID/:experimentID', function(req, res, next) {
     var mf_server = req.app.get('mf_server') + '/dreamcloud/mf',
       workflow = req.params.workflowID.toLowerCase(),
       experiment = req.params.experimentID,
@@ -185,4 +186,7 @@ router.put('/:workflowID/:experimentID', function(req, res, next) {
     });
 });
 
-module.exports = router;
+module.exports = {
+    protected: secure_router,
+    unprotected: open_router
+};

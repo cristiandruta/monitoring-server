@@ -1,6 +1,7 @@
 var express = require('express');
 var dateFormat = require('dateformat');
-var router = express.Router();
+var secure_router = express.Router(),
+    open_router = express.Router();
 
 /**
  * @api {get} /resources 1. Get a list of available resources by target platform
@@ -38,7 +39,7 @@ var router = express.Router();
  *       "error": "No results found."
  *     }
  */
-router.get('/', function(req, res, next) {
+open_router.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
         mf_server = req.app.get('mf_server'),
         details = req.query.expand,
@@ -160,7 +161,7 @@ function get_resource(mf_server, results) {
  *       "error": "Elasticsearch-specific error message."
  *     }
  */
-router.get('/:id', function(req, res, next) {
+open_router.get('/:id', function(req, res, next) {
     var client = req.app.get('elastic'),
       id = req.params.id.toLowerCase(),
       json = {};
@@ -227,7 +228,7 @@ router.get('/:id', function(req, res, next) {
  *       "error": "Elasticsearch-specific error message."
  *     }
  */
-router.put('/:id', function(req, res, next) {
+secure_router.put('/:id', function(req, res, next) {
     var mf_server = req.app.get('mf_server'),
       id = req.params.id.toLowerCase(),
       client = req.app.get('elastic');
@@ -253,4 +254,7 @@ router.put('/:id', function(req, res, next) {
     });
 });
 
-module.exports = router;
+module.exports = {
+    protected: secure_router,
+    unprotected: open_router
+};

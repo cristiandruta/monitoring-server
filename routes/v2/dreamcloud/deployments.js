@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 var express = require('express');
-var router = express.Router();
+var secure_router = express.Router(),
+    open_router = express.Router();
 
 /**
  * @api {get} /deployments/:workflowID/:taskID/:platformID 3. Return available deployment plans
@@ -44,7 +45,7 @@ var router = express.Router();
  *       "error": "No deployment plans found for the given worklow, task, and platform."
  *     }
  */
-router.get('/:workflow/:task/:platform', function(req, res, next) {
+open_router.get('/:workflow/:task/:platform', function(req, res, next) {
     var client = req.app.get('elastic'),
       workflow = req.params.workflow.toLowerCase(),
       task = req.params.task.toLowerCase(),
@@ -149,7 +150,7 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
  *       "error": "Deployment plan unavailable."
  *     }
  */
-router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
+open_router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
     var client = req.app.get('elastic'),
       workflow = req.params.workflow.toLowerCase(),
       task = req.params.task.toLowerCase(),
@@ -249,7 +250,7 @@ router.get('/:workflow/:task/:platform/:deployment', function(req, res, next) {
  *       "error": "Could not store given deployment plan."
  *     }
  */
-router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
+secure_router.put('/:workflow/:task/:platform/:experiment', function(req, res, next) {
     var workflow = req.params.workflow.toLowerCase(),
       task = req.params.task.toLowerCase(),
       platform = req.params.platform.toLowerCase(),
@@ -335,4 +336,7 @@ function is_defined(variable) {
     return (typeof variable !== 'undefined');
 }
 
-module.exports = router;
+module.exports = {
+    protected: secure_router,
+    unprotected: open_router
+};

@@ -1,6 +1,7 @@
 var express = require('express');
 var dateFormat = require('dateformat');
-var router = express.Router();
+var secure_router = express.Router(),
+    open_router = express.Router();
 
 /**
  * @api {get} /experiments 1. Returns a list of all experiment IDs
@@ -36,7 +37,7 @@ var router = express.Router();
  *
  * @apiError DatabaseError Elasticsearch specific error message.
  */
-router.get('/', function(req, res, next) {
+open_router.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
       mf_server = req.app.get('mf_server'),
       details = req.query.details,
@@ -199,7 +200,7 @@ function get_workflows(mf_server, results) {
  *
  * @apiError DatabaseError Elasticsearch specific error message.
  */
-router.get('/:id', function(req, res, next) {
+open_router.get('/:id', function(req, res, next) {
     var client = req.app.get('elastic'),
       id = req.params.id,
       workflow = req.query.workflow,
@@ -290,7 +291,7 @@ router.get('/:id', function(req, res, next) {
  *     }
  *
  */
-router.post('/:id', function(req, res, next) {
+secure_router.post('/:id', function(req, res, next) {
     var id = req.params.id.toLowerCase(),
       mf_server = req.app.get('mf_server'),
       client = req.app.get('elastic');
@@ -317,4 +318,7 @@ router.post('/:id', function(req, res, next) {
     });
 });
 
-module.exports = router;
+module.exports = {
+    protected: secure_router,
+    unprotected: open_router
+};
