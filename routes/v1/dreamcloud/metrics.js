@@ -83,7 +83,7 @@ router.post('/', function(req, res, next) {
             var json = [];
             for (var i in response.items) {
                 json.push(mf_server +
-                  '/profiles/' +
+                  '/dreamcloud/mf/profiles/' +
                   response.items[i].create._index.replace('_all', '/all') +
                   '/' + response.items[i].create._type);
             }
@@ -207,7 +207,7 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
                 if (error !== 'undefined') {
                     var json = {};
                     json[response._id] = {};
-                    json[response._id].href = mf_server + '/profiles/' + workflowID;
+                    json[response._id].href = mf_server + '/dreamcloud/mf/profiles/' + workflowID;
                     if (typeof taskID !== 'undefined') {
                         json[response._id].href += '/' + taskID;
                     }

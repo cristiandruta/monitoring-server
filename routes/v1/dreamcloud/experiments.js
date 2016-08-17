@@ -119,7 +119,7 @@ function get_workflows(mf_server, results) {
         experimentID = results[key]._id;
         workflow = results[key]._parent;
         var json = {};
-        json.href = mf_server + '/experiments/' + experimentID + '?workflow=' + workflow;
+        json.href = mf_server + '/dreamcloud/mf/experiments/' + experimentID + '?workflow=' + workflow;
         response[experimentID] = json;
     });
     return response;
@@ -311,7 +311,7 @@ router.post('/:id', function(req, res, next) {
         } else {
             var json = {};
             json[response._id] = {};
-            json[response._id].href = mf_server + '/experiments/' + response._id + '?workflow=' + id;
+            json[response._id].href = mf_server + '/dreamcloud/mf/experiments/' + response._id + '?workflow=' + id;
             res.json(json);
         }
     });

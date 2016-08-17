@@ -158,7 +158,7 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
  *     }
  */
 router.put('/:workflowID/:experimentID', function(req, res, next) {
-    var mf_server = req.app.get('mf_server'),
+    var mf_server = req.app.get('mf_server') + '/dreamcloud/mf',
       workflow = req.params.workflowID.toLowerCase(),
       experiment = req.params.experimentID,
       client = req.app.get('elastic');

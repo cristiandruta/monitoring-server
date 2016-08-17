@@ -1,4 +1,7 @@
-var express = require('express'); async = require('async'); moment = require('moment'); router = express.Router();
+var express = require('express');
+var async = require('async');
+var moment = require('moment');
+var router = express.Router();
 
 var skip_fields = [ '@timestamp', 'type', 'host' ];
 

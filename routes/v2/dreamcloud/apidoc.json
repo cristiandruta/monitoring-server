@@ -8,8 +8,18 @@
     "title": "DreamCloud API"
   },
   "order": [
-    "GetWorkflows",
-    "PostWorkflows"
+    "Workflows",
+    "Experiments",
+    "Deployment_Plans",
+    "Metrics",
+    "Profiles",
+    "Progress",
+    "Energy",
+    "Runtime",
+    "Reports",
+    "Status",
+    "Resources",
+    "Statistics"
   ],
   "template": {
   	"withCompare": true,

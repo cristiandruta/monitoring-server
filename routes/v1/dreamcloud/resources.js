@@ -102,7 +102,7 @@ function get_resource(mf_server, results) {
     keys.forEach(function(key) {
         platform = results[key]._id;
         var json = {};
-        json.href = mf_server + '/resources/' + platform;
+        json.href = mf_server + '/dreamcloud/mf/resources/' + platform;
         response[platform] = json;
     });
     return response;
@@ -248,7 +248,7 @@ router.put('/:id', function(req, res, next) {
         }
 
         var json = {};
-        json.href = mf_server + '/resources/' + id;
+        json.href = mf_server + '/dreamcloud/mf/resources/' + id;
         res.json(json);
     });
 });

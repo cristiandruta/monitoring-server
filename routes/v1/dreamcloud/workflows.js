@@ -37,7 +37,7 @@ var dateFormat = require('dateformat');
  *       "error": "No workflows found."
  *     }
  */
-router.get('/test', function(req, res, next) {
+router.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
         mf_server = req.app.get('mf_server'),
         details = req.query.details,
@@ -265,7 +265,7 @@ router.put('/:id', function(req, res, next) {
         body: req.body
     }, function(error, response) {
         if (error !== 'undefined') {
-            json.href = mf_server + '/workflows/' + id;
+            json.href = mf_server + '/dreamcloud/mf/workflows/' + id;
         } else {
             res.status(500);
             json.error = "Resource could not be stored.";
@@ -562,7 +562,7 @@ router.put('/:workflowID/:experimentID', function(req, res, next) {
                 workflow_response.workflow = {};
                 workflow_response.workflow.id = workflowID;
                 workflow_response.workflow.href = mf_server +
-                    '/workflows/' + workflowID;
+                    '/dreamcloud/mf/workflows/' + workflowID;
 
                 series_callback(null);
             });
@@ -589,7 +589,7 @@ router.put('/:workflowID/:experimentID', function(req, res, next) {
                 workflow_response.experiment = {};
                 workflow_response.experiment.id = response._id;
                 workflow_response.experiment.href = mf_server +
-                    '/experiments/' + response._id + '?workflow=' + workflowID;
+                    '/dreamcloud/mf/experiments/' + response._id + '?workflow=' + workflowID;
 
                 series_callback(null);
             });

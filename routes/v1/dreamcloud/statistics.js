@@ -48,7 +48,7 @@ var router = express.Router();
  *     HTTP/1.1 200 OK
  *     {
  *        "workflow": {
- *           "href": "http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/workflows/ms2"
+ *           "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows/ms2"
  *        },
  *        "metric": "CPU0::PAPI_TOT_CYC",
  *        "statistics": {
@@ -145,7 +145,7 @@ router.get('/:workflowID', function(req, res, next) {
  *     HTTP/1.1 200 OK
  *     {
  *        "workflow": {
- *           "href": "http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/workflows/ms2"
+ *           "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/workflows/ms2"
  *        },
  *        "metric": "CPU0::PAPI_TOT_CYC",
  *        "statistics": {
@@ -197,7 +197,7 @@ router.get('/:workflowID/:taskID', function(req, res, next) {
 
 function handle_response(req, res, next, index) {
     var client = req.app.get('elastic'),
-      mf_server = req.app.get('mf_server') + '/v1/dreamcloud/mf',
+      mf_server = req.app.get('mf_server') + '/dreamcloud/mf',
       workflowID = req.params.workflowID.toLowerCase(),
       filter = req.query.filter,
       metric = req.query.metric,

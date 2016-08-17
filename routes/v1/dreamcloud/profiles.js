@@ -73,22 +73,22 @@ router.get('/:workflowID', function(req, res, next) {
  *     {
  *        "2016-06-17": {
  *           "AVVe9xN-LeaeU4rxxTaT": {
- *              "href": "http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVe9xN-LeaeU4rxxTaT"
+ *              "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVe9xN-LeaeU4rxxTaT"
  *           },
  *           "AVVejDH1LeaeU4rxwuw-": {
- *              "href": "http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVejDH1LeaeU4rxwuw-"
+ *              "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVejDH1LeaeU4rxwuw-"
  *           },
  *           "AVVeiND0LeaeU4rxwtIV": {
- *              "href": "http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeiND0LeaeU4rxwtIV"
+ *              "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeiND0LeaeU4rxwtIV"
  *           },
  *           "AVVeQmcUenoRsEhyFlHu": {
- *              "href": "http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeQmcUenoRsEhyFlHu"
+ *              "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeQmcUenoRsEhyFlHu"
  *           },
  *           "AVVeQANeenoRsEhyFjlu": {
- *              "href": "http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeQANeenoRsEhyFjlu"
+ *              "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeQANeenoRsEhyFjlu"
  *           },
  *           "AVVeX5NRenoRsEhyF4We": {
- *              "href": "http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeX5NRenoRsEhyF4We"
+ *              "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.1/AVVeX5NRenoRsEhyF4We"
  *           }
  *        },
  *        "2016-04-14": {
