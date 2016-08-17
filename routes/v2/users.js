@@ -93,9 +93,7 @@ function is_defined(variable) {
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     
- *          AVX9O-3oz5chEwIt8_M9
- *     
+ *     AVX9O-3oz5chEwIt8_M9
  *
  */
 routerP.post('/:id/create', function(req, res, next) {
@@ -173,9 +171,9 @@ routerP.post('/:id/create', function(req, res, next) {
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     
+ *
  *          AVX9O-3oz5chEwIt8_M9
- *     
+ *
  *
  */
 routerP.post('/:uid/:eid/create', function(req, res, next) {
