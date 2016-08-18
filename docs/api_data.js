@@ -3,7 +3,7 @@ define({ "api": [
     "type": "get",
     "url": "/experiments",
     "title": "1. Request a list of registered experiments",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "GetExperiments",
     "group": "Experiments",
     "success": {
@@ -28,7 +28,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"AVUWoIRDGMPeuCn4l-cl\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v1/mf/experiments/AVUWoIRDGMPeuCn4l-cl?workflow=hpcfapix\"\n  },\n  \"AVNXMbaBGMPeuCn4bMfv\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMbaBGMPeuCn4bMfv?workflow=hoppe\"\n  },\n  \"AVNXMsA_GMPeuCn4bMj7\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMsA_GMPeuCn4bMj7?workflow=dmitry\"\n  }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"AVUWoIRDGMPeuCn4l-cl\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v2/mf/experiments/AVUWoIRDGMPeuCn4l-cl?workflow=hpcfapix\"\n  },\n  \"AVNXMbaBGMPeuCn4bMfv\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v2/mf/experiments/AVNXMbaBGMPeuCn4bMfv?workflow=hoppe\"\n  },\n  \"AVNXMsA_GMPeuCn4bMj7\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v2/mf/experiments/AVNXMsA_GMPeuCn4bMj7?workflow=dmitry\"\n  }\n}",
           "type": "json"
         }
       ]
@@ -56,7 +56,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/experiments\ncurl -i http://mf.excess-project.eu:3030/v1/mf/experiments?workflow=hpcfapix&details",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/experiments\ncurl -i http://mf.excess-project.eu:3030/v2/mf/experiments?workflow=hpcfapix&details",
         "type": "curl"
       }
     ],
@@ -79,14 +79,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/v1/experiments.js",
+    "filename": "routes/v2/experiments.js",
     "groupTitle": "Experiments"
   },
   {
     "type": "get",
     "url": "/experiments/:experimentID",
     "title": "2. Request a registered experiment with given experiment ID",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "GetExperimentsID",
     "group": "Experiments",
     "parameter": {
@@ -167,7 +167,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/experiments/AVNXMXcvGMPeuCn4bMe0?workflow=hpcfapix",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/experiments/AVNXMXcvGMPeuCn4bMe0?workflow=hpcfapix",
         "type": "curl"
       }
     ],
@@ -190,14 +190,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/v1/experiments.js",
+    "filename": "routes/v2/experiments.js",
     "groupTitle": "Experiments"
   },
   {
     "type": "post",
     "url": "/experiments/:workflowID",
     "title": "3. Create a new experiment with given workflow ID",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "PostExperiments",
     "group": "Experiments",
     "parameter": {
@@ -258,7 +258,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/experiments/hpcfapix",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/experiments/hpcfapix",
         "type": "curl"
       }
     ],
@@ -284,19 +284,19 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"AVXt3coOz5chEwIt8_Ma\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v1/mf/experiments/AVXt3coOz5chEwIt8_Ma?workflow=hpcfapix\"\n  }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"AVXt3coOz5chEwIt8_Ma\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v2/mf/experiments/AVXt3coOz5chEwIt8_Ma?workflow=hpcfapix\"\n  }\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "routes/v1/experiments.js",
+    "filename": "routes/v2/experiments.js",
     "groupTitle": "Experiments"
   },
   {
     "type": "post",
     "url": "/metrics",
     "title": "1. Send bulk of metrics",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "PostBulkMetrics",
     "group": "Metrics",
     "parameter": {
@@ -364,7 +364,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/metrics",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/metrics",
         "type": "curl"
       }
     ],
@@ -383,19 +383,19 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n      \"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix_vector_scal01/AVUWnydqGMPeuCn4l-cj\",\n      \"http://mf.excess-project.eu:3030/v1/mf/profiles/hoppe_testing/AVNXMXcvGMPeuCn4bMe0\"\n]",
+          "content": "HTTP/1.1 200 OK\n[\n      \"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix_vector_scal01/AVUWnydqGMPeuCn4l-cj\",\n      \"http://mf.excess-project.eu:3030/v2/mf/profiles/hoppe_testing/AVNXMXcvGMPeuCn4bMe0\"\n]",
           "type": "json"
         }
       ]
     },
-    "filename": "routes/v1/metrics.js",
+    "filename": "routes/v2/metrics.js",
     "groupTitle": "Metrics"
   },
   {
     "type": "post",
     "url": "/metrics/:workflowID/:experimentID",
     "title": "2. Send one metric with given workflow ID and experiment ID",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "PostMetrics",
     "group": "Metrics",
     "parameter": {
@@ -456,7 +456,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/metrics/hpcfapix/AVNXMXcvGMPeuCn4bMe0?task=vector_scal01",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/metrics/hpcfapix/AVNXMXcvGMPeuCn4bMe0?task=vector_scal01",
         "type": "curl"
       }
     ],
@@ -482,19 +482,19 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"AVXt3coOz5chEwIt8_Ma\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVNXMXcvGMPeuCn4bMe0\"\n  }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"AVXt3coOz5chEwIt8_Ma\": {\n    \"href\": \"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01/AVNXMXcvGMPeuCn4bMe0\"\n  }\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "routes/v1/metrics.js",
+    "filename": "routes/v2/metrics.js",
     "groupTitle": "Metrics"
   },
   {
     "type": "get",
     "url": "/profiles/:workflowID/:taskID/:experimentID",
     "title": "3. Request a profiled experiment with given workflow ID, task ID and experiment ID",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "GetProfilesExperiment",
     "group": "Profiles",
     "parameter": {
@@ -527,7 +527,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVSbT0ChGMPeuCn4QYjq",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01/AVSbT0ChGMPeuCn4QYjq",
         "type": "curl"
       }
     ],
@@ -605,14 +605,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/v1/profiles.js",
+    "filename": "routes/v2/profiles.js",
     "groupTitle": "Profiles"
   },
   {
     "type": "get",
     "url": "/profiles/:workflowID/:taskID",
     "title": "2. Request a list of profiled experiments with given workflow ID and task ID",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "GetProfilesTask",
     "group": "Profiles",
     "parameter": {
@@ -638,7 +638,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01",
         "type": "curl"
       }
     ],
@@ -671,7 +671,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"2016-05-11\":{\n     \"AVSf5_wVGMPeuCn4Qdw2\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVSf5_wVGMPeuCn4Qdw2\"\n     },\n     \"AVSf-mU4GMPeuCn4Qd0L\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVSf-mU4GMPeuCn4Qd0L\"\n     }\n  },\n  \"2016-05-10\":{\n     \"AVXAMB5FLeaeU4rxyi3w\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVXAMB5FLeaeU4rxyi3w\"\n     },\n     \"AVVT4dhwenoRsEhyDkeb\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVVT4dhwenoRsEhyDkeb\"\n     }\n  }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"2016-05-11\":{\n     \"AVSf5_wVGMPeuCn4Qdw2\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01/AVSf5_wVGMPeuCn4Qdw2\"\n     },\n     \"AVSf-mU4GMPeuCn4Qd0L\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01/AVSf-mU4GMPeuCn4Qd0L\"\n     }\n  },\n  \"2016-05-10\":{\n     \"AVXAMB5FLeaeU4rxyi3w\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01/AVXAMB5FLeaeU4rxyi3w\"\n     },\n     \"AVVT4dhwenoRsEhyDkeb\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01/AVVT4dhwenoRsEhyDkeb\"\n     }\n  }\n}",
           "type": "json"
         }
       ]
@@ -695,14 +695,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/v1/profiles.js",
+    "filename": "routes/v2/profiles.js",
     "groupTitle": "Profiles"
   },
   {
     "type": "get",
     "url": "/profiles/:workflowID",
     "title": "1. Request a list of profiled tasks with given workflow ID",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "GetProfilesWorkflow",
     "group": "Profiles",
     "parameter": {
@@ -721,7 +721,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix",
         "type": "curl"
       }
     ],
@@ -754,7 +754,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"vector_scal01\":{\n     \"AVSf5_wVGMPeuCn4Qdw2\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVSf5_wVGMPeuCn4Qdw2\"\n     },\n     \"AVSf-mU4GMPeuCn4Qd0L\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/vector_scal01/AVSf-mU4GMPeuCn4Qd0L\"\n     }\n  },\n  \"mfnode01\":{\n     \"AVXAMB5FLeaeU4rxyi3w\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/mfnode01/AVXAMB5FLeaeU4rxyi3w\"\n     },\n     \"AVVT4dhwenoRsEhyDkeb\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v1/mf/profiles/hpcfapix/mfnode01/AVVT4dhwenoRsEhyDkeb\"\n     }\n  }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"vector_scal01\":{\n     \"AVSf5_wVGMPeuCn4Qdw2\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01/AVSf5_wVGMPeuCn4Qdw2\"\n     },\n     \"AVSf-mU4GMPeuCn4Qd0L\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/vector_scal01/AVSf-mU4GMPeuCn4Qd0L\"\n     }\n  },\n  \"mfnode01\":{\n     \"AVXAMB5FLeaeU4rxyi3w\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/mfnode01/AVXAMB5FLeaeU4rxyi3w\"\n     },\n     \"AVVT4dhwenoRsEhyDkeb\":{\n           \"href\":\"http://mf.excess-project.eu:3030/v2/mf/profiles/hpcfapix/mfnode01/AVVT4dhwenoRsEhyDkeb\"\n     }\n  }\n}",
           "type": "json"
         }
       ]
@@ -778,14 +778,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/v1/profiles.js",
+    "filename": "routes/v2/profiles.js",
     "groupTitle": "Profiles"
   },
   {
     "type": "get",
     "url": "/runtime/:workflowID/:taskID/:experimentID",
     "title": "1. Request the runtime of an experiment with given workflow ID, task ID and experiment ID",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "GetRuntime",
     "group": "Runtime",
     "parameter": {
@@ -818,7 +818,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/runtime/hpcfapix/vector_scal01/AVSbT0ChGMPeuCn4QYjq",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/runtime/hpcfapix/vector_scal01/AVSbT0ChGMPeuCn4QYjq",
         "type": "curl"
       }
     ],
@@ -882,14 +882,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/v1/runtime.js",
+    "filename": "routes/v2/runtime.js",
     "groupTitle": "Runtime"
   },
   {
     "type": "get",
     "url": "/statistics/:workflowID/:taskID/:experimentID",
     "title": "2. Request the statistics of an experiment with given workflow ID, task ID and experiment ID",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "GetStatsExperiment",
     "group": "Statistics",
     "parameter": {
@@ -950,7 +950,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i 'http://mf.excess-project.eu:3030/v1/mf/statistics/hpcfapix/vector_scal01/AVSbT0ChGMPeuCn4QYjq?metric=DRAM_POWER:PACKAGE0&metric=DRAM_POWER:PACKAGE1&host=node01&from=2016-05-10T17:35:57.610&to=2016-05-10T17:36:57.610'",
+        "content": "curl -i 'http://mf.excess-project.eu:3030/v2/mf/statistics/hpcfapix/vector_scal01/AVSbT0ChGMPeuCn4QYjq?metric=DRAM_POWER:PACKAGE0&metric=DRAM_POWER:PACKAGE1&host=node01&from=2016-05-10T17:35:57.610&to=2016-05-10T17:36:57.610'",
         "type": "curl"
       }
     ],
@@ -997,7 +997,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n   {\n       \"user\":\n              {\"href\":\"http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix\"},\n       \"metric\":\"DRAM_POWER:PACKAGE0\",\n       \"statistics\":\n              {\"count\":6,\n               \"min\":1.5568,\n               \"max\":1.5724,\n               \"avg\":1.5640333333333334,\n               \"sum\":9.3842,\n               \"sum_of_squares\":14.677405239999999,\n               \"variance\":0.000033938888888881045,\n               \"std_deviation\":0.0058257093034995355,\n               \"std_deviation_bounds\":\n                      {\"upper\":1.5756847519403325,\n                       \"lower\":1.5523819147263342}\n              },\n       \"min\":\n              {\"@timestamp\":\"2016-05-10T17:36:00.851\",\n               \"host\":\"node01.excess-project.eu\",\n               \"task\":\"vector_scal01\",\n               \"type\":\"energy\",\n               \"DRAM_ENERGY:PACKAGE0\":1.5573,\n               \"DRAM_POWER:PACKAGE0\":1.5568,\n               \"DRAM_ENERGY:PACKAGE1\":1.5584,\n               \"DRAM_POWER:PACKAGE1\":1.5578}\n       \"max\":{\n               \"@timestamp\":\"2016-05-10T17:35:57.610\",\n               \"host\":\"node01.excess-project.eu\",\n               \"task\":\"vector_scal01\",\n               \"type\":\"energy\",\n               \"DRAM_ENERGY:PACKAGE0\":1.5727,\n               \"DRAM_POWER:PACKAGE0\":1.5724,\n               \"DRAM_ENERGY:PACKAGE1\":1.5692,\n               \"DRAM_POWER:PACKAGE1\":1.5689}\n   }\n]",
+          "content": "HTTP/1.1 200 OK\n[\n   {\n       \"user\":\n              {\"href\":\"http://mf.excess-project.eu:3030/v2/mf/users/hpcfapix\"},\n       \"metric\":\"DRAM_POWER:PACKAGE0\",\n       \"statistics\":\n              {\"count\":6,\n               \"min\":1.5568,\n               \"max\":1.5724,\n               \"avg\":1.5640333333333334,\n               \"sum\":9.3842,\n               \"sum_of_squares\":14.677405239999999,\n               \"variance\":0.000033938888888881045,\n               \"std_deviation\":0.0058257093034995355,\n               \"std_deviation_bounds\":\n                      {\"upper\":1.5756847519403325,\n                       \"lower\":1.5523819147263342}\n              },\n       \"min\":\n              {\"@timestamp\":\"2016-05-10T17:36:00.851\",\n               \"host\":\"node01.excess-project.eu\",\n               \"task\":\"vector_scal01\",\n               \"type\":\"energy\",\n               \"DRAM_ENERGY:PACKAGE0\":1.5573,\n               \"DRAM_POWER:PACKAGE0\":1.5568,\n               \"DRAM_ENERGY:PACKAGE1\":1.5584,\n               \"DRAM_POWER:PACKAGE1\":1.5578}\n       \"max\":{\n               \"@timestamp\":\"2016-05-10T17:35:57.610\",\n               \"host\":\"node01.excess-project.eu\",\n               \"task\":\"vector_scal01\",\n               \"type\":\"energy\",\n               \"DRAM_ENERGY:PACKAGE0\":1.5727,\n               \"DRAM_POWER:PACKAGE0\":1.5724,\n               \"DRAM_ENERGY:PACKAGE1\":1.5692,\n               \"DRAM_POWER:PACKAGE1\":1.5689}\n   }\n]",
           "type": "json"
         }
       ]
@@ -1021,14 +1021,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/v1/statistics.js",
+    "filename": "routes/v2/statistics.js",
     "groupTitle": "Statistics"
   },
   {
     "type": "get",
     "url": "/statistics/:workflowID/:taskID",
     "title": "1. Request the statistics of a task with given workflow ID and task ID",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "GetStatsTask",
     "group": "Statistics",
     "parameter": {
@@ -1082,7 +1082,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i 'http://mf.excess-project.eu:3030/v1/mf/statistics/hpcfapix/vector_scal01?metric=DRAM_POWER:PACKAGE0&metric=DRAM_POWER:PACKAGE1&host=node01&from=2016-05-10T17:35:57.610&to=2016-05-10T17:36:57.610'",
+        "content": "curl -i 'http://mf.excess-project.eu:3030/v2/mf/statistics/hpcfapix/vector_scal01?metric=DRAM_POWER:PACKAGE0&metric=DRAM_POWER:PACKAGE1&host=node01&from=2016-05-10T17:35:57.610&to=2016-05-10T17:36:57.610'",
         "type": "curl"
       }
     ],
@@ -1129,7 +1129,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n   {\n       \"user\":\n              {\"href\":\"http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix\"},\n       \"metric\":\"DRAM_POWER:PACKAGE0\",\n       \"statistics\":\n              {\"count\":6,\n               \"min\":1.5568,\n               \"max\":1.5724,\n               \"avg\":1.5640333333333334,\n               \"sum\":9.3842,\n               \"sum_of_squares\":14.677405239999999,\n               \"variance\":0.000033938888888881045,\n               \"std_deviation\":0.0058257093034995355,\n               \"std_deviation_bounds\":\n                      {\"upper\":1.5756847519403325,\n                       \"lower\":1.5523819147263342}\n              },\n       \"min\":\n              {\"@timestamp\":\"2016-05-10T17:36:00.851\",\n               \"host\":\"node01.excess-project.eu\",\n               \"task\":\"vector_scal01\",\n               \"type\":\"energy\",\n               \"DRAM_ENERGY:PACKAGE0\":1.5573,\n               \"DRAM_POWER:PACKAGE0\":1.5568,\n               \"DRAM_ENERGY:PACKAGE1\":1.5584,\n               \"DRAM_POWER:PACKAGE1\":1.5578}\n       \"max\":{\n               \"@timestamp\":\"2016-05-10T17:35:57.610\",\n               \"host\":\"node01.excess-project.eu\",\n               \"task\":\"vector_scal01\",\n               \"type\":\"energy\",\n               \"DRAM_ENERGY:PACKAGE0\":1.5727,\n               \"DRAM_POWER:PACKAGE0\":1.5724,\n               \"DRAM_ENERGY:PACKAGE1\":1.5692,\n               \"DRAM_POWER:PACKAGE1\":1.5689}\n   }\n]",
+          "content": "HTTP/1.1 200 OK\n[\n   {\n       \"user\":\n              {\"href\":\"http://mf.excess-project.eu:3030/v2/mf/users/hpcfapix\"},\n       \"metric\":\"DRAM_POWER:PACKAGE0\",\n       \"statistics\":\n              {\"count\":6,\n               \"min\":1.5568,\n               \"max\":1.5724,\n               \"avg\":1.5640333333333334,\n               \"sum\":9.3842,\n               \"sum_of_squares\":14.677405239999999,\n               \"variance\":0.000033938888888881045,\n               \"std_deviation\":0.0058257093034995355,\n               \"std_deviation_bounds\":\n                      {\"upper\":1.5756847519403325,\n                       \"lower\":1.5523819147263342}\n              },\n       \"min\":\n              {\"@timestamp\":\"2016-05-10T17:36:00.851\",\n               \"host\":\"node01.excess-project.eu\",\n               \"task\":\"vector_scal01\",\n               \"type\":\"energy\",\n               \"DRAM_ENERGY:PACKAGE0\":1.5573,\n               \"DRAM_POWER:PACKAGE0\":1.5568,\n               \"DRAM_ENERGY:PACKAGE1\":1.5584,\n               \"DRAM_POWER:PACKAGE1\":1.5578}\n       \"max\":{\n               \"@timestamp\":\"2016-05-10T17:35:57.610\",\n               \"host\":\"node01.excess-project.eu\",\n               \"task\":\"vector_scal01\",\n               \"type\":\"energy\",\n               \"DRAM_ENERGY:PACKAGE0\":1.5727,\n               \"DRAM_POWER:PACKAGE0\":1.5724,\n               \"DRAM_ENERGY:PACKAGE1\":1.5692,\n               \"DRAM_POWER:PACKAGE1\":1.5689}\n   }\n]",
           "type": "json"
         }
       ]
@@ -1153,14 +1153,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/v1/statistics.js",
+    "filename": "routes/v2/statistics.js",
     "groupTitle": "Statistics"
   },
   {
     "type": "get",
     "url": "/units",
     "title": "1. Request a list of registered units",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "GetUnits",
     "group": "Units",
     "success": {
@@ -1207,7 +1207,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/units",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/units",
         "type": "curl"
       }
     ],
@@ -1230,14 +1230,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/v1/units.js",
+    "filename": "routes/v2/units.js",
     "groupTitle": "Units"
   },
   {
     "type": "put",
     "url": "/units/:metricID",
     "title": "2. Register a unit for a metric",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "PutUnits",
     "group": "Units",
     "parameter": {
@@ -1268,7 +1268,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n     \"href\":\"http://mf.excess-project.eu:3030/v1/mf/units/GPU1:MEM_used\"\n}",
+          "content": "HTTP/1.1 200 OK\n{\n     \"href\":\"http://mf.excess-project.eu:3030/v2/mf/units/GPU1:MEM_used\"\n}",
           "type": "json"
         }
       ]
@@ -1276,18 +1276,18 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/units/GPU1:MEM_used",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/units/GPU1:MEM_used",
         "type": "curl"
       }
     ],
-    "filename": "routes/v1/units.js",
+    "filename": "routes/v2/units.js",
     "groupTitle": "Units"
   },
   {
     "type": "post",
     "url": "/users/:userID/:experimentID/create",
     "title": "3. Create a user and an associated experiment with given experiment ID",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "PostUserExperiment",
     "group": "Users",
     "parameter": {
@@ -1333,18 +1333,18 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix/AVX9O-3oz5chEwIt8_M9/create",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/users/hpcfapix/AVX9O-3oz5chEwIt8_M9/create",
         "type": "curl"
       }
     ],
-    "filename": "routes/v1/users.js",
+    "filename": "routes/v2/users.js",
     "groupTitle": "Users"
   },
   {
     "type": "post",
     "url": "/users/:userID/create",
     "title": "2. Create a user and an associated experiment",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "PostUsers",
     "group": "Users",
     "parameter": {
@@ -1375,7 +1375,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n\n     AVX9O-3oz5chEwIt8_M9",
+          "content": "HTTP/1.1 200 OK\nAVX9O-3oz5chEwIt8_M9",
           "type": "json"
         }
       ]
@@ -1383,18 +1383,18 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix/create",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/users/hpcfapix/create",
         "type": "curl"
       }
     ],
-    "filename": "routes/v1/users.js",
+    "filename": "routes/v2/users.js",
     "groupTitle": "Users"
   },
   {
     "type": "put",
     "url": "/users/:userID",
     "title": "1. Registers a new user",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "name": "PutUsers",
     "group": "Users",
     "parameter": {
@@ -1441,7 +1441,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example usage:",
-        "content": "curl -i http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix",
+        "content": "curl -i http://mf.excess-project.eu:3030/v2/mf/users/hpcfapix",
         "type": "curl"
       }
     ],
@@ -1460,7 +1460,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n     \"href\":\"http://mf.excess-project.eu:3030/v1/mf/users/hpcfapix\"\n}",
+          "content": "HTTP/1.1 200 OK\n{\n     \"href\":\"http://mf.excess-project.eu:3030/v2/mf/users/hpcfapix\"\n}",
           "type": "json"
         }
       ]
@@ -1484,7 +1484,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/v1/users.js",
+    "filename": "routes/v2/users.js",
     "groupTitle": "Users"
   }
 ] });
