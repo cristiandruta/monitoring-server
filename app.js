@@ -51,7 +51,6 @@ var profiles = require('./routes/v2/profiles');
 var profiles_dreamcloud = require('./routes/v2/dreamcloud/profiles');
 var metrics = require('./routes/v2/metrics');
 var units = require('./routes/v2/units');
-var servertime = require('./routes/v2/servertime');
 
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
@@ -108,7 +107,6 @@ app.use('/v2/dreamcloud/mf/report', report);
 app.use('/v2/dreamcloud/mf/summary', summary);
 
 /* both */
-app.use('/v2/mf/time', servertime);
 app.use('/v2/mf/experiments', experiments.unprotected);
 app.use('/v2/mf/experiments', isLoggedIn, experiments.protected);
 app.use('/v2/mf/profiles', profiles);
