@@ -1,6 +1,6 @@
 {
   "name": "monitoring-api",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "RESTful service of the EXCESS monitoring framework",
   "title": "ATOM RESTful API",
   "url" : "http://mf.excess-project.eu:3030/v2/mf",

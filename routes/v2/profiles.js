@@ -4,7 +4,7 @@ var async = require('async');
 
 /**
  * @api {get} /profiles/:workflowID 1. Request a list of profiled tasks with given workflow ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetProfilesWorkflow
  * @apiGroup Profiles
  *
@@ -132,7 +132,7 @@ function isEmpty(obj) {
 
 /**
  * @api {get} /profiles/:workflowID/:taskID 2. Request a list of profiled experiments with given workflow ID and task ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetProfilesTask
  * @apiGroup Profiles
  *
@@ -257,7 +257,7 @@ router.get('/:workID/:taskID', function(req, res, next) {
 
 /**
  * @api {get} /profiles/:workflowID/:taskID/:experimentID 3. Request a profiled experiment with given workflow ID, task ID and experiment ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetProfilesExperiment
  * @apiGroup Profiles
  *

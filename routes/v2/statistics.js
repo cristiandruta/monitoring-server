@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 /**
  * @api {get} /statistics/:workflowID/:taskID 1. Request the statistics of a task with given workflow ID and task ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetStatsTask
  * @apiGroup Statistics
  *
@@ -81,7 +81,7 @@ router.get('/:workflowID/:taskID', function(req, res, next) {
 
 /**
  * @api {get} /statistics/:workflowID/:taskID/:experimentID 2. Request the statistics of an experiment with given workflow ID, task ID and experiment ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetStatsExperiment
  * @apiGroup Statistics
  *

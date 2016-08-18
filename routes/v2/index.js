@@ -5,14 +5,14 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var json = {};
-    json.message = "ATOM API server is up and running."
+    json.message = 'ATOM API server is up and running.';
     json.release = req.app.get('version');
-    json.versions = [ 'v2' ];
+    json.versions = [ 'v1, v2' ];
     res.json(json);
 });
 
-//curl -c cookie.txt -d "username=excess&password=EU-611183" -XPOST localhost:3030/v2/mf/login
-router.post('/login', 
+//curl -c cookie.txt -d "username=XXXXX&password=YYYYYY" -XPOST localhost:3030/v2/mf/login
+router.post('/login',
   passport.authenticate('local', { failureRedirect: '/login',
                                    failureFlash: true}),
   function(req, res) {

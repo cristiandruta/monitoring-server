@@ -5,7 +5,7 @@ var router = express.Router();
 
 /**
  * @api {post} /metrics 1. Send bulk of metrics
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PostBulkMetrics
  * @apiGroup Metrics
  *
@@ -95,7 +95,7 @@ router.post('/', function(req, res, next) {
 
 /**
  * @api {post} /metrics/:workflowID/:experimentID 2. Send one metric with given workflow ID and experiment ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PostMetrics
  * @apiGroup Metrics
  *

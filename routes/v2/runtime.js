@@ -4,7 +4,7 @@ var router = express.Router();
 
 /**
  * @api {get} /runtime/:workflowID/:taskID/:experimentID 1. Request the runtime of an experiment with given workflow ID, task ID and experiment ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetRuntime
  * @apiGroup Runtime
  *

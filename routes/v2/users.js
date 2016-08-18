@@ -14,7 +14,7 @@ routerU.get('/:id', function(req, res, next) {
 
 /**
  * @api {put} /users/:userID 1. Registers a new user
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PutUsers
  * @apiGroup Users
  *
@@ -81,7 +81,7 @@ function is_defined(variable) {
 
 /**
  * @api {post} /users/:userID/create 2. Create a user and an associated experiment
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PostUsers
  * @apiGroup Users
  *
@@ -158,7 +158,7 @@ routerP.post('/:id/create', function(req, res, next) {
 
 /**
  * @api {post} /users/:userID/:experimentID/create 3. Create a user and an associated experiment with given experiment ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PostUserExperiment
  * @apiGroup Users
  *

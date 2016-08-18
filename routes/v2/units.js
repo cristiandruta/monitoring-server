@@ -4,7 +4,7 @@ var routerP = express.Router(),
 
 /**
  * @api {get} /units 1. Request a list of registered units
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetUnits
  * @apiGroup Units
  *
@@ -45,7 +45,7 @@ routerU.get('/', function(req, res, next) {
     var client = req.app.get('elastic'),
       json = {},
       size = 1000;
-    
+
     client.search({
         index: 'mf',
         type: 'metrics',
@@ -70,7 +70,7 @@ routerU.get('/', function(req, res, next) {
 
 /**
  * @api {put} /units/:metricID 2. Register a unit for a metric
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PutUnits
  * @apiGroup Units
  *
