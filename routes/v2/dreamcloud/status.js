@@ -5,7 +5,7 @@ var secure_router = express.Router(),
 
 /**
  * @api {get} /runtime/:workflowID/:experimentID 1. Get status report
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetStatus
  * @apiGroup Status
  *
@@ -132,7 +132,7 @@ open_router.get('/:workflowID/:experimentID', function(req, res, next) {
 
 /**
  * @api {put} /runtime/:workflowID/:experimentID 1. Create/Update status report
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PutStatus
  * @apiGroup Status
  *

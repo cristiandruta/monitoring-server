@@ -7,7 +7,7 @@ var skip_fields = [ '@timestamp', 'type', 'host' ];
 
 /**
  * @api {get} /energy/:workflowID/:experimentID 1. Return energy data for the given experiment ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetEnergy
  * @apiGroup Energy
  *
@@ -281,7 +281,7 @@ router.get('/:workflowID/:experimentID', function(req, res, next) {
 
 /**
  * @api {get} /energy/:workflowID/:taskID/:experimentID 2. Return energy data filtered by task ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetEnergyByTask
  * @apiGroup Energy
  *

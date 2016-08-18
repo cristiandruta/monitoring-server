@@ -5,7 +5,7 @@ var dateFormat = require('dateformat');
 
 /**
  * @api {get} /summary/:workflowID/:taskID/:platformID 2. Get summary including statistics
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetSummary
  * @apiGroup Reports
  *
@@ -344,7 +344,7 @@ router.get('/:workflow/:task/:platform', function(req, res, next) {
 
 /**
  * @api {get} /summary/:workflowID/:taskID/:platformID/:deploymentID 3. Get summary filtered by deployment ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetSummaryByID
  * @apiGroup Reports
  *

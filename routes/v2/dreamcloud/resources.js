@@ -5,7 +5,7 @@ var secure_router = express.Router(),
 
 /**
  * @api {get} /resources 1. Get a list of available resources by target platform
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetResources
  * @apiGroup Resources
  *
@@ -111,7 +111,7 @@ function get_resource(mf_server, results) {
 
 /**
  * @api {get} /resources/:platformID 2. Get resource information for a given platform
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetResource
  * @apiGroup Resources
  *
@@ -183,7 +183,7 @@ open_router.get('/:id', function(req, res, next) {
 
 /**
  * @api {put} /resources/:platformID 3. Add resource information for a given platform
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PutResource
  * @apiGroup Resources
  *

@@ -5,7 +5,7 @@ var router = express.Router();
 
 /**
  * @api {get} /report/:workflowID/:experimentID 1. Get experiment report
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetReport
  * @apiGroup Reports
  *

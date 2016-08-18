@@ -4,7 +4,7 @@ var router = express.Router();
 
 /**
  * @api {get} /runtime/:workflowID/:taskID/:experimentID 1. Get the runtime of a specific task
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetRuntime
  * @apiGroup Runtime
  *
@@ -46,7 +46,7 @@ router.get('/:workID/:taskID/:expID', function(req, res, next) {
 
 /**
  * @api {get} /runtime/:workflowID/:experimentID 2. Get runtime information of an entire experiment
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetRuntimeByExperiment
  * @apiGroup Runtime
  *

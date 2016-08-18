@@ -5,7 +5,7 @@ var secure_router = express.Router(),
 
 /**
  * @api {get} /experiments 1. Returns a list of all experiment IDs
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetExperiments
  * @apiGroup Experiments
  *
@@ -128,7 +128,7 @@ function get_workflows(mf_server, results) {
 
 /**
  * @api {get} /experiments/:experimentID 2. Request a registered experiment with given experiment ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetExperimentsID
  * @apiGroup Experiments
  *
@@ -255,7 +255,7 @@ open_router.get('/:id', function(req, res, next) {
 
 /**
  * @api {post} /experiments/:workflowID 3. Create a new experiment with given workflow ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PostExperiments
  * @apiGroup Experiments
  *

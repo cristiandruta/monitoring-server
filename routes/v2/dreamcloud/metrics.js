@@ -5,7 +5,7 @@ var router = express.Router();
 
 /**
  * @api {post} /metrics 2. Update multiple metrics at once (bulk query)
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PostBulkMetrics
  * @apiGroup Metrics
  *
@@ -96,7 +96,7 @@ router.post('/', function(req, res, next) {
 
 /**
  * @api {post} /metrics/:workflowID/:experimentID 1. Update a single metric
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PostMetric
  * @apiGroup Metrics
  *

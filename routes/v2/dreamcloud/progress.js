@@ -3,7 +3,7 @@ var router = express.Router();
 
 /**
  * @api {get} /progress/:workflowID/:taskID/:experimentID 1. Get progress information for a given experiment
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetProgress
  * @apiGroup Progress
  *

@@ -3,7 +3,7 @@ var router = express.Router();
 
 /**
  * @api {get} /statistics/:workflowID 1. Get statistics on a metric across all tasks
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetStats
  * @apiGroup Statistics
  *
@@ -99,7 +99,7 @@ router.get('/:workflowID', function(req, res, next) {
 
 /**
  * @api {get} /statistics/:workflowID/:taskID 2. Get statistics on a metric filtered by task ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetStatsTask
  * @apiGroup Statistics
  *

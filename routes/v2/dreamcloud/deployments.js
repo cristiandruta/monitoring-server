@@ -5,7 +5,7 @@ var secure_router = express.Router(),
 
 /**
  * @api {get} /deployments/:workflowID/:taskID/:platformID 3. Return available deployment plans
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetDeployments
  * @apiGroup Deployment Plans
  *
@@ -94,7 +94,7 @@ open_router.get('/:workflow/:task/:platform', function(req, res, next) {
 
 /**
  * @api {get} /deployments/:workflowID/:taskID/:platformID/:deploymentPlanID 2. Return a given deployment plan
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetExperiments
  * @apiGroup Deployment Plans
  *
@@ -180,7 +180,7 @@ open_router.get('/:workflow/:task/:platform/:deployment', function(req, res, nex
 
 /**
  * @api {put} /deployments/:workflowID/:taskID/:platformID/:experimentID 1. Add a new deployment plan
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PutDeployments
  * @apiGroup Deployment Plans
  *

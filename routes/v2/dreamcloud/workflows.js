@@ -6,7 +6,7 @@ var secure_router = express.Router(),
 
 /**
  * @api {get} /workflows 3. Request a list of registered workflows
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetWorkflows
  * @apiGroup Workflows
  *
@@ -133,7 +133,7 @@ function get_workflows(results, mf_server, excess) {
 
 /**
  * @api {get} /workflows/:workflowID 2. Get information about a specific workflow
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName GetWorkflow
  * @apiGroup Workflows
  *
@@ -200,7 +200,7 @@ open_router.get('/:id', function(req, res, next) {
 
 /**
  * @api {put} /workflows/:workflowID 1. Register a new workflow with a custom ID
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PutWorkflowID
  * @apiGroup Workflows
  *
@@ -279,7 +279,7 @@ secure_router.put('/:id', function(req, res, next) {
 
 /**
  * @api {put} /workflows 4. Register a new workflow and create a new experiment
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PutWorkflow
  * @apiGroup Workflows
  *
@@ -460,7 +460,7 @@ function isEmpty(obj) {
 
 /**
  * @api {put} /workflows/:workflowID/:experimentID 5. Register a new workflow and experiment using custom IDs
- * @apiVersion 1.0.0
+ * @apiVersion 2.0.0
  * @apiName PutWorkflowIDExperimentID
  * @apiGroup Workflows
  *
