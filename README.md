@@ -68,7 +68,6 @@ When using Ubuntu, for example, please install npm as follows:
 sudo apt-get install npm
 ```
 
-
 Again, please feel free to use your operating system's software installer, instead.
 
 
@@ -128,6 +127,7 @@ GET /v1/dreamcloud/mf/profiles/ms2/task_1/AU3DzggYHjgymAdip
 GET /v1/dreamcloud/mf/runtime/ms2/task_1/AU3DzggYHjgymAdip
 GET /v1/dreamcloud/mf/runtime/ms2/AU3DzYggYHjgymAd2iPp
 ```
+Please refer to the [RESTful API documentation Web page][api] to get more details about EXCESS monitoring framework.
 
 # Monitoring
 
@@ -195,3 +195,4 @@ Copyright (C) 2014-2016 University of Stuttgart
 [agent]: https://github.com/excess-project/monitoring-agent
 [excess]: http://www.excess-project.eu
 [dreamcloud]: http://www.dreamcloud-project.eu
+[api]: http://excess-project.github.io/monitoring-server
