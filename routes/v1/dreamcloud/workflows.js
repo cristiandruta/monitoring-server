@@ -419,7 +419,6 @@ router.put('/', function(req, res, next) {
         },
         /* ADD JOB_ID */
         function(experiment_id, series_callback) {
-            console.log(experiment_id);
             client.update({
                 index: 'mf',
                 type: 'experiments',
@@ -431,8 +430,6 @@ router.put('/', function(req, res, next) {
                     }
                 }
             }, function(error, response) {
-                console.log(error);
-                console.log(response);
                 if (error) {
                     return series_callback(error);
                 }

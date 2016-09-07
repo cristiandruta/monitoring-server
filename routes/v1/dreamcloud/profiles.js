@@ -93,7 +93,7 @@ router.get('/:workflowID', function(req, res, next) {
  *        },
  *        "2016-04-14": {
  *           "AVQUiW67GMPeuCn47XpS": {
- *              "href": "http://mf.excess-project.eu:3030/v1/v1/dreamcloud/mf/profiles/ms2/t2.1/AVQUiW67GMPeuCn47XpS"
+ *              "href": "http://mf.excess-project.eu:3030/v1/dreamcloud/mf/profiles/ms2/t2.1/AVQUiW67GMPeuCn47XpS"
  *           }
  *        },
  *        ...
