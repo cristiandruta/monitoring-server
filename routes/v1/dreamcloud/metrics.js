@@ -79,18 +79,18 @@ router.post('/', function(req, res, next) {
     client.bulk({
         body: bulk_data
     },function(error, response) {
-        if (error !== 'undefined') {
-            var json = [];
-            for (var i in response.items) {
-                json.push(mf_server +
-                  '/dreamcloud/mf/profiles/' +
-                  response.items[i].create._index.replace('_all', '/all') +
-                  '/' + response.items[i].create._type);
-            }
-            res.json(json);
-        } else {
-            res.json(error);
+        if (error) {
+            res.status(500);
+            return next(error);
         }
+        var json = [];
+        for (var i in response.items) {
+            json.push(mf_server +
+              '/dreamcloud/mf/profiles/' +
+              response.items[i].create._index.replace('_all', '/all') +
+              '/' + response.items[i].create._type);
+        }
+        res.json(json);
     });
 });
 
@@ -209,21 +209,23 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
                 type: experimentID,
                 body: req.body
             },function(error, response) {
-                if (error !== 'undefined') {
-                    var json = {};
-                    json[response._id] = {};
-                    json[response._id].href = mf_server + '/dreamcloud/mf/profiles/' + workflowID;
-                    if (typeof taskID !== 'undefined') {
-                        json[response._id].href += '/' + taskID;
-                    }
-                    json[response._id].href += '/' + experimentID;
-                    res.json(json);
-                } else {
-                    res.json(error);
-                }
-                callback(null, '3');
-            });
-        }
+              if (error) {
+                res.status(500);
+                callback(null, 'id not found');
+                console.log(error);
+                return;
+              }
+              var json = {};
+              json[response._id] = {};
+              json[response._id].href = mf_server + '/dreamcloud/mf/profiles/' + workflowID;
+              if (typeof taskID !== 'undefined') {
+                  json[response._id].href += '/' + taskID;
+              }
+              json[response._id].href += '/' + experimentID;
+              res.json(json);
+              callback(null, '3');
+          });
+      }
     ],
     function(err, results){
         //console.log(results);

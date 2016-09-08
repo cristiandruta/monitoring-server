@@ -50,6 +50,7 @@ var experiments = require('./routes/v2/experiments');
 var profiles = require('./routes/v2/profiles');
 var profiles_dreamcloud = require('./routes/v2/dreamcloud/profiles');
 var metrics = require('./routes/v2/metrics');
+var metrics_dreamcloud = require('./routes/v2/dreamcloud/metrics');
 var units = require('./routes/v2/units');
 
 var app = express();
@@ -116,7 +117,7 @@ app.use('/v2/mf/units', isLoggedIn, units.protected);
 app.use('/v2/dreamcloud/mf/experiments', experiments.unprotected);
 app.use('/v2/dreamcloud/mf/experiments', isLoggedIn, experiments.protected);
 app.use('/v2/dreamcloud/mf/profiles', profiles_dreamcloud);
-app.use('/v2/dreamcloud/mf/metrics', isLoggedIn, metrics);
+app.use('/v2/dreamcloud/mf/metrics', isLoggedIn, metrics_dreamcloud);
 
 /* catch 404 and forward to error handler */
 app.use(function(req, res, next) {
