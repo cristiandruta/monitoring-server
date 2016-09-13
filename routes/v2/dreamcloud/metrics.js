@@ -201,7 +201,7 @@ router.post('/:workflowID/:experimentID', function(req, res, next) {
             }
             /* fix for timestamps having whitespaces: 2016-08-24T10:24:07.  6 */
             if (req.body['@timestamp'] !== undefined) {
-                var replaced = str.replace(/ /g, '0');
+                var replaced = req.body['@timestamp'].replace(/ /g, '0');
                 req.body['@timestamp'] = replaced;
             }
             client.index({
